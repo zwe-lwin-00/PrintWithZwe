@@ -1,0 +1,26 @@
+# Print with Zwe — Cursor Rules
+
+## Project Overview
+- **Brand:** Print with Zwe — 3D Printing Service & Custom Fabrication
+- **Stack:** React (Vite), TypeScript, Tailwind CSS, Shadcn-style UI, Lucide React, Framer Motion
+- **Theme:** Modern precision tech, dark mode preferred, subtle mesh grids, clean cards
+
+## Architecture
+- Functional components only with strict TypeScript (no `any`)
+- Components live in `src/components/` (`ui/`, `layout/`, `sections/`)
+- Types in `src/types/`, utilities in `src/lib/`
+- Use `cn()` from `@/lib/utils` for conditional classes
+- Use `lucide-react` for icons
+
+## Coding Standards
+- Responsive Tailwind utilities (`sm:`, `md:`, `lg:`)
+- Client-side form validation before submission
+- Handle loading and empty states for async work
+- Production-ready code — avoid placeholder comments
+
+## Feature Roadmap
+1. Hero with quote CTA modal
+2. Services showcase
+3. Interactive print gallery
+4. Price estimator
+5. Contact / order inquiry form
