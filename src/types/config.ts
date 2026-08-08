@@ -2,6 +2,7 @@ import type { MaterialId } from "@/types/pricing";
 import type { GalleryConfig } from "@/types/gallery";
 
 export interface ContactConfig {
+  phoneNumber: string;
   telegramUsername: string;
   whatsappNumber: string;
   messengerPageId: string;

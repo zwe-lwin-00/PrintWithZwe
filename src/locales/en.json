@@ -78,7 +78,7 @@
     "materialLine": "Material ({{label}})",
     "machineLine": "Machine ({{rate}}/hr)",
     "baseFee": "Base fee",
-    "formula": "Formula: (Weight × Material rate) + (Hours × {{machineRate}}) + {{baseFee}} base fee. Message us on Telegram @{{telegram}} for an exact quote."
+    "formula": "Formula: (Weight × Material rate) + (Hours × {{machineRate}}) + {{baseFee}} base fee. Call {{phone}} or message us on Telegram @{{telegram}} for an exact quote."
   },
   "materials": {
     "pla": "PLA",
@@ -113,6 +113,12 @@
       "deskSetup": "Desk Setup",
       "artFigures": "Art & Figures"
     }
+  },
+  "contact": {
+    "title": "Get in touch",
+    "subtitle": "Call or message us — we reply quickly on Telegram.",
+    "call": "Call now",
+    "telegram": "Message on Telegram"
   },
   "footer": {
     "navigate": "Navigate",

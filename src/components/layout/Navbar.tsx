@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Calculator, Menu, Printer, X } from "lucide-react";
+import { ContactButtons } from "@/components/ui/ContactButtons";
 import { Button } from "@/components/ui/Button";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -177,6 +178,7 @@ export function Navbar() {
                   </motion.a>
                 ))}
                 <motion.div variants={staggerItem} className="mt-3 space-y-3">
+                  <ContactButtons layout="stack" size="lg" />
                   <LanguageToggle className="w-full justify-center" />
                   <ThemeToggle className="w-full justify-center" />
                   <a

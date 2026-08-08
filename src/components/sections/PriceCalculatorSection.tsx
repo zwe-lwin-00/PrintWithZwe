@@ -4,6 +4,7 @@ import { Calculator, Info } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
+import { buildContactLinks } from "@/lib/contact";
 import {
   calculatePrice,
   formatPrice,
@@ -32,6 +33,7 @@ export function PriceCalculatorSection() {
   const { config } = useSiteConfig();
   const { pricing, contact } = config;
   const { t } = useTranslation();
+  const contactLinks = buildContactLinks(contact);
 
   const [materialId, setMaterialId] = useState<MaterialId>(() =>
     getDefaultMaterialId(pricing),
@@ -221,6 +223,7 @@ export function PriceCalculatorSection() {
               {t("calculator.formula", {
                 machineRate: formatPrice(pricing.machineRatePerHour, pricing),
                 baseFee: formatPrice(pricing.baseFee, pricing),
+                phone: contactLinks.phoneDisplay,
                 telegram: contact.telegramUsername,
               })}
             </p>

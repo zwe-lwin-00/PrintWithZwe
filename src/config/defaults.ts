@@ -2,8 +2,9 @@ import type { SiteConfig } from "@/types/config";
 
 export const defaultSiteConfig: SiteConfig = {
   contact: {
+    phoneNumber: "+959787238201",
     telegramUsername: "zwe_ll",
-    whatsappNumber: "",
+    whatsappNumber: "959787238201",
     messengerPageId: "printwithzwe",
   },
   pricing: {

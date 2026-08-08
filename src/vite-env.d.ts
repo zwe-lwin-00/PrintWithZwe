@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_TELEGRAM_USERNAME?: string;
+  readonly VITE_PHONE_NUMBER?: string;
   readonly VITE_WHATSAPP_NUMBER?: string;
   readonly VITE_MESSENGER_PAGE_ID?: string;
   readonly VITE_PRICING_BASE_FEE?: string;

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Calculator, Layers, Sparkles } from "lucide-react";
+import { ContactButtons } from "@/components/ui/ContactButtons";
 import { Container } from "@/components/layout/Container";
 import { SceneBackground } from "@/components/ui/SceneBackground";
 import { PrintAnimation } from "@/components/ui/PrintAnimation";
@@ -100,6 +101,16 @@ export function HeroSection() {
             <MotionLinkButton href="#gallery" icon={<Layers className="h-4 w-4" />}>
               {t("hero.viewGallery")}
             </MotionLinkButton>
+          </motion.div>
+
+          <motion.div
+            custom={0.38}
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            className="mt-4 sm:mt-5"
+          >
+            <ContactButtons layout="row" size="default" className="max-w-md" />
           </motion.div>
 
           <motion.div

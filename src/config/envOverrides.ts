@@ -40,6 +40,9 @@ export function applyEnvOverrides(config: SiteConfig): SiteConfig {
   if (import.meta.env.VITE_TELEGRAM_USERNAME) {
     next.contact.telegramUsername = import.meta.env.VITE_TELEGRAM_USERNAME;
   }
+  if (import.meta.env.VITE_PHONE_NUMBER) {
+    next.contact.phoneNumber = import.meta.env.VITE_PHONE_NUMBER;
+  }
   if (import.meta.env.VITE_WHATSAPP_NUMBER !== undefined) {
     next.contact.whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
   }
