@@ -6,12 +6,7 @@ import { GalleryLightbox } from "@/components/ui/GalleryLightbox";
 import { useTranslation } from "@/context/LocaleProvider";
 import { useGalleryItems } from "@/hooks/useGalleryItems";
 import { driveImageFallbacks } from "@/lib/gallery";
-import {
-  fadeUp,
-  scaleIn,
-  staggerContainer,
-  staggerItem,
-} from "@/lib/motion";
+import { fadeUp, scaleIn } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 const INITIAL_VISIBLE = 12;
@@ -33,7 +28,15 @@ function GallerySkeleton() {
   );
 }
 
-function GalleryThumb({ title, fileId }: { title: string; fileId: string }) {
+function GalleryThumb({
+  title,
+  fileId,
+  priority = false,
+}: {
+  title: string;
+  fileId: string;
+  priority?: boolean;
+}) {
   const sources = driveImageFallbacks(fileId, THUMB_WIDTH);
   const [sourceIndex, setSourceIndex] = useState(0);
 
@@ -41,7 +44,8 @@ function GalleryThumb({ title, fileId }: { title: string; fileId: string }) {
     <img
       src={sources[sourceIndex]}
       alt={title}
-      loading="lazy"
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "auto"}
       decoding="async"
       referrerPolicy="no-referrer"
       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -59,11 +63,17 @@ export function GallerySection() {
   const { items, state, error } = useGalleryItems();
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [eagerFromIndex, setEagerFromIndex] = useState(INITIAL_VISIBLE);
 
   const visibleItems = useMemo(
     () => items.slice(0, visibleCount),
     [items, visibleCount],
   );
+
+  const handleLoadMore = () => {
+    setEagerFromIndex(visibleCount);
+    setVisibleCount((count) => Math.min(count + LOAD_MORE_STEP, items.length));
+  };
 
   const hasMore = visibleCount < items.length;
 
@@ -140,39 +150,35 @@ export function GallerySection() {
 
         {state === "ready" && (
           <>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-40px" }}
-              variants={staggerContainer}
-              className="mt-8 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 lg:gap-4"
-            >
-              {visibleItems.map((item) => (
-                <motion.button
+            <div className="mt-8 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 lg:gap-4">
+              {visibleItems.map((item, index) => (
+                <button
                   key={item.id}
                   type="button"
-                  variants={staggerItem}
-                  whileHover={{ y: -4 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
                   onClick={() => setLightboxIndex(items.indexOf(item))}
                   className={cn(
-                    "group relative overflow-hidden rounded-xl border border-border bg-card/40 text-left shadow-elevated transition-colors hover:border-primary/30",
+                    "group relative overflow-hidden rounded-xl border border-border bg-card/40 text-left shadow-elevated transition-[transform,colors] duration-200 hover:border-primary/30 active:scale-[0.98] sm:hover:-translate-y-1",
                   )}
                 >
                   <div className="relative aspect-square overflow-hidden bg-muted/60">
-                    <GalleryThumb title={item.title} fileId={item.id} />
+                    <GalleryThumb
+                      title={item.title}
+                      fileId={item.id}
+                      priority={
+                        index < INITIAL_VISIBLE || index >= eagerFromIndex
+                      }
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
-                    <div className="absolute bottom-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:opacity-100 sm:bg-black/40">
+                    <div className="absolute bottom-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white opacity-100 backdrop-blur-sm sm:bg-black/40">
                       <Expand className="h-4 w-4" />
                     </div>
                   </div>
                   <p className="truncate px-2.5 py-2 text-xs font-medium sm:px-3 sm:text-sm">
                     {item.title}
                   </p>
-                </motion.button>
+                </button>
               ))}
-            </motion.div>
+            </div>
 
             {hasMore && (
               <div className="mt-8 flex flex-col items-center gap-2 sm:mt-10">
@@ -184,11 +190,7 @@ export function GallerySection() {
                 </p>
                 <button
                   type="button"
-                  onClick={() =>
-                    setVisibleCount((count) =>
-                      Math.min(count + LOAD_MORE_STEP, items.length),
-                    )
-                  }
+                  onClick={handleLoadMore}
                   className="inline-flex h-11 min-h-11 items-center justify-center rounded-lg border border-border bg-card/60 px-6 text-sm font-medium transition-colors hover:border-primary/30 hover:bg-card"
                 >
                   {t("gallery.loadMore")}
