@@ -22,17 +22,17 @@ export function HeroSection() {
   const { brand } = config;
 
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden">
+    <section className="relative overflow-hidden lg:min-h-[100dvh]">
       <SceneBackground />
 
-      <Container className="relative min-h-[100dvh] pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid lg:grid-cols-[1fr_400px] lg:items-center lg:gap-10 lg:pb-20 lg:pt-32 xl:gap-14">
-        <div className="flex flex-col justify-center">
+      <Container className="relative pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid lg:min-h-[100dvh] lg:grid-cols-[1fr_400px] lg:items-center lg:gap-10 lg:pb-20 lg:pt-32 xl:gap-14">
+        <div className="flex min-w-0 flex-col justify-center">
           <motion.div
             custom={0}
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mb-5 inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur sm:mb-6 sm:gap-2 sm:px-4 sm:text-sm"
+            className="mb-4 inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur sm:mb-6 sm:gap-2 sm:px-4 sm:text-sm"
           >
             <motion.span
               animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.15, 1] }}
@@ -60,7 +60,7 @@ export function HeroSection() {
               initial="hidden"
               animate="visible"
               variants={fadeUp}
-              className="mt-2 block text-xl font-semibold leading-snug text-muted-foreground xs:text-2xl sm:text-4xl sm:leading-tight lg:text-3xl xl:text-4xl"
+              className="mt-2 block text-lg font-semibold leading-snug text-muted-foreground xs:text-xl sm:text-4xl sm:leading-tight lg:text-3xl xl:text-4xl"
             >
               {brand.tagline}
             </motion.span>
@@ -71,7 +71,7 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:text-base xl:text-lg"
+            className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:text-base xl:text-lg"
           >
             Custom 3D printing, multi-color fabrication, and rapid prototyping —
             built with software-grade precision and maker-space creativity.
@@ -82,9 +82,9 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mx-auto mt-8 w-full max-w-[220px] sm:max-w-[260px] lg:hidden"
+            className="mx-auto mt-8 w-full max-w-[400px] lg:hidden"
           >
-            <PrintAnimation compact />
+            <PrintAnimation className="w-full" />
           </motion.div>
 
           <motion.div
@@ -92,10 +92,11 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mt-8 flex w-full flex-col gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:items-center sm:gap-4"
+            className="mt-6 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center sm:gap-4"
           >
             <MotionLinkButton
               href="#calculator"
+              variant="default"
               icon={<Calculator className="h-4 w-4" />}
               className="w-full sm:w-auto"
             >
@@ -111,23 +112,20 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="mt-12 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:mt-16 sm:gap-4 md:grid-cols-3 lg:mt-10"
+            className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 md:grid-cols-3 lg:mt-10"
           >
-            {stats.map((stat, index) => (
+            {stats.map((stat) => (
               <motion.div
                 key={stat.label}
                 variants={staggerItem}
-                whileHover={{ y: -4, scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 className={cn(
-                  "rounded-xl border border-border bg-card/50 p-3.5 shadow-elevated backdrop-blur-sm transition-colors duration-300 hover:border-primary/30 hover:bg-card/70 sm:p-4",
-                  index === 2 && "xs:col-span-2 md:col-span-1",
+                  "rounded-xl border border-border bg-card/50 px-4 py-3.5 shadow-elevated backdrop-blur-sm transition-colors duration-300 hover:border-primary/30 hover:bg-card/70 sm:px-5 sm:py-4",
                 )}
               >
                 <motion.p
                   initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
+                  transition={{ delay: 0.5 }}
                   className="text-[0.65rem] font-medium uppercase tracking-wider text-primary sm:text-xs"
                 >
                   {stat.label}
@@ -138,15 +136,16 @@ export function HeroSection() {
               </motion.div>
             ))}
           </motion.div>
+
         </div>
 
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="pointer-events-none hidden w-[400px] shrink-0 lg:block"
+          className="pointer-events-none hidden w-full max-w-[400px] shrink-0 lg:block"
         >
-          <PrintAnimation />
+          <PrintAnimation className="w-full" />
         </motion.div>
 
         <motion.div

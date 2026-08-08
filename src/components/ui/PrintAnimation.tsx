@@ -9,14 +9,12 @@ const PAUSE_MS = 2400;
 const VIEW_W = 380;
 const VIEW_H = 340;
 
-/** Fixed layout — printer must never resize between animation states */
-const CARD_W = 400;
-const CARD_PAD = 20; // p-5
-const INNER_W = CARD_W - CARD_PAD * 2; // 360px content area inside border
-const SCENE_H = Math.round(INNER_W * (VIEW_H / VIEW_W)); // 322px
+/** Reference layout at 400px card width — scene uses aspect-ratio to scale */
 const HUD_H = 56;
 const FOOTER_H = 20;
-const CARD_INNER_H = HUD_H + 12 + SCENE_H + 8 + FOOTER_H;
+const COMPACT_HUD_H = 32;
+const COMPACT_FOOTER_H = 14;
+const COMPACT_SCENE_MAX_H = 220;
 
 /** SVG viewBox regions — single source of truth for HTML overlay alignment */
 const CHAMBER = {
@@ -154,11 +152,37 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
 
   return (
     <PrintFrame compact={compact} className={className}>
-      <div
-        className={cn("relative mx-auto w-full max-w-full", compact && "max-w-[280px]")}
-        style={compact ? undefined : { height: CARD_INNER_H }}
-      >
-        {/* HUD — fixed height, stays inside padded area */}
+      <div className="relative mx-auto w-full max-w-full">
+        {/* Compact HUD — legacy mobile fallback */}
+        {compact && (
+          <div
+            className="mb-2 flex shrink-0 items-center justify-between gap-2 rounded-lg border border-border/70 bg-card/85 px-2 py-1"
+            style={{ height: COMPACT_HUD_H }}
+          >
+            <div className="min-w-0 shrink-0">
+              <p className="text-[0.45rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                Layer
+              </p>
+              <p className="text-[0.7rem] font-bold tabular-nums leading-none">
+                {String(Math.min(layer, LAYER_COUNT)).padStart(2, "0")}
+                <span className="text-muted-foreground"> / {LAYER_COUNT}</span>
+              </p>
+            </div>
+            <div className="min-w-0 flex-1 px-1.5">
+              <div className="h-1 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-primary"
+                  style={{ width: `${printProgress}%` }}
+                />
+              </div>
+            </div>
+            <p className="shrink-0 text-[0.45rem] font-semibold uppercase tracking-wider text-emerald-500/90">
+              {isComplete ? "Done" : isPrinting ? "Print" : "Ready"}
+            </p>
+          </div>
+        )}
+
+        {/* HUD — desktop */}
         {!compact && (
           <div
             className="mb-3 flex shrink-0 items-start justify-between gap-1.5"
@@ -203,13 +227,21 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
           </div>
         )}
 
-        {/* Scene — exact pixel size, never flexes */}
+        {/* Scene — scales with card width, same proportions as desktop */}
         <div
-          className={cn(
-            "relative shrink-0 overflow-hidden",
-            compact && "aspect-[380/340] w-full",
-          )}
-          style={compact ? undefined : { height: SCENE_H, width: "100%" }}
+          className="relative w-full shrink-0 overflow-hidden"
+          style={
+            compact
+              ? {
+                  aspectRatio: `${VIEW_W} / ${VIEW_H}`,
+                  maxHeight: COMPACT_SCENE_MAX_H,
+                  width: "100%",
+                }
+              : {
+                  aspectRatio: `${VIEW_W} / ${VIEW_H}`,
+                  width: "100%",
+                }
+          }
         >
           <BambuP2SComboScene
             compact={compact}
@@ -272,8 +304,20 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
           />
         </div>
 
-        {/* Status footer */}
-        {!compact && (
+        {/* Footer */}
+        {compact ? (
+          <div
+            className="mt-2 grid shrink-0 grid-cols-2 gap-1"
+            style={{ height: COMPACT_FOOTER_H }}
+          >
+            <p className="min-w-0 truncate text-[0.45rem] font-semibold uppercase tracking-wider text-muted-foreground">
+              P2S
+            </p>
+            <p className="min-w-0 truncate text-right text-[0.45rem] font-medium uppercase leading-none tracking-wider text-muted-foreground">
+              {isComplete ? "Done" : "Print"}
+            </p>
+          </div>
+        ) : (
           <div
             className="mt-2 grid shrink-0 grid-cols-2 gap-1"
             style={{ height: FOOTER_H }}
@@ -653,7 +697,7 @@ function BambuP2SComboScene({
         rx="2"
         fill="#0f172a"
       />
-      {!compact && (
+      {!compact ? (
         <>
           <text x="130" y="270" fill="#e2e8f0" fontSize="7" fontWeight="600">
             {isComplete ? "Done" : isPrinting ? "Printing" : "Ready"}
@@ -665,6 +709,21 @@ function BambuP2SComboScene({
             width={(118 * printProgress) / 100}
             height="3"
             rx="1.5"
+            fill={isComplete ? "#22c55e" : CYAN}
+          />
+        </>
+      ) : (
+        <>
+          <text x="130" y={162} fill="#e2e8f0" fontSize="6" fontWeight="600">
+            {isComplete ? "Done" : isPrinting ? "Print" : "Ready"}
+          </text>
+          <rect x="130" y={165} width="118" height="2.5" rx="1" fill="#334155" />
+          <rect
+            x="130"
+            y={165}
+            width={(118 * printProgress) / 100}
+            height="2.5"
+            rx="1"
             fill={isComplete ? "#22c55e" : CYAN}
           />
         </>
@@ -823,16 +882,13 @@ function PrintFrame({
   className?: string;
   compact?: boolean;
 }) {
-  const frameH = compact ? undefined : CARD_INNER_H + 40; // padding p-5 top+bottom
-
   return (
-    <div className={cn("flex flex-col items-center", className)} aria-hidden>
+    <div className={cn("flex w-full flex-col", className)} aria-hidden>
       <div
         className={cn(
-          "relative isolate overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-b from-card/95 to-background/70 shadow-elevated backdrop-blur-md",
-          compact ? "w-full p-3" : "w-[400px] p-5",
+          "relative isolate w-full overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-b from-card/95 to-background/70 shadow-elevated backdrop-blur-md",
+          compact ? "p-3" : "p-5",
         )}
-        style={compact ? undefined : { height: frameH }}
       >
         {!compact && (
           <>
