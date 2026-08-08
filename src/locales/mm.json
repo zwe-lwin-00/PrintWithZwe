@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "title": "Print with Zwe",
+    "description": "Print with Zwe — စိတ်ကြိုက် 3D ပရင့်နှင့် အမြန် prototype ဝန်ဆောင်မှုများ။"
+  },
+  "brand": {
+    "name": "Print with Zwe",
+    "tagline": "သင့်အကြံအဉာဏ်များကို အလွှာတိုင်းဖြင့် သက်ဝင်စေပါသည်။",
+    "heroBadge": "Bambu Lab အရည်အသွေး · တိကျသော အင်ဂျင်နီယာ",
+    "heroBadgeShort": "Bambu Lab အရည်အသွေး ပရင့်",
+    "footerBlurb": "{{name}} — တိကျသော အင်ဂျင်နီယာနှင့် ဖန်တီးမှု ပေါင်းစပ်ထားသော စိတ်ကြိုက် 3D ပရင့်နှင့် အမြန် prototype ဝန်ဆောင်မှုများ။"
+  },
+  "nav": {
+    "services": "ဝန်ဆောင်မှုများ",
+    "calculator": "ဈေးနှုန်းတွက်",
+    "gallery": "ပြခန်း",
+    "contact": "ဆက်သွယ်ရန်",
+    "estimatePrice": "ဈေးနှုန်းခန့်မှန်း",
+    "openMenu": "မီနူဖွင့်ရန်",
+    "closeMenu": "မီနူပိတ်ရန်"
+  },
+  "hero": {
+    "description": "စိတ်ကြိုက် 3D ပရင့်၊ အရောင်များစွာ ထုတ်လုပ်ခြင်းနှင့် အမြန် prototype — software-grade တိကျမှုနှင့် maker-space ဖန်တီးမှုကို ပေါင်းစပ်ထားသည်။",
+    "estimatePrice": "ဈေးနှုန်းခန့်မှန်း",
+    "viewGallery": "ပြခန်းကြည့်ရန်",
+    "scroll": "Scroll",
+    "stats": {
+      "materials": { "label": "ပစ္စည်းများ", "value": "PLA · PETG · ABS · TPU" },
+      "multiColor": { "label": "အရောင်များစွာ", "value": "AMS အဆင်သင့်" },
+      "turnaround": { "label": "ပြီးစီးချိန်", "value": "အမြန် Prototype" }
+    }
+  },
+  "services": {
+    "eyebrow": "ကျွန်ုပ်တို့ ပေးဆောင်သော ဝန်ဆောင်မှုများ",
+    "title": "Maker၊ engineer နှင့် creator များအတွက် ဝန်ဆောင်မှုများ",
+    "description": "တစ်ခုချင်း ပရင့်မှ multi-color prototype များအထိ — အလုပ်တိုင်းကို အတူတူဂရုစိုက်ပါသည်။",
+    "estimateLink": "ဤဝန်ဆောင်မှုဖြင့် ဈေးနှုန်းတွက်ရန်",
+    "items": {
+      "custom-printing": {
+        "title": "စိတ်ကြိုက် 3D ပရင့်",
+        "description": "PLA၊ PETG၊ ABS နှင့် TPU တွင် အရည်အသွေးမြင့် ပရင့် — ခိုင်မြဲမှု၊ ပြီးသွက်မှုနှင့် လုပ်ဆောင်ချက်အတွက် tune လုပ်ထားသည်။",
+        "features": [
+          "PLA · PETG · ABS · TPU",
+          "0.2mm တိကျသော layer",
+          "လုပ်ဆောင်ချက်နှင့် အလှပရင့်"
+        ]
+      },
+      "multi-color": {
+        "title": "အရောင်များစွာ ပရင့်",
+        "description": "AMS ပံ့ပိုးမှုဖြင့် တောက်ပသော multi-material ပရင့် — logo၊ label နှင့် eye-catching model များအတွက် သင့်တော်သည်။",
+        "features": [
+          "AMS multi-filament",
+          "ချောမွေ့သော အရောင်ပြောင်း",
+          "Brand-ready prototype"
+        ]
+      },
+      "prototyping": {
+        "title": "အမြန် Prototype & CAD",
+        "description": "အကြံအဉာဏ်မှ physical part အထိ အမြန်ပြန်လည်ပြုပြင်ခြင်း — file လိုအပ်ပါက CAD design ပံ့ပိုးမှုပါဝင်သည်။",
+        "features": [
+          "တစ်ပတ်အတွင်း ပြီးစီး",
+          "Design-to-print ပံ့ပိုးမှု",
+          "Iterative fit testing"
+        ]
+      }
+    }
+  },
+  "calculator": {
+    "title": "ချက်ချင်း ဈေးနှုန်းခန့်မှန်း",
+    "description": "ပစ္စည်း၊ အလေးချိန်နှင့် print time အပေါ် အခြေခံသော ခန့်မှန်းချက်။ complexity၊ support နှင့် infill ပေါ်မူတည်၍ ဈေးနှုန်း ကွဲပြားနိုင်သည်။",
+    "material": "ပစ္စည်း",
+    "weight": "အလေးချိန် (grams)",
+    "printTime": "Print time (နာရီ)",
+    "weightPlaceholder": "ဥပမာ 50",
+    "hoursPlaceholder": "ဥပမာ 3",
+    "hint": "ခန့်မှန်းချက်အတွက် အလေးချိန်၊ print time သို့မဟုတ် နှစ်ခုစလုံး ထည့်ပါ။",
+    "estimatedTotal": "ခန့်မှန်းစုစုပေါင်း",
+    "materialLine": "ပစ္စည်း ({{label}})",
+    "machineLine": "Machine ({{rate}}/hr)",
+    "baseFee": "Base fee",
+    "formula": "Formula: (အလေးချိန် × Material rate) + (နာရီ × {{machineRate}}) + {{baseFee}} base fee။ တိကျသော quotation အတွက် Telegram @{{telegram}} သို့ message ပို့ပါ။"
+  },
+  "materials": {
+    "pla": "PLA",
+    "petg": "PETG",
+    "abs": "ABS",
+    "tpu": "TPU",
+    "multi-color": "Multi-Color (AMS)"
+  },
+  "gallery": {
+    "title": "Print Gallery",
+    "description": "ယခင် project နှင့် printed model များ ဤနေရာတွင် ပြသပါမည် — functional parts၊ desk setup၊ art figures နှင့် အခြားများ။",
+    "comingSoon": "မကြာမီ",
+    "categories": {
+      "functional": "Functional",
+      "deskSetup": "Desk Setup",
+      "artFigures": "Art & Figures"
+    }
+  },
+  "footer": {
+    "navigate": "Navigation",
+    "reachUs": "ဆက်သွယ်ရန်",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "copyright": "© {{year}} {{name}}. All rights reserved."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "switchTo": "{{mode}} mode သို့ ပြောင်းရန်",
+    "themeLabel": "Theme",
+    "usingMode": "{{mode}} mode သုံးနေသည်"
+  },
+  "language": {
+    "label": "ဘာသာစကား",
+    "switchTo": "{{language}} သို့ ပြောင်းရန်"
+  },
+  "animation": {
+    "layer": "Layer",
+    "ready": "အဆင်သင့်",
+    "printing": "Print လုပ်နေသည်",
+    "complete": "ပြီးပါပြီ",
+    "done": "Done",
+    "print": "Print",
+    "footerModel": "P2S Combo · AMS 2 Pro",
+    "footerModelShort": "P2S Combo",
+    "amsLabel": "AMS 2 PRO",
+    "modelBadge": "P2S COMBO"
+  }
+}

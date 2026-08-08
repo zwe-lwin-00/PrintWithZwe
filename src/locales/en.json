@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "title": "Print with Zwe",
+    "description": "Print with Zwe — Custom 3D printing, multi-color prints, and rapid prototyping."
+  },
+  "brand": {
+    "name": "Print with Zwe",
+    "tagline": "Bringing your ideas to life, layer by layer.",
+    "heroBadge": "Bambu Lab quality · Precision engineering",
+    "heroBadgeShort": "Bambu Lab quality prints",
+    "footerBlurb": "{{name}} — custom 3D printing and rapid prototyping with precision engineering meets creative fabrication."
+  },
+  "nav": {
+    "services": "Services",
+    "calculator": "Calculator",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "estimatePrice": "Estimate Price",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "hero": {
+    "description": "Custom 3D printing, multi-color fabrication, and rapid prototyping — built with software-grade precision and maker-space creativity.",
+    "estimatePrice": "Estimate Price",
+    "viewGallery": "View Gallery",
+    "scroll": "Scroll",
+    "stats": {
+      "materials": { "label": "Materials", "value": "PLA · PETG · ABS · TPU" },
+      "multiColor": { "label": "Multi-Color", "value": "AMS Ready" },
+      "turnaround": { "label": "Turnaround", "value": "Fast Prototypes" }
+    }
+  },
+  "services": {
+    "eyebrow": "What we offer",
+    "title": "Services built for makers, engineers, and creators",
+    "description": "From single-part prints to multi-color prototypes — every job gets the same attention to detail.",
+    "estimateLink": "Estimate with this service",
+    "items": {
+      "custom-printing": {
+        "title": "Custom 3D Printing",
+        "description": "High-quality prints in PLA, PETG, ABS, and TPU — tuned profiles for strength, finish, and function.",
+        "features": [
+          "PLA · PETG · ABS · TPU",
+          "0.2mm precision layers",
+          "Functional & decorative parts"
+        ]
+      },
+      "multi-color": {
+        "title": "Multi-Color Printing",
+        "description": "Vivid multi-material prints with AMS support — perfect for logos, labels, and eye-catching models.",
+        "features": [
+          "AMS multi-filament",
+          "Seamless color swaps",
+          "Brand-ready prototypes"
+        ]
+      },
+      "prototyping": {
+        "title": "Rapid Prototyping & CAD",
+        "description": "Fast iteration from idea to physical part, with CAD design support when you need a file built from scratch.",
+        "features": [
+          "Same-week turnaround",
+          "Design-to-print support",
+          "Iterative fit testing"
+        ]
+      }
+    }
+  },
+  "calculator": {
+    "title": "Instant Price Estimator",
+    "description": "Rough estimate based on material, weight, and print time. Final price may vary with complexity, supports, and infill.",
+    "material": "Material",
+    "weight": "Weight (grams)",
+    "printTime": "Print time (hours)",
+    "weightPlaceholder": "e.g. 50",
+    "hoursPlaceholder": "e.g. 3",
+    "hint": "Enter weight, print time, or both for a full estimate.",
+    "estimatedTotal": "Estimated total",
+    "materialLine": "Material ({{label}})",
+    "machineLine": "Machine ({{rate}}/hr)",
+    "baseFee": "Base fee",
+    "formula": "Formula: (Weight × Material rate) + (Hours × {{machineRate}}) + {{baseFee}} base fee. Message us on Telegram @{{telegram}} for an exact quote."
+  },
+  "materials": {
+    "pla": "PLA",
+    "petg": "PETG",
+    "abs": "ABS",
+    "tpu": "TPU",
+    "multi-color": "Multi-Color (AMS)"
+  },
+  "gallery": {
+    "title": "Print Gallery",
+    "description": "Past projects and printed models will appear here — functional parts, desk setups, art figures, and more.",
+    "comingSoon": "Coming soon",
+    "categories": {
+      "functional": "Functional",
+      "deskSetup": "Desk Setup",
+      "artFigures": "Art & Figures"
+    }
+  },
+  "footer": {
+    "navigate": "Navigate",
+    "reachUs": "Reach us",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "copyright": "© {{year}} {{name}}. All rights reserved."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "switchTo": "Switch to {{mode}} mode",
+    "themeLabel": "Theme",
+    "usingMode": "Using {{mode}} mode"
+  },
+  "language": {
+    "label": "Language",
+    "switchTo": "Switch to {{language}}"
+  },
+  "animation": {
+    "layer": "Layer",
+    "ready": "Ready",
+    "printing": "Printing",
+    "complete": "Complete",
+    "done": "Done",
+    "print": "Print",
+    "footerModel": "P2S Combo · AMS 2 Pro",
+    "footerModelShort": "P2S Combo",
+    "amsLabel": "AMS 2 PRO",
+    "modelBadge": "P2S COMBO"
+  }
+}

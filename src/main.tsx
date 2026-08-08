@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ConfigProvider } from "@/context/ConfigProvider";
+import { LocaleProvider } from "@/context/LocaleProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import App from "./App";
 import "./index.css";
@@ -8,9 +9,11 @@ import "./index.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ConfigProvider>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
+      <LocaleProvider>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </LocaleProvider>
     </ConfigProvider>
   </StrictMode>,
 );

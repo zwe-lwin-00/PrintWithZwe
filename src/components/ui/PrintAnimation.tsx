@@ -1,6 +1,6 @@
 import { useReducedMotion } from "framer-motion";
 import { useMemo, useState, useEffect, useRef, type ReactNode } from "react";
-import { useSiteConfig } from "@/context/ConfigProvider";
+import { useTranslation } from "@/context/LocaleProvider";
 import { cn } from "@/lib/utils";
 
 const LAYER_COUNT = 16;
@@ -126,11 +126,12 @@ function usePrintSimulation(enabled: boolean): PrintState {
 }
 
 export function PrintAnimation({ className, compact = false }: PrintAnimationProps) {
-  const { config } = useSiteConfig();
+  const { t } = useTranslation();
   const prefersReducedMotion = useReducedMotion();
+  const brandName = t("brand.name");
   const { lead, accent } = useMemo(
-    () => splitBrandTitle(config.brand.name),
-    [config.brand.name],
+    () => splitBrandTitle(brandName),
+    [brandName],
   );
 
   const { layer, isComplete } = usePrintSimulation(!prefersReducedMotion);
@@ -147,6 +148,12 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
   const nozzleVisible = layer > 0 || isComplete;
   const displayProgress = isComplete ? 100 : printProgress;
 
+  const statusLabel = isComplete
+    ? t("animation.complete")
+    : isPrinting
+      ? t("animation.printing")
+      : t("animation.ready");
+
   const box = chamberBox(compact);
   const bedY = compact ? BED_Y_COMPACT : BED_Y;
 
@@ -161,7 +168,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
           >
             <div className="min-w-0 shrink-0">
               <p className="text-[0.45rem] font-semibold uppercase tracking-wider text-muted-foreground">
-                Layer
+                {t("animation.layer")}
               </p>
               <p className="text-[0.7rem] font-bold tabular-nums leading-none">
                 {String(Math.min(layer, LAYER_COUNT)).padStart(2, "0")}
@@ -177,7 +184,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
               </div>
             </div>
             <p className="shrink-0 text-[0.45rem] font-semibold uppercase tracking-wider text-emerald-500/90">
-              {isComplete ? "Done" : isPrinting ? "Print" : "Ready"}
+              {isComplete ? t("animation.done") : isPrinting ? t("animation.print") : t("animation.ready")}
             </p>
           </div>
         )}
@@ -190,7 +197,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
           >
             <HudPanel className="min-w-0 flex-1">
               <p className="text-[0.55rem] font-semibold uppercase tracking-widest text-muted-foreground">
-                Layer
+                {t("animation.layer")}
               </p>
               <p className="text-sm font-bold tabular-nums leading-none text-foreground">
                 {String(Math.min(layer, LAYER_COUNT)).padStart(2, "0")}
@@ -213,7 +220,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
                   )}
                 />
                 <p className="truncate text-[0.55rem] font-semibold uppercase tracking-wider text-emerald-500/90">
-                  {isComplete ? "Complete" : isPrinting ? "Printing" : "Ready"}
+                  {statusLabel}
                 </p>
               </div>
               <p className="mt-0.5 truncate text-[0.6rem] tabular-nums leading-tight text-foreground">
@@ -311,10 +318,10 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
             style={{ height: COMPACT_FOOTER_H }}
           >
             <p className="min-w-0 truncate text-[0.45rem] font-semibold uppercase tracking-wider text-muted-foreground">
-              P2S
+              {t("animation.footerModelShort")}
             </p>
             <p className="min-w-0 truncate text-right text-[0.45rem] font-medium uppercase leading-none tracking-wider text-muted-foreground">
-              {isComplete ? "Done" : "Print"}
+              {isComplete ? t("animation.done") : t("animation.print")}
             </p>
           </div>
         ) : (
@@ -323,10 +330,10 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
             style={{ height: FOOTER_H }}
           >
             <p className="min-w-0 truncate text-[0.55rem] font-semibold uppercase tracking-wider text-muted-foreground">
-              P2S Combo · AMS 2 Pro
+              {t("animation.footerModel")}
             </p>
             <p className="min-w-0 truncate text-right text-[0.55rem] font-medium uppercase leading-none tracking-wider text-muted-foreground">
-              {isComplete ? "Complete" : "Printing"}
+              {statusLabel}
             </p>
           </div>
         )}
@@ -455,6 +462,12 @@ function BambuP2SComboScene({
   isComplete: boolean;
   className?: string;
 }) {
+  const { t } = useTranslation();
+  const screenStatus = isComplete
+    ? t("animation.done")
+    : isPrinting
+      ? t("animation.printing")
+      : t("animation.ready");
   const bodyDark = "#181a1d";
   const trim = "#3a3f45";
   const glass = "rgba(34,211,238,0.06)";
@@ -543,7 +556,7 @@ function BambuP2SComboScene({
           })}
 
           <text x="190" y="28" textAnchor="middle" fill="#94a3b8" fontSize="7" fontWeight="600" letterSpacing="0.08em">
-            AMS 2 PRO
+            {t("animation.amsLabel")}
           </text>
         </g>
       )}
@@ -700,7 +713,7 @@ function BambuP2SComboScene({
       {!compact ? (
         <>
           <text x="130" y="270" fill="#e2e8f0" fontSize="7" fontWeight="600">
-            {isComplete ? "Done" : isPrinting ? "Printing" : "Ready"}
+            {screenStatus}
           </text>
           <rect x="130" y="274" width="118" height="3" rx="1.5" fill="#334155" />
           <rect
@@ -715,7 +728,7 @@ function BambuP2SComboScene({
       ) : (
         <>
           <text x="130" y={162} fill="#e2e8f0" fontSize="6" fontWeight="600">
-            {isComplete ? "Done" : isPrinting ? "Print" : "Ready"}
+            {isComplete ? t("animation.done") : isPrinting ? t("animation.print") : t("animation.ready")}
           </text>
           <rect x="130" y={165} width="118" height="2.5" rx="1" fill="#334155" />
           <rect
@@ -732,7 +745,7 @@ function BambuP2SComboScene({
       {/* Model badge — below printer body */}
       {!compact && (
         <text x="190" y="328" textAnchor="middle" fill="#64748b" fontSize="6.5" fontWeight="600" letterSpacing="0.12em">
-          P2S COMBO
+          {t("animation.modelBadge")}
         </text>
       )}
 

@@ -2,18 +2,19 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Calculator, Menu, Printer, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Container } from "@/components/layout/Container";
-import { useSiteConfig } from "@/context/ConfigProvider";
+import { useTranslation } from "@/context/LocaleProvider";
 import { slideDown, staggerContainer, staggerItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const navLinks = [
-  { href: "#services", label: "Services" },
-  { href: "#calculator", label: "Calculator" },
-  { href: "#gallery", label: "Gallery" },
-  { href: "#contact", label: "Contact" },
-];
+const navLinkKeys = [
+  { href: "#services", key: "nav.services" },
+  { href: "#calculator", key: "nav.calculator" },
+  { href: "#gallery", key: "nav.gallery" },
+  { href: "#contact", key: "nav.contact" },
+] as const;
 
 function NavLink({
   href,
@@ -43,7 +44,7 @@ function NavLink({
 }
 
 export function Navbar() {
-  const { config } = useSiteConfig();
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -89,17 +90,20 @@ export function Navbar() {
           >
             <Printer className="h-4 w-4" />
           </motion.span>
-          <span className="truncate text-sm sm:text-base">{config.brand.name}</span>
+          <span className="truncate text-sm sm:text-base">{t("brand.name")}</span>
         </motion.a>
 
         <nav className="hidden items-center gap-6 md:flex lg:gap-8">
-          {navLinks.map(({ href, label }) => (
-            <NavLink key={href} href={href} label={label} />
+          {navLinkKeys.map(({ href, key }) => (
+            <NavLink key={href} href={href} label={t(key)} />
           ))}
         </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <LanguageToggle compact className="md:hidden" />
           <ThemeToggle compact className="md:hidden" />
+
+          <LanguageToggle className="hidden md:inline-flex" />
           <ThemeToggle className="hidden md:inline-flex" />
 
           <motion.div
@@ -112,7 +116,7 @@ export function Navbar() {
               className="inline-flex h-11 min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-colors hover:bg-primary/90 dark:shadow-primary/20"
             >
               <Calculator className="h-4 w-4" />
-              Estimate Price
+              {t("nav.estimatePrice")}
             </a>
           </motion.div>
 
@@ -121,7 +125,7 @@ export function Navbar() {
             size="icon"
             className="md:hidden"
             onClick={() => setMobileOpen((open) => !open)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileOpen ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={mobileOpen}
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -160,7 +164,7 @@ export function Navbar() {
                 variants={staggerContainer}
                 className="flex flex-col gap-1"
               >
-                {navLinks.map(({ href, label }) => (
+                {navLinkKeys.map(({ href, key }) => (
                   <motion.a
                     key={href}
                     href={href}
@@ -169,10 +173,11 @@ export function Navbar() {
                     whileTap={{ scale: 0.98 }}
                     className="block rounded-lg px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                   >
-                    {label}
+                    {t(key)}
                   </motion.a>
                 ))}
                 <motion.div variants={staggerItem} className="mt-3 space-y-3">
+                  <LanguageToggle className="w-full justify-center" />
                   <ThemeToggle className="w-full justify-center" />
                   <a
                     href="#calculator"
@@ -180,7 +185,7 @@ export function Navbar() {
                     className="inline-flex h-12 min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 text-base font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-colors hover:bg-primary/90"
                   >
                     <Calculator className="h-4 w-4" />
-                    Estimate Price
+                    {t("nav.estimatePrice")}
                   </a>
                 </motion.div>
               </motion.div>

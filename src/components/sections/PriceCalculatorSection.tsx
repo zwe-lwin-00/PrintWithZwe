@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, Info } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { useSiteConfig } from "@/context/ConfigProvider";
+import { useTranslation } from "@/context/LocaleProvider";
 import {
   calculatePrice,
   formatPrice,
   getDefaultMaterialId,
-  getMaterialRate,
   parseMaterialFromQuery,
 } from "@/lib/pricing";
 import { fadeUp, springTransition } from "@/lib/motion";
@@ -31,6 +31,7 @@ function isValidInput(
 export function PriceCalculatorSection() {
   const { config } = useSiteConfig();
   const { pricing, contact } = config;
+  const { t } = useTranslation();
 
   const [materialId, setMaterialId] = useState<MaterialId>(() =>
     getDefaultMaterialId(pricing),
@@ -73,7 +74,7 @@ export function PriceCalculatorSection() {
     );
   }, [materialId, weight, hours, isValid, pricing]);
 
-  const material = getMaterialRate(pricing, materialId);
+  const materialLabel = t(`materials.${materialId}`);
 
   return (
     <section
@@ -92,11 +93,10 @@ export function PriceCalculatorSection() {
             <Calculator className="h-5 w-5 sm:h-6 sm:w-6" />
           </span>
           <h2 className="mt-5 text-2xl font-bold tracking-tight sm:mt-6 sm:text-3xl lg:text-4xl">
-            Instant Price Estimator
+            {t("calculator.title")}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Rough estimate based on material, weight, and print time. Final price
-            may vary with complexity, supports, and infill.
+            {t("calculator.description")}
           </p>
         </motion.div>
 
@@ -112,7 +112,7 @@ export function PriceCalculatorSection() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="calc-material" className="text-sm font-medium">
-                  Material
+                  {t("calculator.material")}
                 </label>
                 <select
                   id="calc-material"
@@ -124,7 +124,7 @@ export function PriceCalculatorSection() {
                 >
                   {pricing.materials.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.label} — {formatPrice(item.ratePerGram, pricing)}/g
+                      {t(`materials.${item.id}`)} — {formatPrice(item.ratePerGram, pricing)}/g
                     </option>
                   ))}
                 </select>
@@ -133,7 +133,7 @@ export function PriceCalculatorSection() {
               <div className="grid grid-cols-1 gap-4 xs:grid-cols-2">
                 <div className="space-y-2">
                   <label htmlFor="calc-weight" className="text-sm font-medium">
-                    Weight (grams)
+                    {t("calculator.weight")}
                   </label>
                   <input
                     id="calc-weight"
@@ -141,7 +141,7 @@ export function PriceCalculatorSection() {
                     min={0}
                     step={1}
                     inputMode="decimal"
-                    placeholder="e.g. 50"
+                    placeholder={t("calculator.weightPlaceholder")}
                     value={weightGrams}
                     onChange={(event) => setWeightGrams(event.target.value)}
                     className={inputClassName}
@@ -150,7 +150,7 @@ export function PriceCalculatorSection() {
 
                 <div className="space-y-2">
                   <label htmlFor="calc-hours" className="text-sm font-medium">
-                    Print time (hours)
+                    {t("calculator.printTime")}
                   </label>
                   <input
                     id="calc-hours"
@@ -158,7 +158,7 @@ export function PriceCalculatorSection() {
                     min={0}
                     step={0.5}
                     inputMode="decimal"
-                    placeholder="e.g. 3"
+                    placeholder={t("calculator.hoursPlaceholder")}
                     value={printHours}
                     onChange={(event) => setPrintHours(event.target.value)}
                     className={inputClassName}
@@ -166,9 +166,7 @@ export function PriceCalculatorSection() {
                 </div>
               </div>
 
-              <p className="text-xs text-muted-foreground">
-                Enter weight, print time, or both for a full estimate.
-              </p>
+              <p className="text-xs text-muted-foreground">{t("calculator.hint")}</p>
             </div>
 
             <AnimatePresence mode="wait">
@@ -182,7 +180,7 @@ export function PriceCalculatorSection() {
                   className="mt-6 rounded-xl border border-primary/20 bg-primary/5 p-4 sm:p-5"
                 >
                   <p className="text-xs font-medium uppercase tracking-wider text-primary">
-                    Estimated total
+                    {t("calculator.estimatedTotal")}
                   </p>
                   <p className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
                     {formatPrice(breakdown.total, pricing)}
@@ -191,7 +189,7 @@ export function PriceCalculatorSection() {
                   <dl className="mt-4 space-y-2 border-t border-border/60 pt-4 text-sm">
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">
-                        Material ({material.label})
+                        {t("calculator.materialLine", { label: materialLabel })}
                       </dt>
                       <dd className="font-medium">
                         {formatPrice(breakdown.materialCost, pricing)}
@@ -199,15 +197,16 @@ export function PriceCalculatorSection() {
                     </div>
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">
-                        Machine ({formatPrice(pricing.machineRatePerHour, pricing)}
-                        /hr)
+                        {t("calculator.machineLine", {
+                          rate: formatPrice(pricing.machineRatePerHour, pricing),
+                        })}
                       </dt>
                       <dd className="font-medium">
                         {formatPrice(breakdown.machineCost, pricing)}
                       </dd>
                     </div>
                     <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">Base fee</dt>
+                      <dt className="text-muted-foreground">{t("calculator.baseFee")}</dt>
                       <dd className="font-medium">
                         {formatPrice(breakdown.baseFee, pricing)}
                       </dd>
@@ -219,10 +218,11 @@ export function PriceCalculatorSection() {
 
             <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              Formula: (Weight × Material rate) + (Hours ×{" "}
-              {formatPrice(pricing.machineRatePerHour, pricing)}) +{" "}
-              {formatPrice(pricing.baseFee, pricing)} base fee. Message us on
-              Telegram @{contact.telegramUsername} for an exact quote.
+              {t("calculator.formula", {
+                machineRate: formatPrice(pricing.machineRatePerHour, pricing),
+                baseFee: formatPrice(pricing.baseFee, pricing),
+                telegram: contact.telegramUsername,
+              })}
             </p>
           </div>
         </motion.div>

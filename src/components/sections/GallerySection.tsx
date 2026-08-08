@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ImageIcon } from "lucide-react";
 import { Container } from "@/components/layout/Container";
+import { useTranslation } from "@/context/LocaleProvider";
 import {
   fadeUp,
   scaleIn,
@@ -9,9 +10,11 @@ import {
 } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const placeholderCategories = ["Functional", "Desk Setup", "Art & Figures"];
+const categoryKeys = ["functional", "deskSetup", "artFigures"] as const;
 
 export function GallerySection() {
+  const { t } = useTranslation();
+
   return (
     <section
       id="gallery"
@@ -42,11 +45,10 @@ export function GallerySection() {
             </motion.div>
           </motion.span>
           <h2 className="mt-5 text-2xl font-bold tracking-tight sm:mt-6 sm:text-3xl lg:text-4xl">
-            Print Gallery
+            {t("gallery.title")}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
-            Past projects and printed models will appear here — functional parts,
-            desk setups, art figures, and more.
+            {t("gallery.description")}
           </p>
         </motion.div>
 
@@ -57,9 +59,9 @@ export function GallerySection() {
           variants={staggerContainer}
           className="mt-10 grid grid-cols-1 gap-4 xs:grid-cols-2 sm:mt-14 lg:grid-cols-3"
         >
-          {placeholderCategories.map((category, index) => (
+          {categoryKeys.map((key, index) => (
             <motion.div
-              key={category}
+              key={key}
               variants={staggerItem}
               whileHover={{ y: -6, scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300, damping: 22 }}
@@ -94,9 +96,11 @@ export function GallerySection() {
                   />
                 </div>
               </motion.div>
-              <p className="relative mt-3 text-sm font-medium sm:mt-4">{category}</p>
+              <p className="relative mt-3 text-sm font-medium sm:mt-4">
+                {t(`gallery.categories.${key}`)}
+              </p>
               <p className="relative mt-1 text-xs text-muted-foreground">
-                Coming soon
+                {t("gallery.comingSoon")}
               </p>
             </motion.div>
           ))}

@@ -64,6 +64,10 @@
       color 0.35s ease;
   }
 
+  html[data-locale="mm"] body {
+    font-family: "Noto Sans Myanmar", Inter, system-ui, sans-serif;
+  }
+
   ::selection {
     background: hsl(var(--primary) / 0.25);
     color: hsl(var(--foreground));

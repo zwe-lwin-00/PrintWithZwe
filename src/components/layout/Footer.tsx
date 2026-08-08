@@ -2,19 +2,22 @@ import { motion } from "framer-motion";
 import { Printer } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { useSiteConfig } from "@/context/ConfigProvider";
+import { useTranslation } from "@/context/LocaleProvider";
 import { fadeUp, staggerContainer, staggerItem } from "@/lib/motion";
 
-const footerLinks = [
-  { href: "#services", label: "Services" },
-  { href: "#calculator", label: "Calculator" },
-  { href: "#gallery", label: "Gallery" },
-  { href: "#contact", label: "Contact" },
-];
+const footerLinkKeys = [
+  { href: "#services", key: "nav.services" },
+  { href: "#calculator", key: "nav.calculator" },
+  { href: "#gallery", key: "nav.gallery" },
+  { href: "#contact", key: "nav.contact" },
+] as const;
 
 export function Footer() {
   const { config } = useSiteConfig();
-  const { contact, brand } = config;
+  const { contact } = config;
+  const { t } = useTranslation();
   const year = new Date().getFullYear();
+  const brandName = t("brand.name");
 
   return (
     <footer
@@ -41,19 +44,18 @@ export function Footer() {
               >
                 <Printer className="h-4 w-4" />
               </motion.span>
-              {brand.name}
+              {brandName}
             </motion.div>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              {brand.name} — custom 3D printing and rapid prototyping with
-              precision engineering meets creative fabrication.
+              {t("brand.footerBlurb", { name: brandName })}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-2 gap-8 sm:gap-12 md:gap-16">
             <motion.div variants={staggerItem}>
-              <p className="text-sm font-medium">Navigate</p>
+              <p className="text-sm font-medium">{t("footer.navigate")}</p>
               <ul className="mt-3 space-y-2.5">
-                {footerLinks.map(({ href, label }) => (
+                {footerLinkKeys.map(({ href, key }) => (
                   <li key={href}>
                     <motion.a
                       href={href}
@@ -61,7 +63,7 @@ export function Footer() {
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
                       className="inline-block py-0.5 text-sm text-muted-foreground"
                     >
-                      {label}
+                      {t(key)}
                     </motion.a>
                   </li>
                 ))}
@@ -69,7 +71,7 @@ export function Footer() {
             </motion.div>
 
             <motion.div variants={staggerItem}>
-              <p className="text-sm font-medium">Reach us</p>
+              <p className="text-sm font-medium">{t("footer.reachUs")}</p>
               <ul className="mt-3 space-y-2.5 text-sm text-muted-foreground">
                 <li>
                   <motion.a
@@ -79,7 +81,7 @@ export function Footer() {
                     whileHover={{ x: 4, color: "hsl(var(--primary))" }}
                     className="inline-block py-0.5"
                   >
-                    Telegram
+                    {t("footer.telegram")}
                   </motion.a>
                 </li>
                 {contact.whatsappNumber && (
@@ -91,7 +93,7 @@ export function Footer() {
                       whileHover={{ x: 4, color: "hsl(var(--primary))" }}
                       className="inline-block py-0.5"
                     >
-                      WhatsApp
+                      {t("footer.whatsapp")}
                     </motion.a>
                   </li>
                 )}
@@ -108,7 +110,7 @@ export function Footer() {
           custom={0.2}
           className="mt-8 border-t border-border pt-6 text-center text-xs text-muted-foreground sm:mt-10"
         >
-          © {year} Print with Zwe. All rights reserved.
+          {t("footer.copyright", { year, name: brandName })}
         </motion.p>
       </Container>
     </footer>

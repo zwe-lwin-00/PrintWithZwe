@@ -7,19 +7,14 @@ import {
   AnimatedArrow,
   MotionLinkButton,
 } from "@/components/ui/MotionButton";
-import { useSiteConfig } from "@/context/ConfigProvider";
+import { useTranslation } from "@/context/LocaleProvider";
 import { fadeUp, staggerContainer, staggerItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const stats = [
-  { label: "Materials", value: "PLA · PETG · ABS · TPU" },
-  { label: "Multi-Color", value: "AMS Ready" },
-  { label: "Turnaround", value: "Fast Prototypes" },
-];
+const statKeys = ["materials", "multiColor", "turnaround"] as const;
 
 export function HeroSection() {
-  const { config } = useSiteConfig();
-  const { brand } = config;
+  const { t } = useTranslation();
 
   return (
     <section className="relative overflow-hidden lg:min-h-[100dvh]">
@@ -42,8 +37,8 @@ export function HeroSection() {
               <Sparkles className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
             </motion.span>
             <span className="leading-snug">
-              <span className="sm:hidden">{brand.heroBadgeShort}</span>
-              <span className="hidden sm:inline">{brand.heroBadge}</span>
+              <span className="sm:hidden">{t("brand.heroBadgeShort")}</span>
+              <span className="hidden sm:inline">{t("brand.heroBadge")}</span>
             </span>
           </motion.div>
 
@@ -54,7 +49,7 @@ export function HeroSection() {
             variants={fadeUp}
             className="max-w-4xl text-[1.75rem] font-bold leading-tight tracking-tight xs:text-3xl sm:text-5xl lg:text-5xl xl:text-6xl"
           >
-            <span className="text-gradient-brand">{brand.name}</span>
+            <span className="text-gradient-brand">{t("brand.name")}</span>
             <motion.span
               custom={0.2}
               initial="hidden"
@@ -62,7 +57,7 @@ export function HeroSection() {
               variants={fadeUp}
               className="mt-2 block text-lg font-semibold leading-snug text-muted-foreground xs:text-xl sm:text-4xl sm:leading-tight lg:text-3xl xl:text-4xl"
             >
-              {brand.tagline}
+              {t("brand.tagline")}
             </motion.span>
           </motion.h1>
 
@@ -73,8 +68,7 @@ export function HeroSection() {
             variants={fadeUp}
             className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:text-base xl:text-lg"
           >
-            Custom 3D printing, multi-color fabrication, and rapid prototyping —
-            built with software-grade precision and maker-space creativity.
+            {t("hero.description")}
           </motion.p>
 
           <motion.div
@@ -100,11 +94,11 @@ export function HeroSection() {
               icon={<Calculator className="h-4 w-4" />}
               className="w-full sm:w-auto"
             >
-              Estimate Price
+              {t("hero.estimatePrice")}
               <AnimatedArrow />
             </MotionLinkButton>
             <MotionLinkButton href="#gallery" icon={<Layers className="h-4 w-4" />}>
-              View Gallery
+              {t("hero.viewGallery")}
             </MotionLinkButton>
           </motion.div>
 
@@ -114,9 +108,9 @@ export function HeroSection() {
             variants={staggerContainer}
             className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:gap-4 md:grid-cols-3 lg:mt-10"
           >
-            {stats.map((stat) => (
+            {statKeys.map((key) => (
               <motion.div
-                key={stat.label}
+                key={key}
                 variants={staggerItem}
                 className={cn(
                   "rounded-xl border border-border bg-card/50 px-4 py-3.5 shadow-elevated backdrop-blur-sm transition-colors duration-300 hover:border-primary/30 hover:bg-card/70 sm:px-5 sm:py-4",
@@ -128,15 +122,14 @@ export function HeroSection() {
                   transition={{ delay: 0.5 }}
                   className="text-[0.65rem] font-medium uppercase tracking-wider text-primary sm:text-xs"
                 >
-                  {stat.label}
+                  {t(`hero.stats.${key}.label`)}
                 </motion.p>
                 <p className="mt-1 text-xs font-medium text-foreground sm:text-sm">
-                  {stat.value}
+                  {t(`hero.stats.${key}.value`)}
                 </p>
               </motion.div>
             ))}
           </motion.div>
-
         </div>
 
         <motion.div
@@ -159,7 +152,7 @@ export function HeroSection() {
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
             className="flex flex-col items-center gap-2 text-muted-foreground"
           >
-            <span className="text-xs uppercase tracking-widest">Scroll</span>
+            <span className="text-xs uppercase tracking-widest">{t("hero.scroll")}</span>
             <div className="h-10 w-6 rounded-full border border-border p-1.5">
               <motion.div
                 animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}

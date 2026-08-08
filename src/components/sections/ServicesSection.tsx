@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { SceneBackground } from "@/components/ui/SceneBackground";
-import { services } from "@/lib/services";
+import { useTranslation } from "@/context/LocaleProvider";
+import { serviceDefinitions } from "@/lib/services";
 import {
   fadeUp,
   springTransition,
@@ -12,6 +13,8 @@ import {
 import { cn } from "@/lib/utils";
 
 export function ServicesSection() {
+  const { t, tArray } = useTranslation();
+
   return (
     <section
       id="services"
@@ -35,14 +38,13 @@ export function ServicesSection() {
             transition={{ duration: 0.5 }}
             className="text-xs font-medium uppercase tracking-wider text-primary sm:text-sm"
           >
-            What we offer
+            {t("services.eyebrow")}
           </motion.p>
           <h2 className="mt-2 text-2xl font-bold leading-tight tracking-tight sm:mt-3 sm:text-3xl lg:text-4xl">
-            Services built for makers, engineers, and creators
+            {t("services.title")}
           </h2>
           <p className="mt-3 text-base leading-relaxed text-muted-foreground sm:mt-4 sm:text-lg">
-            From single-part prints to multi-color prototypes — every job gets
-            the same attention to detail.
+            {t("services.description")}
           </p>
         </motion.div>
 
@@ -53,8 +55,9 @@ export function ServicesSection() {
           variants={staggerContainer}
           className="mt-10 grid grid-cols-1 gap-4 sm:mt-14 sm:gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
-          {services.map((service) => {
+          {serviceDefinitions.map((service) => {
             const Icon = service.icon;
+            const features = tArray(`services.items.${service.id}.features`);
 
             return (
               <motion.article
@@ -65,7 +68,8 @@ export function ServicesSection() {
                 className={cn(
                   "group relative overflow-hidden rounded-2xl border border-border bg-card/60 p-5 shadow-elevated backdrop-blur-sm transition-[colors,box-shadow,border-color] duration-300 sm:p-6",
                   "hover:border-primary/40 hover:bg-card/80 hover:shadow-elevated",
-                  services.length === 3 && "md:last:col-span-2 lg:last:col-span-1",
+                  serviceDefinitions.length === 3 &&
+                    "md:last:col-span-2 lg:last:col-span-1",
                 )}
               >
                 <motion.div
@@ -86,10 +90,10 @@ export function ServicesSection() {
                   </motion.span>
 
                   <h3 className="mt-4 text-lg font-semibold sm:mt-5 sm:text-xl">
-                    {service.title}
+                    {t(`services.items.${service.id}.title`)}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {service.description}
+                    {t(`services.items.${service.id}.description`)}
                   </p>
 
                   <motion.ul
@@ -99,7 +103,7 @@ export function ServicesSection() {
                     variants={staggerContainer}
                     className="mt-4 space-y-2 sm:mt-5"
                   >
-                    {service.features.map((feature) => (
+                    {features.map((feature) => (
                       <motion.li
                         key={feature}
                         variants={staggerItem}
@@ -120,7 +124,7 @@ export function ServicesSection() {
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}
                     className="mt-5 inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary sm:mt-6"
                   >
-                    Estimate with this service
+                    {t("services.estimateLink")}
                     <motion.span
                       whileHover={{ x: 2, y: -2 }}
                       transition={{ type: "spring", stiffness: 400, damping: 20 }}
