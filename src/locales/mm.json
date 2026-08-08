@@ -89,8 +89,13 @@
   },
   "gallery": {
     "title": "ပြခန်း",
-    "description": "ယခင် ပြုလုပ်ခဲ့သော ပရောဂျက်များနှင့် ပရင့် ရလဒ်များ (အသုံးဝင်သော ပစ္စည်းများ၊ စာပွဲတင် အလှဆင်များ၊ အနုပညာ ရုပ်တုများ စသည်) ကို ဤနေရာတွင် ဖော်ပြပေးပါမည်။",
+    "description": "Google Drive folder မှ ပရင့် ရလဒ်များကို ပြသပါသည်။",
     "comingSoon": "မကြာမီ လာမည်",
+    "loading": "ပြခန်း ဖွင့်နေသည်…",
+    "emptyTitle": "ဓာတ်ပုံများ မရှိသေးပါ",
+    "emptyHint": "Google Drive folder ထဲသို့ ဓာတ်ပုံများ ထည့်ပါ၊ သို့မဟုတ် site-config.json တွင် feedUrl ချိတ်ဆက်ပါ။",
+    "errorTitle": "ပြခန်း ဖွင့်၍ မရပါ",
+    "errorHint": "gallery.feedUrl (Apps Script) သို့မဟုတ် Netlify တွင် GOOGLE_DRIVE_API_KEY သတ်မှတ်ပါ။",
     "categories": {
       "functional": "အသုံးဝင်မှု",
       "deskSetup": "စာပွဲတင် ပြင်ဆင်မှု",

@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ImageIcon } from "lucide-react";
+import { AlertCircle, ImageIcon } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { useTranslation } from "@/context/LocaleProvider";
+import { useGalleryItems } from "@/hooks/useGalleryItems";
+import { driveImageFallbacks, driveViewUrl } from "@/lib/gallery";
 import {
   fadeUp,
   scaleIn,
@@ -10,10 +13,46 @@ import {
 } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const categoryKeys = ["functional", "deskSetup", "artFigures"] as const;
+function GallerySkeleton() {
+  return (
+    <div className="mt-10 grid grid-cols-1 gap-4 xs:grid-cols-2 sm:mt-14 lg:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div
+          key={index}
+          className="overflow-hidden rounded-2xl border border-border bg-card/40 p-4 sm:p-6"
+        >
+          <div className="aspect-[4/3] animate-pulse rounded-lg bg-muted/60 sm:aspect-video" />
+          <div className="mt-4 h-4 w-2/3 animate-pulse rounded bg-muted" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GalleryImage({ title, fileId }: { title: string; fileId: string }) {
+  const sources = driveImageFallbacks(fileId);
+  const [sourceIndex, setSourceIndex] = useState(0);
+
+  return (
+    <img
+      src={sources[sourceIndex]}
+      alt={title}
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      onError={() => {
+        setSourceIndex((current) =>
+          current < sources.length - 1 ? current + 1 : current,
+        );
+      }}
+    />
+  );
+}
 
 export function GallerySection() {
   const { t } = useTranslation();
+  const { items, state, error } = useGalleryItems();
 
   return (
     <section
@@ -52,59 +91,73 @@ export function GallerySection() {
           </p>
         </motion.div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          variants={staggerContainer}
-          className="mt-10 grid grid-cols-1 gap-4 xs:grid-cols-2 sm:mt-14 lg:grid-cols-3"
-        >
-          {categoryKeys.map((key, index) => (
-            <motion.div
-              key={key}
-              variants={staggerItem}
-              whileHover={{ y: -6, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              className={cn(
-                "group relative overflow-hidden rounded-2xl border border-border bg-card/40 p-4 shadow-elevated transition-[colors,box-shadow] duration-300 sm:p-6",
-                index === 2 && "xs:col-span-2 lg:col-span-1",
-              )}
-            >
-              <motion.div
-                aria-hidden
-                className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
-              />
-              <motion.div
-                animate={{ y: [0, -4, 0] }}
-                transition={{
-                  duration: 3 + index * 0.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: index * 0.3,
-                }}
-                className="relative aspect-[4/3] rounded-lg bg-muted/60 sm:aspect-video"
+        {state === "loading" && <GallerySkeleton />}
+
+        {state === "error" && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-auto mt-10 flex max-w-lg items-start gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-muted-foreground sm:mt-14"
+          >
+            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+            <div>
+              <p className="font-medium text-foreground">{t("gallery.errorTitle")}</p>
+              <p className="mt-1">{t("gallery.errorHint")}</p>
+              {error && <p className="mt-2 text-xs opacity-70">{error}</p>}
+            </div>
+          </motion.div>
+        )}
+
+        {state === "empty" && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-auto mt-10 max-w-lg rounded-2xl border border-border bg-card/40 p-6 text-center sm:mt-14"
+          >
+            <ImageIcon className="mx-auto h-8 w-8 text-muted-foreground" />
+            <p className="mt-4 font-medium text-foreground">{t("gallery.emptyTitle")}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{t("gallery.emptyHint")}</p>
+          </motion.div>
+        )}
+
+        {state === "ready" && (
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+            variants={staggerContainer}
+            className="mt-10 grid grid-cols-1 gap-4 xs:grid-cols-2 sm:mt-14 lg:grid-cols-3"
+          >
+            {items.map((item, index) => (
+              <motion.a
+                key={item.id}
+                href={driveViewUrl(item.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+                variants={staggerItem}
+                whileHover={{ y: -6, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className={cn(
+                  "group relative overflow-hidden rounded-2xl border border-border bg-card/40 p-4 shadow-elevated transition-[colors,box-shadow] duration-300 sm:p-4",
+                  index === items.length - 1 &&
+                    items.length % 3 === 1 &&
+                    "xs:col-span-2 lg:col-span-1",
+                )}
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.div
-                    className="h-10 w-10 rounded-lg border border-dashed border-border/80 sm:h-12 sm:w-12"
-                    animate={{ rotate: [0, 90, 180, 270, 360] }}
-                    transition={{
-                      duration: 12,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
+                <motion.div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
+                />
+                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted/60 sm:aspect-video">
+                  <GalleryImage title={item.title} fileId={item.id} />
                 </div>
-              </motion.div>
-              <p className="relative mt-3 text-sm font-medium sm:mt-4">
-                {t(`gallery.categories.${key}`)}
-              </p>
-              <p className="relative mt-1 text-xs text-muted-foreground">
-                {t("gallery.comingSoon")}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
+                <p className="relative mt-3 line-clamp-2 text-sm font-medium sm:mt-4">
+                  {item.title}
+                </p>
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
       </Container>
     </section>
   );

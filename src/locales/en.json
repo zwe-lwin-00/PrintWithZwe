@@ -89,8 +89,13 @@
   },
   "gallery": {
     "title": "Print Gallery",
-    "description": "Past projects and printed models will appear here — functional parts, desk setups, art figures, and more.",
+    "description": "Past projects and printed models — updated from our Google Drive folder.",
     "comingSoon": "Coming soon",
+    "loading": "Loading gallery…",
+    "emptyTitle": "No photos yet",
+    "emptyHint": "Add images to the Google Drive folder, or connect the Apps Script feed URL in site-config.json.",
+    "errorTitle": "Could not load gallery",
+    "errorHint": "Connect gallery.feedUrl (Apps Script) or GOOGLE_DRIVE_API_KEY on Netlify. See scripts/google-drive-gallery.gs.",
     "categories": {
       "functional": "Functional",
       "deskSetup": "Desk Setup",

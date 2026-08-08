@@ -25,6 +25,12 @@ export const defaultSiteConfig: SiteConfig = {
     heroBadge: "Bambu Lab quality · Precision engineering",
     heroBadgeShort: "Bambu Lab quality prints",
   },
+  gallery: {
+    driveFolderId: "1A65jclkdLnyAhN1J1kAXcArXsJe7FnBu",
+    feedUrl:
+      "https://script.google.com/macros/s/AKfycbxfiZCvFSna0SUouWqNj3OnA2Zu7ne54-5JHjMab63P-_YFoxGfRuM0DTeCFaA50hHi/exec",
+    items: [],
+  },
 };
 
 export const SITE_CONFIG_URL = "/site-config.json";

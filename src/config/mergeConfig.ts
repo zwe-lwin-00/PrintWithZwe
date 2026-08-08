@@ -29,6 +29,19 @@ export function mergeSiteConfig(
     result.brand = { ...result.brand, ...patch.brand };
   }
 
+  if (patch.gallery) {
+    result.gallery = { ...result.gallery, ...patch.gallery };
+    if (Array.isArray(patch.gallery.items)) {
+      result.gallery.items = patch.gallery.items.filter(
+        (item) =>
+          item &&
+          typeof item.id === "string" &&
+          typeof item.title === "string" &&
+          typeof item.imageUrl === "string",
+      );
+    }
+  }
+
   if (patch.pricing) {
     const { materials, ...pricingPatch } = patch.pricing;
     result.pricing = { ...result.pricing, ...pricingPatch };

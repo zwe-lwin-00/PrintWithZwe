@@ -5,6 +5,11 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[[redirects]]
+  from = "/api/gallery"
+  to = "/.netlify/functions/gallery"
+  status = 200
+
 # SPA fallback — Vite/React client-side routes & hash links
 [[redirects]]
   from = "/*"
