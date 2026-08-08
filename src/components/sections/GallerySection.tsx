@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { AlertCircle, ImageIcon } from "lucide-react";
+import { AlertCircle, Expand, ImageIcon } from "lucide-react";
 import { Container } from "@/components/layout/Container";
+import { GalleryLightbox } from "@/components/ui/GalleryLightbox";
 import { useTranslation } from "@/context/LocaleProvider";
 import { useGalleryItems } from "@/hooks/useGalleryItems";
-import { driveImageFallbacks, driveViewUrl } from "@/lib/gallery";
+import { driveImageFallbacks } from "@/lib/gallery";
 import {
   fadeUp,
   scaleIn,
@@ -13,24 +14,27 @@ import {
 } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
+const INITIAL_VISIBLE = 12;
+const LOAD_MORE_STEP = 12;
+const THUMB_WIDTH = 600;
+
 function GallerySkeleton() {
   return (
-    <div className="mt-10 grid grid-cols-1 gap-4 xs:grid-cols-2 sm:mt-14 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, index) => (
+    <div className="mt-8 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 lg:gap-4">
+      {Array.from({ length: 8 }).map((_, index) => (
         <div
           key={index}
-          className="overflow-hidden rounded-2xl border border-border bg-card/40 p-4 sm:p-6"
+          className="overflow-hidden rounded-xl border border-border bg-card/40"
         >
-          <div className="aspect-[4/3] animate-pulse rounded-lg bg-muted/60 sm:aspect-video" />
-          <div className="mt-4 h-4 w-2/3 animate-pulse rounded bg-muted" />
+          <div className="aspect-square animate-pulse bg-muted/60" />
         </div>
       ))}
     </div>
   );
 }
 
-function GalleryImage({ title, fileId }: { title: string; fileId: string }) {
-  const sources = driveImageFallbacks(fileId);
+function GalleryThumb({ title, fileId }: { title: string; fileId: string }) {
+  const sources = driveImageFallbacks(fileId, THUMB_WIDTH);
   const [sourceIndex, setSourceIndex] = useState(0);
 
   return (
@@ -53,6 +57,15 @@ function GalleryImage({ title, fileId }: { title: string; fileId: string }) {
 export function GallerySection() {
   const { t } = useTranslation();
   const { items, state, error } = useGalleryItems();
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const visibleItems = useMemo(
+    () => items.slice(0, visibleCount),
+    [items, visibleCount],
+  );
+
+  const hasMore = visibleCount < items.length;
 
   return (
     <section
@@ -89,6 +102,11 @@ export function GallerySection() {
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
             {t("gallery.description")}
           </p>
+          {state === "ready" && items.length > 0 && (
+            <p className="mt-2 text-xs font-medium text-primary sm:text-sm">
+              {t("gallery.photoCount", { count: items.length })}
+            </p>
+          )}
         </motion.div>
 
         {state === "loading" && <GallerySkeleton />}
@@ -121,44 +139,73 @@ export function GallerySection() {
         )}
 
         {state === "ready" && (
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
-            variants={staggerContainer}
-            className="mt-10 grid grid-cols-1 gap-4 xs:grid-cols-2 sm:mt-14 lg:grid-cols-3"
-          >
-            {items.map((item, index) => (
-              <motion.a
-                key={item.id}
-                href={driveViewUrl(item.id)}
-                target="_blank"
-                rel="noopener noreferrer"
-                variants={staggerItem}
-                whileHover={{ y: -6, scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className={cn(
-                  "group relative overflow-hidden rounded-2xl border border-border bg-card/40 p-4 shadow-elevated transition-[colors,box-shadow] duration-300 sm:p-4",
-                  index === items.length - 1 &&
-                    items.length % 3 === 1 &&
-                    "xs:col-span-2 lg:col-span-1",
-                )}
-              >
-                <motion.div
-                  aria-hidden
-                  className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
-                />
-                <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted/60 sm:aspect-video">
-                  <GalleryImage title={item.title} fileId={item.id} />
-                </div>
-                <p className="relative mt-3 line-clamp-2 text-sm font-medium sm:mt-4">
-                  {item.title}
+          <>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={staggerContainer}
+              className="mt-8 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 lg:gap-4"
+            >
+              {visibleItems.map((item) => (
+                <motion.button
+                  key={item.id}
+                  type="button"
+                  variants={staggerItem}
+                  whileHover={{ y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                  onClick={() => setLightboxIndex(items.indexOf(item))}
+                  className={cn(
+                    "group relative overflow-hidden rounded-xl border border-border bg-card/40 text-left shadow-elevated transition-colors hover:border-primary/30",
+                  )}
+                >
+                  <div className="relative aspect-square overflow-hidden bg-muted/60">
+                    <GalleryThumb title={item.title} fileId={item.id} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
+                    <div className="absolute bottom-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:opacity-100 sm:bg-black/40">
+                      <Expand className="h-4 w-4" />
+                    </div>
+                  </div>
+                  <p className="truncate px-2.5 py-2 text-xs font-medium sm:px-3 sm:text-sm">
+                    {item.title}
+                  </p>
+                </motion.button>
+              ))}
+            </motion.div>
+
+            {hasMore && (
+              <div className="mt-8 flex flex-col items-center gap-2 sm:mt-10">
+                <p className="text-xs text-muted-foreground sm:text-sm">
+                  {t("gallery.showingCount", {
+                    shown: visibleCount,
+                    total: items.length,
+                  })}
                 </p>
-              </motion.a>
-            ))}
-          </motion.div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setVisibleCount((count) =>
+                      Math.min(count + LOAD_MORE_STEP, items.length),
+                    )
+                  }
+                  className="inline-flex h-11 min-h-11 items-center justify-center rounded-lg border border-border bg-card/60 px-6 text-sm font-medium transition-colors hover:border-primary/30 hover:bg-card"
+                >
+                  {t("gallery.loadMore")}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </Container>
+
+      <GalleryLightbox
+        items={items}
+        index={lightboxIndex ?? 0}
+        open={lightboxIndex !== null}
+        onClose={() => setLightboxIndex(null)}
+        onIndexChange={setLightboxIndex}
+      />
     </section>
   );
 }
