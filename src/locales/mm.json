@@ -1,127 +1,127 @@
 {
   "meta": {
     "title": "Print with Zwe",
-    "description": "Print with Zwe — စိတ်ကြိုက် 3D ပရင့်နှင့် အမြန် prototype ဝန်ဆောင်မှုများ။"
+    "description": "Print with Zwe — စိတ်ကြိုက် 3D ပရင့်ထုတ်ခြင်း၊ အရောင်စုံ ပရင့်များ နှင့် မြန်ဆန်သော ပုံစံငယ် ဖန်တီးခြင်း။"
   },
   "brand": {
     "name": "Print with Zwe",
-    "tagline": "သင့်အကြံအဉာဏ်များကို အလွှာတိုင်းဖြင့် သက်ဝင်စေပါသည်။",
-    "heroBadge": "Bambu Lab အရည်အသွေး · တိကျသော အင်ဂျင်နီယာ",
-    "heroBadgeShort": "Bambu Lab အရည်အသွေး ပရင့်",
-    "footerBlurb": "{{name}} — တိကျသော အင်ဂျင်နီယာနှင့် ဖန်တီးမှု ပေါင်းစပ်ထားသော စိတ်ကြိုက် 3D ပရင့်နှင့် အမြန် prototype ဝန်ဆောင်မှုများ။"
+    "tagline": "သင်၏ စိတ်ကူးများကို အသက်သွင်းပေးသည်။",
+    "heroBadge": "ကောင်းမွန်သော အရည်အသွေး · တိကျဆန်းသစ်သော နည်းပညာ",
+    "heroBadgeShort": "အရည်အသွေးမြင့် ပရင့်များ",
+    "footerBlurb": "{{name}} — စိတ်ကြိုက် 3D ပရင့်ထုတ်ခြင်းနှင့် တိကျသော ဖန်တီးမှု စွမ်းရည်တို့ ပေါင်းစပ်ထားသည့် မြန်ဆန်သော ပုံစံငယ် ဖန်တီးခြင်း ဝန်ဆောင်မှု။"
   },
   "nav": {
     "services": "ဝန်ဆောင်မှုများ",
-    "calculator": "ဈေးနှုန်းတွက်",
+    "calculator": "ဈေးနှုန်း တွက်ချက်ရန်",
     "gallery": "ပြခန်း",
     "contact": "ဆက်သွယ်ရန်",
-    "estimatePrice": "ဈေးနှုန်းခန့်မှန်း",
-    "openMenu": "မီနူဖွင့်ရန်",
-    "closeMenu": "မီနူပိတ်ရန်"
+    "estimatePrice": "ဈေးနှုန်း ခန့်မှန်းရန်",
+    "openMenu": "မီနူး ဖွင့်ရန်",
+    "closeMenu": "မနူး ပိတ်ရန်"
   },
   "hero": {
-    "description": "စိတ်ကြိုက် 3D ပရင့်၊ အရောင်များစွာ ထုတ်လုပ်ခြင်းနှင့် အမြန် prototype — software-grade တိကျမှုနှင့် maker-space ဖန်တီးမှုကို ပေါင်းစပ်ထားသည်။",
-    "estimatePrice": "ဈေးနှုန်းခန့်မှန်း",
-    "viewGallery": "ပြခန်းကြည့်ရန်",
-    "scroll": "Scroll",
+    "description": "စိတ်ကြိုက် 3D ပရင့်ထုတ်ခြင်း၊ အရောင်စုံ ဖန်တီးမှုများနှင့် မြန်ဆန်သော ပုံစံငယ် ထုတ်လုပ်ခြင်း — ဆော့ဖ်ဝဲအဆင့် တိကျမှုနှင့် ဖန်တီးသူများ၏ စိတ်ကူးစိတ်သန်းများဖြင့် တည်ဆောက်ထားသည်။",
+    "estimatePrice": "ဈေးနှုန်း ခန့်မှန်းရန်",
+    "viewGallery": "ပြခန်း ကြည့်ရန်",
+    "scroll": "အောက်သို့ ဆွဲရွှေ့ရန်",
     "stats": {
-      "materials": { "label": "ပစ္စည်းများ", "value": "PLA · PETG · ABS · TPU" },
-      "multiColor": { "label": "အရောင်များစွာ", "value": "AMS အဆင်သင့်" },
-      "turnaround": { "label": "ပြီးစီးချိန်", "value": "အမြန် Prototype" }
+      "materials": { "label": "အသုံးပြုသော ပစ္စည်းများ", "value": "PLA · PETG · ABS · TPU" },
+      "multiColor": { "label": "အရောင်စုံ", "value": "AMS အဆင်သင့်" },
+      "turnaround": { "label": "ကြာမြင့်ချိန်", "value": "မြန်ဆန်သော" }
     }
   },
   "services": {
-    "eyebrow": "ကျွန်ုပ်တို့ ပေးဆောင်သော ဝန်ဆောင်မှုများ",
-    "title": "Maker၊ engineer နှင့် creator များအတွက် ဝန်ဆောင်မှုများ",
-    "description": "တစ်ခုချင်း ပရင့်မှ multi-color prototype များအထိ — အလုပ်တိုင်းကို အတူတူဂရုစိုက်ပါသည်။",
-    "estimateLink": "ဤဝန်ဆောင်မှုဖြင့် ဈေးနှုန်းတွက်ရန်",
+    "eyebrow": "ကျွန်ုပ်တို့ ဝန်ဆောင်မှုများ",
+    "title": "တီထွင်ဖန်တီးသူများ၊ အင်ဂျင်နီယာများ အတွက် ဝန်ဆောင်မှုများ",
+    "description": "တစ်စိတ်တစ်ပိုင်း ပရင့်ထုတ်ခြင်းမှသည် အရောင်စုံ ပုံစံငယ်များအထိ အလုပ်တိုင်းကို ဂရုတစိုက် ဆောင်ရွက်ပေးပါသည်။",
+    "estimateLink": "ဒီဝန်ဆောင်မှုအတွက် ဈေးတွက်ရန်",
     "items": {
       "custom-printing": {
-        "title": "စိတ်ကြိုက် 3D ပရင့်",
-        "description": "PLA၊ PETG၊ ABS နှင့် TPU တွင် အရည်အသွေးမြင့် ပရင့် — ခိုင်မြဲမှု၊ ပြီးသွက်မှုနှင့် လုပ်ဆောင်ချက်အတွက် tune လုပ်ထားသည်။",
+        "title": "စိတ်ကြိုက် 3D ပရင့်ထုတ်ခြင်း",
+        "description": "PLA, PETG, ABS နှင့် TPU တို့ဖြင့် ထုတ်လုပ်ထားသော အရည်အသွေးမြင့် ပရင့်များ — ခိုင်ခံ့မှု၊ အချောကိုင်မှုနှင့် လုပ်ဆောင်ချက်များအတွက် အထူးချိန်ညှိထားသည်။",
         "features": [
           "PLA · PETG · ABS · TPU",
-          "0.2mm တိကျသော layer",
-          "လုပ်ဆောင်ချက်နှင့် အလှပရင့်"
+          "0.2mm တိကျသော အလွှာများ",
+          "အသုံးပြုရန်နှင့် အလှဆင်ရန် ပစ္စည်းများ"
         ]
       },
       "multi-color": {
-        "title": "အရောင်များစွာ ပရင့်",
-        "description": "AMS ပံ့ပိုးမှုဖြင့် တောက်ပသော multi-material ပရင့် — logo၊ label နှင့် eye-catching model များအတွက် သင့်တော်သည်။",
+        "title": "အရောင်စုံ ပရင့်ထုတ်ခြင်း",
+        "description": "AMS စနစ်ဖြင့် တောက်ပသော အရောင်စုံ ပရင့်များ — လိုဂိုများ၊ အမှတ်တံဆိပ်များနှင့် ဆွဲဆောင်မှုရှိသော ပုံစံများအတွက် အထူးသင့်လျော်သည်။",
         "features": [
-          "AMS multi-filament",
-          "ချောမွေ့သော အရောင်ပြောင်း",
-          "Brand-ready prototype"
+          "AMS အရောင်စုံ",
+          "ချောမွေ့သော အရောင်ပြောင်းလဲမှုများ",
+          "အမှတ်တံဆိပ် အဆင်သင့် ပုံစံငယ်များ"
         ]
       },
       "prototyping": {
-        "title": "အမြန် Prototype & CAD",
-        "description": "အကြံအဉာဏ်မှ physical part အထိ အမြန်ပြန်လည်ပြုပြင်ခြင်း — file လိုအပ်ပါက CAD design ပံ့ပိုးမှုပါဝင်သည်။",
+        "title": "မြန်ဆန်သော ပုံစံငယ် ဖန်တီးခြင်းနှင့် CAD",
+        "description": "စိတ်ကူးမှ အကောင်အထည်ပေါ်သည်အထိ စိတ်ကြိုက် ပြင်ဆင်ဖန်တီးပေးခြင်း၊ အစမှစ၍ ဖိုင်တည်ဆောက်ရန် လိုအပ်ပါက CAD ဒီဇိုင်း ကူညီပေးခြင်း။",
         "features": [
-          "တစ်ပတ်အတွင်း ပြီးစီး",
-          "Design-to-print ပံ့ပိုးမှု",
-          "Iterative fit testing"
+          "တစ်ပတ်အတွင်း အမြန်ရရှိနိုင်မှု",
+          "ဒီဇိုင်းမှ ပရင့်အထိ ကူညီပေးမှု",
+          "အတိုင်းအတာ ကိုက်ညီမှု စမ်းသပ်ခြင်း"
         ]
       }
     }
   },
   "calculator": {
-    "title": "ချက်ချင်း ဈေးနှုန်းခန့်မှန်း",
-    "description": "ပစ္စည်း၊ အလေးချိန်နှင့် print time အပေါ် အခြေခံသော ခန့်မှန်းချက်။ complexity၊ support နှင့် infill ပေါ်မူတည်၍ ဈေးနှုန်း ကွဲပြားနိုင်သည်။",
-    "material": "ပစ္စည်း",
-    "weight": "အလေးချိန် (grams)",
-    "printTime": "Print time (နာရီ)",
-    "weightPlaceholder": "ဥပမာ 50",
-    "hoursPlaceholder": "ဥပမာ 3",
-    "hint": "ခန့်မှန်းချက်အတွက် အလေးချိန်၊ print time သို့မဟုတ် နှစ်ခုစလုံး ထည့်ပါ။",
-    "estimatedTotal": "ခန့်မှန်းစုစုပေါင်း",
+    "title": "ဈေးနှုန်း တွက်ချက်ခြင်း",
+    "description": "အသုံးပြုသည့် ပစ္စည်း၊ အလေးချိန်နှင့် ပရင့်ချိန်တို့အပေါ် မူတည်၍ ခန့်မှန်းခြေ ဈေးနှုန်းဖြစ်သည်။ ပုံစံ ခက်ခဲမှု၊ အထောက်အကူပြု လိုင်းများနှင့် ပစ္စည်းဖြည့်တင်းမှုအပေါ် မူတည်၍ ဈေးနှုန်း အနည်းငယ် ပြောင်းလဲနိုင်သည်။",
+    "material": "အသုံးပြုသည့် ပစ္စည်း",
+    "weight": "အလေးချိန် (ဂရမ်)",
+    "printTime": "ကြာမြင့်ချိန် (နာရီ)",
+    "weightPlaceholder": "ဥပမာ - ၅၀",
+    "hoursPlaceholder": "ဥပမာ - ၃",
+    "hint": "တိကျသော ခန့်မှန်းချက် ရရှိရန် အလေးချိန် သို့မဟုတ် ကြာမြင့်ချိန် သို့မဟုတ် နှစ်ခုလုံး ထည့်သွင်းပါ။",
+    "estimatedTotal": "ခန့်မှန်းခြေ စုစုပေါင်း",
     "materialLine": "ပစ္စည်း ({{label}})",
-    "machineLine": "Machine ({{rate}}/hr)",
-    "baseFee": "Base fee",
-    "formula": "Formula: (အလေးချိန် × Material rate) + (နာရီ × {{machineRate}}) + {{baseFee}} base fee။ တိကျသော quotation အတွက် Telegram @{{telegram}} သို့ message ပို့ပါ။"
+    "machineLine": "စက်စရိတ် ({{rate}}/နာရီ)",
+    "baseFee": "အခြေခံ စရိတ်",
+    "formula": "တွက်ချက်နည်း - (အလေးချိန် × ပစ္စည်းနှုန်း) + (နာရီ × {{machineRate}}) + {{baseFee}} အခြေခံ စရိတ်။ အတိအကျ ဈေးနှုန်းအတွက် Telegram @{{telegram}} သို့ စာပို့ပါ။"
   },
   "materials": {
     "pla": "PLA",
     "petg": "PETG",
     "abs": "ABS",
     "tpu": "TPU",
-    "multi-color": "Multi-Color (AMS)"
+    "multi-color": "အရောင်စုံ (AMS)"
   },
   "gallery": {
-    "title": "Print Gallery",
-    "description": "ယခင် project နှင့် printed model များ ဤနေရာတွင် ပြသပါမည် — functional parts၊ desk setup၊ art figures နှင့် အခြားများ။",
-    "comingSoon": "မကြာမီ",
+    "title": "ပြခန်း",
+    "description": "ယခင် ပြုလုပ်ခဲ့သော ပရောဂျက်များနှင့် ပရင့် ရလဒ်များ (အသုံးဝင်သော ပစ္စည်းများ၊ စာပွဲတင် အလှဆင်များ၊ အနုပညာ ရုပ်တုများ စသည်) ကို ဤနေရာတွင် ဖော်ပြပေးပါမည်။",
+    "comingSoon": "မကြာမီ လာမည်",
     "categories": {
-      "functional": "Functional",
-      "deskSetup": "Desk Setup",
-      "artFigures": "Art & Figures"
+      "functional": "အသုံးဝင်မှု",
+      "deskSetup": "စာပွဲတင် ပြင်ဆင်မှု",
+      "artFigures": "အနုပညာနှင့် ရုပ်တုများ"
     }
   },
   "footer": {
-    "navigate": "Navigation",
+    "navigate": "ကြည့်ရှုရန်",
     "reachUs": "ဆက်သွယ်ရန်",
     "telegram": "Telegram",
     "whatsapp": "WhatsApp",
-    "copyright": "© {{year}} {{name}}. All rights reserved."
+    "copyright": "© {{year}} {{name}}။ မူပိုင်ခွင့်များ ရယူထားပြီး ဖြစ်သည်။"
   },
   "theme": {
-    "light": "Light",
-    "dark": "Dark",
-    "switchTo": "{{mode}} mode သို့ ပြောင်းရန်",
-    "themeLabel": "Theme",
-    "usingMode": "{{mode}} mode သုံးနေသည်"
+    "light": "အလင်း",
+    "dark": "အမှောင်",
+    "switchTo": "{{mode}} မုဒ်သို့ ပြောင်းရန်",
+    "themeLabel": "ဒီဇိုင်း",
+    "usingMode": "{{mode}} မုဒ် အသုံးပြုနေသည်"
   },
   "language": {
     "label": "ဘာသာစကား",
-    "switchTo": "{{language}} သို့ ပြောင်းရန်"
+    "switchTo": "{{language}} ဘာသာစကားသို့ ပြောင်းရန်"
   },
   "animation": {
-    "layer": "Layer",
+    "layer": "အလွှာ",
     "ready": "အဆင်သင့်",
-    "printing": "Print လုပ်နေသည်",
-    "complete": "ပြီးပါပြီ",
-    "done": "Done",
-    "print": "Print",
+    "printing": "ပရင့်ထုတ်နေသည်",
+    "complete": "ပြီးစီးပါပြီ",
+    "done": "ပြီးပြီ",
+    "print": "ပရင့်",
     "footerModel": "P2S Combo · AMS 2 Pro",
     "footerModelShort": "P2S Combo",
     "amsLabel": "AMS 2 PRO",
