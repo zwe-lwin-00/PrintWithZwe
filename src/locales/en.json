@@ -12,8 +12,8 @@
   },
   "nav": {
     "services": "Services",
+    "shop": "Shop",
     "calculator": "Calculator",
-    "gallery": "Gallery",
     "contact": "Contact",
     "estimatePrice": "Estimate Price",
     "openMenu": "Open menu",
@@ -22,7 +22,7 @@
   "hero": {
     "description": "Custom 3D printing, multi-color fabrication, and rapid prototyping — built with software-grade precision and maker-space creativity.",
     "estimatePrice": "Estimate Price",
-    "viewGallery": "View Gallery",
+    "viewShop": "View Shop",
     "scroll": "Scroll",
     "stats": {
       "materials": { "label": "Materials", "value": "PLA · PETG · ABS · TPU" },
@@ -78,7 +78,9 @@
     "materialLine": "Material ({{label}})",
     "machineLine": "Machine ({{rate}}/hr)",
     "baseFee": "Base fee",
-    "formula": "Formula: (Weight × Material rate) + (Hours × {{machineRate}}) + {{baseFee}} base fee. Call {{phone}} or message us on Telegram @{{telegram}} for an exact quote."
+    "formula": "Formula: (Weight × Material rate) + (Hours × {{machineRate}}) + {{baseFee}} base fee. Call {{phone}} or message us on Telegram @{{telegram}} for an exact quote.",
+    "emptyStateTitle": "Your estimate will appear here",
+    "emptyStateHint": "Enter weight or print time above to calculate a rough price."
   },
   "materials": {
     "pla": "PLA",
@@ -87,32 +89,33 @@
     "tpu": "TPU",
     "multi-color": "Multi-Color (AMS)"
   },
-  "gallery": {
-    "title": "Print Gallery",
-    "description": "Past projects and printed models — updated from our Google Drive folder.",
-    "comingSoon": "Coming soon",
-    "loading": "Loading gallery…",
-    "emptyTitle": "No photos yet",
-    "emptyHint": "Add images to the Google Drive folder, or connect the Apps Script feed URL in site-config.json.",
-    "errorTitle": "Could not load gallery",
-    "errorHint": "Connect gallery.feedUrl (Apps Script) or GOOGLE_DRIVE_API_KEY on Netlify. See scripts/google-drive-gallery.gs.",
-    "photoCount": "{{count}} photos",
+  "shop": {
+    "title": "Shop Catalog",
+    "description": "Ready-to-order 3D prints with clear pricing. Message us on Telegram or call to place an order.",
+    "productCount": "{{count}} products",
+    "featured": "Featured",
+    "outOfStock": "Sold out",
+    "orderTelegram": "Order on Telegram",
+    "orderCall": "Call to order",
+    "telegramMessage": "Hi! I want to order: {{title}} ({{price}}).",
+    "loading": "Loading products…",
+    "emptyTitle": "No products listed yet",
+    "emptyHint": "Check back soon — new prints will appear here.",
+    "errorTitle": "Could not load products",
+    "errorHint": "Connect VITE_APPS_SCRIPT_URL on Netlify after deploying apps-script/Code.gs.",
     "showingCount": "Showing {{shown}} of {{total}}",
-    "loadMore": "Load more photos",
-    "tapToView": "Tap to view full size",
-    "close": "Close",
-    "previous": "Previous photo",
-    "next": "Next photo",
-    "zoomIn": "Zoom in",
-    "zoomOut": "Zoom out",
-    "zoomHint": "Pinch or double-tap to zoom",
-    "openInDrive": "Open in Drive",
-    "lightboxCounter": "{{current}} / {{total}}",
-    "categories": {
-      "functional": "Functional",
-      "deskSetup": "Desk Setup",
-      "artFigures": "Art & Figures"
-    }
+    "loadMore": "Load more products",
+    "viewDetails": "View details for {{title}}, {{price}}",
+    "viewDetailsShort": "View details",
+    "selectImage": "Show image {{index}}",
+    "closeDetail": "Close product details",
+    "photoCount": "{{count}} photos",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "imageCounter": "{{current}} / {{total}}",
+    "tapToView": "Tap to view",
+    "soldOutHint": "This item is currently sold out. Contact us — we can let you know when it's available again or suggest something similar.",
+    "contactForAvailability": "Contact us about availability"
   },
   "contact": {
     "title": "Get in touch",
@@ -137,6 +140,9 @@
   "language": {
     "label": "Language",
     "switchTo": "Switch to {{language}}"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content"
   },
   "animation": {
     "layer": "Layer",

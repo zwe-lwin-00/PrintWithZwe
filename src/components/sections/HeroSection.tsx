@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Calculator, Layers, Sparkles } from "lucide-react";
+import { Calculator, ShoppingBag, Sparkles } from "lucide-react";
 import { ContactButtons } from "@/components/ui/ContactButtons";
 import { Container } from "@/components/layout/Container";
 import { SceneBackground } from "@/components/ui/SceneBackground";
@@ -21,7 +21,7 @@ export function HeroSection() {
     <section className="relative overflow-hidden lg:min-h-[100dvh]">
       <SceneBackground />
 
-      <Container className="relative pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid lg:min-h-[100dvh] lg:grid-cols-[1fr_400px] lg:items-center lg:gap-10 lg:pb-20 lg:pt-32 xl:gap-14">
+      <Container className="relative pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid lg:min-h-[100dvh] lg:grid-cols-[1fr_minmax(280px,400px)] lg:items-center lg:gap-10 lg:pb-20 lg:pt-32 xl:gap-14">
         <div className="flex min-w-0 flex-col justify-center">
           <motion.div
             custom={0}
@@ -98,8 +98,12 @@ export function HeroSection() {
               {t("hero.estimatePrice")}
               <AnimatedArrow />
             </MotionLinkButton>
-            <MotionLinkButton href="#gallery" icon={<Layers className="h-4 w-4" />}>
-              {t("hero.viewGallery")}
+            <MotionLinkButton
+              href="#shop"
+              icon={<ShoppingBag className="h-4 w-4" />}
+              className="w-full sm:w-auto"
+            >
+              {t("hero.viewShop")}
             </MotionLinkButton>
           </motion.div>
 

@@ -12,8 +12,8 @@
   },
   "nav": {
     "services": "ဝန်ဆောင်မှုများ",
+    "shop": "ဆိုင်ခန်း",
     "calculator": "ဈေးနှုန်း တွက်ချက်ရန်",
-    "gallery": "ပြခန်း",
     "contact": "ဆက်သွယ်ရန်",
     "estimatePrice": "ဈေးနှုန်း ခန့်မှန်းရန်",
     "openMenu": "မီနူး ဖွင့်ရန်",
@@ -22,7 +22,7 @@
   "hero": {
     "description": "စိတ်ကြိုက် 3D ပရင့်ထုတ်ခြင်း၊ အရောင်စုံ ဖန်တီးမှုများနှင့် မြန်ဆန်သော ပုံစံငယ် ထုတ်လုပ်ခြင်း — ဆော့ဖ်ဝဲအဆင့် တိကျမှုနှင့် ဖန်တီးသူများ၏ စိတ်ကူးစိတ်သန်းများဖြင့် တည်ဆောက်ထားသည်။",
     "estimatePrice": "ဈေးနှုန်း ခန့်မှန်းရန်",
-    "viewGallery": "ပြခန်း ကြည့်ရန်",
+    "viewShop": "ဆိုင်ခန်း ကြည့်ရန်",
     "scroll": "အောက်သို့ ဆွဲရွှေ့ရန်",
     "stats": {
       "materials": { "label": "အသုံးပြုသော ပစ္စည်းများ", "value": "PLA · PETG · ABS · TPU" },
@@ -78,7 +78,9 @@
     "materialLine": "ပစ္စည်း ({{label}})",
     "machineLine": "စက်စရိတ် ({{rate}}/နာရီ)",
     "baseFee": "အခြေခံ စရိတ်",
-    "formula": "တွက်ချက်နည်း - (အလေးချိန် × ပစ္စည်းနှုန်း) + (နာရီ × {{machineRate}}) + {{baseFee}} အခြေခံ စရိတ်။ အတိအကျ ဈေးနှုန်းအတွက် {{phone}} သို့ ခေါ်ဆိုပါ သို့မဟုတ် Telegram @{{telegram}} သို့ စာပို့ပါ။"
+    "formula": "တွက်ချက်နည်း - (အလေးချိန် × ပစ္စည်းနှုန်း) + (နာရီ × {{machineRate}}) + {{baseFee}} အခြေခံ စရိတ်။ အတိအကျ ဈေးနှုန်းအတွက် {{phone}} သို့ ခေါ်ဆိုပါ သို့မဟုတ် Telegram @{{telegram}} သို့ စာပို့ပါ။",
+    "emptyStateTitle": "ခန့်မှန်းခြေ ဈေးနှုန်း ဤနေရာတွင် ပြပါမည်",
+    "emptyStateHint": "အပေါ်တွင် အလေးချိန် သို့မဟုတ် ပရင့်ချိန် ထည့်ပါ။"
   },
   "materials": {
     "pla": "PLA",
@@ -87,32 +89,33 @@
     "tpu": "TPU",
     "multi-color": "အရောင်စုံ (AMS)"
   },
-  "gallery": {
-    "title": "ပြခန်း",
-    "description": "Google Drive folder မှ ပရင့် ရလဒ်များကို ပြသပါသည်။",
-    "comingSoon": "မကြာမီ လာမည်",
-    "loading": "ပြခန်း ဖွင့်နေသည်…",
-    "emptyTitle": "ဓာတ်ပုံများ မရှိသေးပါ",
-    "emptyHint": "Google Drive folder ထဲသို့ ဓာတ်ပုံများ ထည့်ပါ၊ သို့မဟုတ် site-config.json တွင် feedUrl ချိတ်ဆက်ပါ။",
-    "errorTitle": "ပြခန်း ဖွင့်၍ မရပါ",
-    "errorHint": "gallery.feedUrl (Apps Script) သို့မဟုတ် Netlify တွင် GOOGLE_DRIVE_API_KEY သတ်မှတ်ပါ။",
+  "shop": {
+    "title": "ထုတ်ကုန်များ",
+    "description": "ဈေးနှုန်းပါသော 3D ပရင့်များ — Telegram သို့မဟုတ် ဖုန်းခေါ်ဆိုပြီး မှာယူနိုင်ပါသည်။",
+    "productCount": "ထုတ်ကုန် {{count}} ခု",
+    "featured": "အထူးရွေးချယ်",
+    "outOfStock": "ကုန်ပြီ",
+    "orderTelegram": "Telegram မှ မှာယူရန်",
+    "orderCall": "ဖုန်းခေါ်ပြီး မှာယူရန်",
+    "telegramMessage": "မင်္ဂလာပါ! {{title}} ({{price}}) မှာယူချင်ပါတယ်။",
+    "loading": "ထုတ်ကုန်များ ဖွင့်နေသည်…",
+    "emptyTitle": "ထုတ်ကုန်များ မရှိသေးပါ",
+    "emptyHint": "မကြာမီ ထုတ်ကုန်အသစ်များ ထည့်သွင်းပါမည်။",
+    "errorTitle": "ထုတ်ကုန်များ ဖွင့်၍ မရပါ",
+    "errorHint": "Netlify တွင် VITE_APPS_SCRIPT_URL သတ်မှတ်ပြီး apps-script/Code.gs deploy လုပ်ပါ။",
+    "showingCount": "{{total}} ခုအနက် {{shown}} ခု",
+    "loadMore": "ထုတ်ကုန်များ ထပ်ကြည့်ရန်",
+    "viewDetails": "{{title}} — {{price}} အသေးစိတ် ကြည့်ရန်",
+    "viewDetailsShort": "အသေးစိတ် ကြည့်ရန်",
+    "selectImage": "ဓာတ်ပုံ {{index}} ပြရန်",
+    "closeDetail": "ထုတ်ကုန် အသေးစိတ် ပိတ်ရန်",
     "photoCount": "ဓာတ်ပုံ {{count}} ပုံ",
-    "showingCount": "{{total}} ပုံအနက် {{shown}} ပုံ",
-    "loadMore": "ဓာတ်ပုံများ ထပ်ကြည့်ရန်",
-    "tapToView": "အပြည့်အဝ ကြည့်ရန် နှိပ်ပါ",
-    "close": "ပိတ်ရန်",
-    "previous": "ယခင် ဓာတ်ပုံ",
-    "next": "နောက် ဓာတ်ပုံ",
-    "zoomIn": "ချဲ့ရန်",
-    "zoomOut": "ချုံ့ရန်",
-    "zoomHint": "pinch လုပ်ပါ သို့မဟုတ် နှစ်ချက်တို့၍ ချဲ့/ချုံ့ပါ",
-    "openInDrive": "Drive တွင် ဖွင့်ရန်",
-    "lightboxCounter": "{{current}} / {{total}}",
-    "categories": {
-      "functional": "အသုံးဝင်မှု",
-      "deskSetup": "စာပွဲတင် ပြင်ဆင်မှု",
-      "artFigures": "အနုပညာနှင့် ရုပ်တုများ"
-    }
+    "previousPhoto": "ယခင် ဓာတ်ပုံ",
+    "nextPhoto": "နောက် ဓာတ်ပုံ",
+    "imageCounter": "{{current}} / {{total}}",
+    "tapToView": "ကြည့်ရန် နှိပ်ပါ",
+    "soldOutHint": "ဤထုတ်ကုန်သည် လက်ရှိတွင် ကုန်ပြီ ဖြစ်နေပါသည်။ ရရှိချိန် သို့မဟုတ် အလားတူအကြံပြုချက်များအတွက် ဆက်သွယ်ပါ။",
+    "contactForAvailability": "ရရှိနိုင်မှုအတွက် ဆက်သွယ်ရန်"
   },
   "contact": {
     "title": "ဆက်သွယ်ရန်",
@@ -137,6 +140,9 @@
   "language": {
     "label": "ဘာသာစကား",
     "switchTo": "{{language}} ဘာသာစကားသို့ ပြောင်းရန်"
+  },
+  "a11y": {
+    "skipToContent": "အဓိက အကြောင်းအရာသို့ သွားရန်"
   },
   "animation": {
     "layer": "အလွှာ",

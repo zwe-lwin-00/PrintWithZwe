@@ -9,8 +9,8 @@ import { fadeUp, staggerContainer, staggerItem } from "@/lib/motion";
 
 const footerLinkKeys = [
   { href: "#services", key: "nav.services" },
+  { href: "#shop", key: "nav.shop" },
   { href: "#calculator", key: "nav.calculator" },
-  { href: "#gallery", key: "nav.gallery" },
   { href: "#contact", key: "nav.contact" },
 ] as const;
 
@@ -25,7 +25,7 @@ export function Footer() {
   return (
     <footer
       id="contact"
-      className="border-t border-border bg-card/30 pb-[env(safe-area-inset-bottom,0px)] md:pb-0"
+      className="border-t border-border bg-card/30 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
     >
       <Container className="py-10 sm:py-12">
         <motion.div
@@ -42,7 +42,8 @@ export function Footer() {
             <p className="text-sm font-medium text-foreground">{t("contact.title")}</p>
             <p className="mt-1 text-sm text-muted-foreground">{t("contact.subtitle")}</p>
             <div className="mt-4">
-              <ContactButtons layout="row" size="lg" className="max-w-md" />
+              <ContactButtons layout="stack" size="lg" className="max-w-md sm:hidden" />
+              <ContactButtons layout="row" size="lg" className="hidden max-w-md sm:flex" />
             </div>
           </motion.div>
 
@@ -76,7 +77,7 @@ export function Footer() {
                         href={href}
                         whileHover={{ x: 4, color: "hsl(var(--foreground))" }}
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                        className="inline-block py-0.5 text-sm text-muted-foreground"
+                        className="inline-block py-2 text-sm text-muted-foreground sm:py-0.5"
                       >
                         {t(key)}
                       </motion.a>

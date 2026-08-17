@@ -82,12 +82,5 @@ export function applyEnvOverrides(config: SiteConfig): SiteConfig {
     next.brand.tagline = import.meta.env.VITE_BRAND_TAGLINE;
   }
 
-  if (import.meta.env.VITE_GALLERY_FEED_URL) {
-    next.gallery.feedUrl = import.meta.env.VITE_GALLERY_FEED_URL;
-  }
-  if (import.meta.env.VITE_GALLERY_DRIVE_FOLDER_ID) {
-    next.gallery.driveFolderId = import.meta.env.VITE_GALLERY_DRIVE_FOLDER_ID;
-  }
-
   return next;
 }

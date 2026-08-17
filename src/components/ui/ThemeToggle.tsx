@@ -68,7 +68,7 @@ export function ThemeToggle({ className, compact = false }: ThemeToggleProps) {
             aria-label={t("theme.switchTo", { mode: label })}
             aria-pressed={active}
             className={cn(
-              "relative inline-flex h-9 min-w-9 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors sm:min-w-[4.5rem] sm:px-3",
+              "relative inline-flex h-11 min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors sm:min-w-[4.5rem] sm:px-3",
               className?.includes("w-full") && "flex-1",
               active
                 ? "text-foreground"

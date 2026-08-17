@@ -7,36 +7,46 @@ import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Container } from "@/components/layout/Container";
 import { useTranslation } from "@/context/LocaleProvider";
+import { useActiveSection } from "@/hooks/useActiveSection";
 import { slideDown, staggerContainer, staggerItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 const navLinkKeys = [
-  { href: "#services", key: "nav.services" },
-  { href: "#calculator", key: "nav.calculator" },
-  { href: "#gallery", key: "nav.gallery" },
-  { href: "#contact", key: "nav.contact" },
+  { href: "#services", key: "nav.services", id: "services" },
+  { href: "#shop", key: "nav.shop", id: "shop" },
+  { href: "#calculator", key: "nav.calculator", id: "calculator" },
+  { href: "#contact", key: "nav.contact", id: "contact" },
 ] as const;
+
+const sectionIds = navLinkKeys.map((link) => link.id);
 
 function NavLink({
   href,
   label,
+  active,
   onClick,
 }: {
   href: string;
   label: string;
+  active?: boolean;
   onClick?: () => void;
 }) {
   return (
     <motion.a
       href={href}
       onClick={onClick}
-      className="group relative py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+      aria-current={active ? "true" : undefined}
+      className={cn(
+        "group relative py-1 text-sm font-medium transition-colors",
+        active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+      )}
       whileHover={{ y: -1 }}
     >
       {label}
       <motion.span
         className="absolute -bottom-1 left-0 h-px bg-primary"
-        initial={{ width: 0 }}
+        initial={{ width: active ? "100%" : 0 }}
+        animate={{ width: active ? "100%" : 0 }}
         whileHover={{ width: "100%" }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
       />
@@ -48,6 +58,7 @@ export function Navbar() {
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const activeSection = useActiveSection(sectionIds);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 16);
@@ -95,8 +106,13 @@ export function Navbar() {
         </motion.a>
 
         <nav className="hidden items-center gap-6 md:flex lg:gap-8">
-          {navLinkKeys.map(({ href, key }) => (
-            <NavLink key={href} href={href} label={t(key)} />
+          {navLinkKeys.map(({ href, key, id }) => (
+            <NavLink
+              key={href}
+              href={href}
+              label={t(key)}
+              active={activeSection === id}
+            />
           ))}
         </nav>
 
@@ -165,22 +181,26 @@ export function Navbar() {
                 variants={staggerContainer}
                 className="flex flex-col gap-1"
               >
-                {navLinkKeys.map(({ href, key }) => (
+                {navLinkKeys.map(({ href, key, id }) => (
                   <motion.a
                     key={href}
                     href={href}
                     onClick={handleNavClick}
                     variants={staggerItem}
                     whileTap={{ scale: 0.98 }}
-                    className="block rounded-lg px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                    aria-current={activeSection === id ? "true" : undefined}
+                    className={cn(
+                      "block rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-muted/50 hover:text-foreground",
+                      activeSection === id
+                        ? "bg-primary/10 text-foreground"
+                        : "text-muted-foreground",
+                    )}
                   >
                     {t(key)}
                   </motion.a>
                 ))}
                 <motion.div variants={staggerItem} className="mt-3 space-y-3">
                   <ContactButtons layout="stack" size="lg" />
-                  <LanguageToggle className="w-full justify-center" />
-                  <ThemeToggle className="w-full justify-center" />
                   <a
                     href="#calculator"
                     onClick={handleNavClick}

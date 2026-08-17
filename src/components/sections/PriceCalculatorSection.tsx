@@ -172,7 +172,7 @@ export function PriceCalculatorSection() {
             </div>
 
             <AnimatePresence mode="wait">
-              {breakdown && (
+              {breakdown ? (
                 <motion.div
                   key={`${breakdown.total}-${materialId}-${pricing.baseFee}`}
                   initial={{ opacity: 0, y: 12 }}
@@ -189,31 +189,46 @@ export function PriceCalculatorSection() {
                   </p>
 
                   <dl className="mt-4 space-y-2 border-t border-border/60 pt-4 text-sm">
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">
+                    <div className="flex flex-col gap-0.5 xs:flex-row xs:justify-between xs:gap-4">
+                      <dt className="min-w-0 text-muted-foreground">
                         {t("calculator.materialLine", { label: materialLabel })}
                       </dt>
-                      <dd className="font-medium">
+                      <dd className="shrink-0 font-medium xs:text-right">
                         {formatPrice(breakdown.materialCost, pricing)}
                       </dd>
                     </div>
-                    <div className="flex justify-between gap-4">
-                      <dt className="text-muted-foreground">
+                    <div className="flex flex-col gap-0.5 xs:flex-row xs:justify-between xs:gap-4">
+                      <dt className="min-w-0 text-muted-foreground">
                         {t("calculator.machineLine", {
                           rate: formatPrice(pricing.machineRatePerHour, pricing),
                         })}
                       </dt>
-                      <dd className="font-medium">
+                      <dd className="shrink-0 font-medium xs:text-right">
                         {formatPrice(breakdown.machineCost, pricing)}
                       </dd>
                     </div>
-                    <div className="flex justify-between gap-4">
+                    <div className="flex flex-col gap-0.5 xs:flex-row xs:justify-between xs:gap-4">
                       <dt className="text-muted-foreground">{t("calculator.baseFee")}</dt>
-                      <dd className="font-medium">
+                      <dd className="shrink-0 font-medium xs:text-right">
                         {formatPrice(breakdown.baseFee, pricing)}
                       </dd>
                     </div>
                   </dl>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="mt-6 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center"
+                >
+                  <p className="text-sm font-medium text-foreground">
+                    {t("calculator.emptyStateTitle")}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t("calculator.emptyStateHint")}
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>

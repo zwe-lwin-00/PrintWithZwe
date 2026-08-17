@@ -1,5 +1,4 @@
 import type { MaterialId } from "@/types/pricing";
-import type { GalleryConfig } from "@/types/gallery";
 
 export interface ContactConfig {
   phoneNumber: string;
@@ -33,7 +32,6 @@ export interface SiteConfig {
   contact: ContactConfig;
   pricing: PricingConfig;
   brand: BrandConfig;
-  gallery: GalleryConfig;
 }
 
 export type SiteConfigPatch = DeepPartial<SiteConfig>;

@@ -50,7 +50,7 @@ export function LanguageToggle({ className, compact = false }: LanguageTogglePro
             aria-label={t("language.switchTo", { language: LOCALE_LABELS[value] })}
             aria-pressed={active}
             className={cn(
-              "relative inline-flex h-9 min-w-9 items-center justify-center rounded-md px-2.5 text-xs font-semibold transition-colors sm:min-w-[2.75rem]",
+              "relative inline-flex h-11 min-h-11 min-w-11 items-center justify-center rounded-md px-2.5 text-xs font-semibold transition-colors sm:min-w-[2.75rem]",
               className?.includes("w-full") && "flex-1",
               active
                 ? "text-foreground"

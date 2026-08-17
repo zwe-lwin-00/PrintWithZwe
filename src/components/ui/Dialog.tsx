@@ -8,9 +8,18 @@ export interface DialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   children: ReactNode;
+  panelClassName?: string;
+  /** id of the element that labels the dialog (aria-labelledby) */
+  labelledBy?: string;
 }
 
-export function Dialog({ open, onOpenChange, children }: DialogProps) {
+export function Dialog({
+  open,
+  onOpenChange,
+  children,
+  panelClassName,
+  labelledBy,
+}: DialogProps) {
   useEffect(() => {
     if (!open) return;
 
@@ -21,9 +30,18 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleEscape);
 
+    const focusTimer = window.setTimeout(() => {
+      const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+      const focusable = dialog?.querySelector<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      focusable?.focus();
+    }, 50);
+
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleEscape);
+      window.clearTimeout(focusTimer);
     };
   }, [open, onOpenChange]);
 
@@ -43,7 +61,11 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
           <motion.div
             role="dialog"
             aria-modal="true"
-            className="relative z-10 w-full max-w-lg sm:mx-4"
+            aria-labelledby={labelledBy}
+            className={cn(
+              "relative z-10 w-full max-w-lg sm:mx-4",
+              panelClassName,
+            )}
             initial={{ opacity: 0, scale: 0.95, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 24 }}

@@ -1,0 +1,55 @@
+{
+  "items": [
+    {
+      "id": "seed-phone-stand",
+      "title": "Adjustable Phone Stand",
+      "description": "Compact desk stand for phones and small tablets. Printed in durable PETG with a clean matte finish.",
+      "price": 8500,
+      "currency": "MMK",
+      "material": "PETG",
+      "category": "Desk",
+      "imageUrls": [
+        "https://placehold.co/800x800/1e293b/e2e8f0?text=Phone+Stand"
+      ],
+      "inStock": true,
+      "featured": true,
+      "archived": false,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "seed-keychain",
+      "title": "Custom Name Keychain",
+      "description": "Personalized 3D printed keychain with your name or short text. Great for gifts and branding.",
+      "price": 3500,
+      "currency": "MMK",
+      "material": "PLA",
+      "category": "Gifts",
+      "imageUrls": [
+        "https://placehold.co/800x800/1e293b/e2e8f0?text=Keychain"
+      ],
+      "inStock": true,
+      "featured": false,
+      "archived": false,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "seed-planter",
+      "title": "Mini Desk Planter",
+      "description": "Small geometric planter for succulents and desk plants. Drainage hole included.",
+      "price": 12000,
+      "currency": "MMK",
+      "material": "PLA",
+      "category": "Functional",
+      "imageUrls": [
+        "https://placehold.co/800x800/1e293b/e2e8f0?text=Planter"
+      ],
+      "inStock": true,
+      "featured": true,
+      "archived": false,
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}
