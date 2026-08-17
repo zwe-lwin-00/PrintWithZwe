@@ -137,10 +137,6 @@
     "themeLabel": "Theme",
     "usingMode": "Using {{mode}} mode"
   },
-  "language": {
-    "label": "Language",
-    "switchTo": "Switch to {{language}}"
-  },
   "a11y": {
     "skipToContent": "Skip to content"
   },

@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Calculator, Menu, Printer, X } from "lucide-react";
 import { ContactButtons } from "@/components/ui/ContactButtons";
 import { Button } from "@/components/ui/Button";
-import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Container } from "@/components/layout/Container";
 import { useTranslation } from "@/context/LocaleProvider";
@@ -117,10 +116,8 @@ export function Navbar() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <LanguageToggle compact className="md:hidden" />
           <ThemeToggle compact className="md:hidden" />
 
-          <LanguageToggle className="hidden md:inline-flex" />
           <ThemeToggle className="hidden md:inline-flex" />
 
           <motion.div
