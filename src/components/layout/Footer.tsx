@@ -25,7 +25,7 @@ export function Footer() {
   return (
     <footer
       id="contact"
-      className="border-t border-border bg-card/30 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
+      className="border-t border-border bg-card/30 pb-[calc(var(--mobile-contact-bar-height)+env(safe-area-inset-bottom,0px))] md:pb-0"
     >
       <Container className="py-10 sm:py-12">
         <motion.div
@@ -41,9 +41,8 @@ export function Footer() {
           >
             <p className="text-sm font-medium text-foreground">{t("contact.title")}</p>
             <p className="mt-1 text-sm text-muted-foreground">{t("contact.subtitle")}</p>
-            <div className="mt-4">
-              <ContactButtons layout="stack" size="lg" className="max-w-md sm:hidden" />
-              <ContactButtons layout="row" size="lg" className="hidden max-w-md sm:flex" />
+            <div className="mt-4 hidden sm:block">
+              <ContactButtons layout="row" size="lg" className="max-w-md" />
             </div>
           </motion.div>
 
@@ -140,7 +139,7 @@ export function Footer() {
           viewport={{ once: true }}
           variants={fadeUp}
           custom={0.2}
-          className="mt-8 border-t border-border pt-6 text-center text-xs text-muted-foreground sm:mt-10"
+          className="mt-8 border-t border-border pt-6 text-center text-xs text-muted-foreground sm:mt-10 md:pb-0"
         >
           {t("footer.copyright", { year, name: brandName })}
         </motion.p>

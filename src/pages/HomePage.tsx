@@ -19,10 +19,7 @@ export function HomePage() {
         {t("a11y.skipToContent")}
       </a>
       <Navbar />
-      <main
-        id="main-content"
-        className="min-w-0 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
-      >
+      <main id="main-content" className="min-w-0 md:pb-0">
         <HeroSection />
         <ServicesSection />
         <ProductCatalogSection />
