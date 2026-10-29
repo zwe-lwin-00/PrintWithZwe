@@ -328,6 +328,11 @@ namespace PrintWithZwe.Api.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("LocationUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("MessengerPageId")
                         .IsRequired()
                         .HasMaxLength(80)

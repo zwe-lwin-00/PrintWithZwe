@@ -40,6 +40,7 @@ export interface ContactLinks {
   hasPhone: boolean;
   hasTelegram: boolean;
   hasWhatsapp: boolean;
+  locationUrl: string;
 }
 
 export function buildContactLinks(contact: ContactConfig): ContactLinks {
@@ -56,5 +57,6 @@ export function buildContactLinks(contact: ContactConfig): ContactLinks {
     hasPhone: phone.length > 0,
     hasTelegram: contact.telegramUsername.trim().length > 0,
     hasWhatsapp: normalizePhoneDigits(whatsapp).length > 0,
+    locationUrl: contact.locationUrl?.trim() ?? "",
   };
 }

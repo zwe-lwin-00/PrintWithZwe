@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle, Phone } from "lucide-react";
+import { MapPin, MessageCircle, Phone } from "lucide-react";
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
 import { buildContactLinks } from "@/lib/contact";
@@ -20,7 +20,7 @@ export function ContactButtons({
   const { t } = useTranslation();
   const links = buildContactLinks(config.contact);
 
-  if (!links.hasPhone && !links.hasTelegram) return null;
+  if (!links.hasPhone && !links.hasTelegram && !links.locationUrl) return null;
 
   const sizeClass =
     size === "lg"
@@ -65,6 +65,11 @@ export function ContactButtons({
           <span className="truncate">{t("contact.telegram")}</span>
         </motion.a>
       )}
+      {links.locationUrl && (
+        <motion.a href={links.locationUrl} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className={cn("inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card/80 font-medium text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-card", sizeClass)}>
+          <MapPin className="h-4 w-4 shrink-0 text-primary" /><span className="truncate">{t("contact.location")}</span>
+        </motion.a>
+      )}
     </div>
   );
 }
@@ -74,7 +79,7 @@ export function MobileContactBar() {
   const { config } = useSiteConfig();
   const links = buildContactLinks(config.contact);
 
-  if (!links.hasPhone && !links.hasTelegram) return null;
+  if (!links.hasPhone && !links.hasTelegram && !links.locationUrl) return null;
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 md:hidden">

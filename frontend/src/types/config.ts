@@ -5,6 +5,7 @@ export interface ContactConfig {
   telegramUsername: string;
   whatsappNumber: string;
   messengerPageId: string;
+  locationUrl: string;
 }
 
 export interface MaterialRateConfig {

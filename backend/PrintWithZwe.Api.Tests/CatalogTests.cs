@@ -88,6 +88,28 @@ public sealed class CatalogTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task SiteLocationIsPublishedAndOnlyGoogleMapsUrlsAreAccepted()
+    {
+        using var visitor = factory.Browser();
+        var defaults = (await visitor.GetFromJsonAsync<JsonObject>("/api/site-config"))!["config"]!;
+        Assert.Equal("https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5", defaults["contact"]!["locationUrl"]!.GetValue<string>());
+        using var browser = factory.Browser();
+        await Login(browser);
+        Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/site-config", new
+        {
+            brandName = "Print with Zwe", brandTagline = "Tagline", heroBadge = "Quality", heroBadgeShort = "Prints",
+            phoneNumber = "+959700000000", telegramUsername = "valid", whatsappNumber = "", messengerPageId = "",
+            locationUrl = "https://example.com/location"
+        })).StatusCode);
+        Assert.Equal(HttpStatusCode.OK, (await browser.PutAsJsonAsync("/api/admin/site-config", new
+        {
+            brandName = "Print with Zwe", brandTagline = "Tagline", heroBadge = "Quality", heroBadgeShort = "Prints",
+            phoneNumber = "+959700000000", telegramUsername = "valid", whatsappNumber = "", messengerPageId = "",
+            locationUrl = "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5"
+        })).StatusCode);
+    }
+
+    [Fact]
     public async Task SiteInformationIsPublicButUpdatesRequireAdminAndPersist()
     {
         using var visitor = factory.Browser();
@@ -111,7 +133,7 @@ public sealed class CatalogTests : IAsyncLifetime
         {
             brandName = "Updated Print with Zwe", brandTagline = "Updated tagline", heroBadge = "Updated quality",
             heroBadgeShort = "Updated prints", phoneNumber = "+959700000000", telegramUsername = "updated_handle",
-            whatsappNumber = "959700000000", messengerPageId = "updated-page"
+            whatsappNumber = "959700000000", messengerPageId = "updated-page", locationUrl = "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5"
         })).StatusCode);
         var published = (await visitor.GetFromJsonAsync<JsonObject>("/api/site-config"))!["config"]!;
         Assert.Equal("Updated Print with Zwe", published["brand"]!["name"]!.GetValue<string>());
@@ -127,7 +149,7 @@ public sealed class CatalogTests : IAsyncLifetime
         var response = await browser.PutAsJsonAsync("/api/admin/site-config", new
         {
             brandName = "Valid", brandTagline = tooLong, heroBadge = "Valid", heroBadgeShort = "Valid",
-            phoneNumber = "+959700000000", telegramUsername = "valid", whatsappNumber = "", messengerPageId = ""
+            phoneNumber = "+959700000000", telegramUsername = "valid", whatsappNumber = "", messengerPageId = "", locationUrl = "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5"
         });
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         var published = (await browser.GetFromJsonAsync<JsonObject>("/api/site-config"))!["config"]!;

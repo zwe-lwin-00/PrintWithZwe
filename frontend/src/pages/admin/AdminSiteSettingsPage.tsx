@@ -18,6 +18,7 @@ function fieldsFromConfig(config: EditableConfig): Record<string, string> {
     telegramUsername: config.contact.telegramUsername,
     whatsappNumber: config.contact.whatsappNumber,
     messengerPageId: config.contact.messengerPageId,
+    locationUrl: config.contact.locationUrl,
   };
 }
 
@@ -52,7 +53,7 @@ export function AdminSiteSettingsPage() {
     try {
       const updated = await saveSiteConfig({
         brand: { name: fields.brandName.trim(), tagline: fields.brandTagline.trim(), heroBadge: fields.heroBadge.trim(), heroBadgeShort: fields.heroBadgeShort.trim() },
-        contact: { phoneNumber: fields.phoneNumber.trim(), telegramUsername: fields.telegramUsername.trim().replace(/^@/, ""), whatsappNumber: fields.whatsappNumber.trim(), messengerPageId: fields.messengerPageId.trim() },
+        contact: { phoneNumber: fields.phoneNumber.trim(), telegramUsername: fields.telegramUsername.trim().replace(/^@/, ""), whatsappNumber: fields.whatsappNumber.trim(), messengerPageId: fields.messengerPageId.trim(), locationUrl: fields.locationUrl.trim() },
       });
       setSavedConfig(updated); setFields(fieldsFromConfig(updated)); await reloadConfig(); setSaved(true);
     } catch (error) { setError(error instanceof Error ? error.message : "Could not save site settings."); }
@@ -83,6 +84,7 @@ export function AdminSiteSettingsPage() {
           {field("telegramUsername", "Telegram username", { maxLength: 40, required: true, help: "Enter the username without @." })}
           {field("whatsappNumber", "WhatsApp number", { maxLength: 30, help: "Include country code, without + or spaces." })}
           {field("messengerPageId", "Messenger page ID", { maxLength: 80 })}
+          {field("locationUrl", "Shop location map URL", { maxLength: 2048, required: true, help: "Use a Google Maps link." })}
         </div></section></fieldset>
         <div className="flex flex-wrap items-center justify-between gap-4"><span role="status" className="text-sm text-emerald-600 dark:text-emerald-400">{saved ? "Site information saved." : ""}</span><div className="flex flex-wrap gap-3"><Button type="button" variant="outline" disabled={saving || !changed} onClick={() => { if (savedConfig) setFields(fieldsFromConfig(savedConfig)); setError(null); setSaved(false); }}><RotateCcw className="h-4 w-4" />Reset changes</Button><Button type="submit" disabled={saving || !changed}><Save className="h-4 w-4" />{saving ? "Saving..." : "Save information"}</Button></div></div>
       </form>

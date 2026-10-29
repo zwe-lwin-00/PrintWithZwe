@@ -6,6 +6,7 @@ export const defaultSiteConfig: SiteConfig = {
     telegramUsername: "zwe_ll",
     whatsappNumber: "959787238201",
     messengerPageId: "printwithzwe",
+    locationUrl: "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5",
   },
   pricing: {
     currency: "MMK",

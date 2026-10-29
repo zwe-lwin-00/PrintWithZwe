@@ -74,6 +74,7 @@ export async function saveSiteConfig(config: Pick<SiteConfig, "brand" | "contact
     telegramUsername: config.contact.telegramUsername,
     whatsappNumber: config.contact.whatsappNumber,
     messengerPageId: config.contact.messengerPageId,
+    locationUrl: config.contact.locationUrl,
   })).config;
 }
 
