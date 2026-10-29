@@ -2,74 +2,61 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
-import { loginAdmin } from "@/api/catalogClient";
-
-const STORAGE_KEY = "pzw_admin_token";
-const EMAIL_KEY = "pzw_admin_email";
+import { getAdminSession, loginAdmin, logoutAdmin } from "@/api/catalogClient";
 
 interface AdminAuthContextValue {
-  token: string | null;
   email: string | null;
+  loading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  login: (email: string, password: string, code: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextValue | null>(null);
 
-function readStoredToken(): string | null {
-  try {
-    return sessionStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function readStoredEmail(): string | null {
-  try {
-    return sessionStorage.getItem(EMAIL_KEY);
-  } catch {
-    return null;
-  }
-}
-
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => readStoredToken());
-  const [email, setEmail] = useState<string | null>(() => readStoredEmail());
+  const [email, setEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = useCallback(async (nextEmail: string, password: string) => {
+  useEffect(() => {
+    let active = true;
     try {
-      const result = await loginAdmin(nextEmail, password);
-      sessionStorage.setItem(STORAGE_KEY, result.token);
-      sessionStorage.setItem(EMAIL_KEY, result.email);
-      setToken(result.token);
-      setEmail(result.email);
-      return true;
-    } catch {
-      return false;
-    }
+      sessionStorage.removeItem("pzw_admin_token");
+      sessionStorage.removeItem("pzw_admin_email");
+    } catch {}
+    const expire = () => setEmail(null);
+    window.addEventListener("pzw-session-expired", expire);
+    void getAdminSession()
+      .then((session) => { if (active) setEmail(session?.email ?? null); })
+      .catch(() => { if (active) setEmail(null); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; window.removeEventListener("pzw-session-expired", expire); };
   }, []);
 
-  const logout = useCallback(() => {
-    sessionStorage.removeItem(STORAGE_KEY);
-    sessionStorage.removeItem(EMAIL_KEY);
-    setToken(null);
+  const login = useCallback(async (nextEmail: string, password: string, code: string) => {
+    const result = await loginAdmin(nextEmail, password, code);
+    setEmail(result.email);
+  }, []);
+
+  const logout = useCallback(async () => {
+    await logoutAdmin();
     setEmail(null);
   }, []);
 
   const value = useMemo(
     () => ({
-      token,
       email,
-      isAuthenticated: !!token,
+      loading,
+      isAuthenticated: !!email,
       login,
       logout,
     }),
-    [token, email, login, logout],
+    [email, loading, login, logout],
   );
 
   return (

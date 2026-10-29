@@ -4,20 +4,20 @@ import { Lock, Mail, Printer } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { useAdminAuth } from "@/context/AdminAuthProvider";
-import { getMockAdminPassword, useMockCatalog } from "@/api/catalogClient";
 
 export function AdminLoginPage() {
-  const { isAuthenticated, login } = useAdminAuth();
+  const { isAuthenticated, loading, login } = useAdminAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState("admin@printwithzwe.com");
   const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const isMock = useMockCatalog();
 
   const redirectTo =
-    (location.state as { from?: string } | null)?.from ?? "/admin/products";
+    (location.state as { from?: string } | null)?.from?.startsWith("/admin/")
+      ? (location.state as { from: string }).from : "/admin/products";
 
   if (isAuthenticated) {
     return <Navigate to={redirectTo} replace />;
@@ -28,15 +28,16 @@ export function AdminLoginPage() {
     setSubmitting(true);
     setError(null);
 
-    const ok = await login(email, password);
-    setSubmitting(false);
-
-    if (!ok) {
-      setError("Invalid email or password.");
-      return;
+    try {
+      await login(email, password, code);
+      setPassword("");
+      setCode("");
+      navigate(redirectTo, { replace: true });
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Sign in failed.");
+    } finally {
+      setSubmitting(false);
     }
-
-    navigate(redirectTo, { replace: true });
   };
 
   return (
@@ -49,9 +50,6 @@ export function AdminLoginPage() {
             </span>
             <div>
               <h1 className="text-xl font-bold">Admin login</h1>
-              <p className="text-sm text-muted-foreground">
-                Manage products in Google Sheets + Drive
-              </p>
             </div>
           </div>
 
@@ -92,32 +90,34 @@ export function AdminLoginPage() {
               </div>
             </div>
 
+            <div>
+              <label htmlFor="admin-code" className="mb-2 block text-sm font-medium">
+                Authenticator code
+              </label>
+              <input
+                id="admin-code"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                pattern="[0-9]{6}"
+                maxLength={6}
+                value={code}
+                onChange={(event) => setCode(event.target.value.replace(/\D/g, ""))}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base outline-none ring-primary focus:ring-2 sm:text-sm"
+                required
+              />
+            </div>
+
             {error && (
               <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
                 {error}
               </p>
             )}
 
-            <Button type="submit" className="w-full" disabled={submitting}>
+            <Button type="submit" className="w-full" disabled={submitting || loading}>
               {submitting ? "Signing in..." : "Sign in"}
             </Button>
           </form>
-
-          <p className="mt-5 text-center text-xs leading-relaxed text-muted-foreground">
-            {isMock ? (
-              <>
-                Mock mode is on. Use password from{" "}
-                <code className="rounded bg-muted px-1 py-0.5">VITE_MOCK_ADMIN_PASSWORD</code>
-                {getMockAdminPassword() ? "" : " (not set in .env)"}.
-              </>
-            ) : (
-              <>
-                Credentials are stored in Google Apps Script properties (
-                <code className="rounded bg-muted px-1 py-0.5">ADMIN_EMAIL</code>,{" "}
-                <code className="rounded bg-muted px-1 py-0.5">ADMIN_PASSWORD</code>).
-              </>
-            )}
-          </p>
 
           <p className="mt-4 text-center text-sm">
             <Link to="/" className="text-primary hover:underline">

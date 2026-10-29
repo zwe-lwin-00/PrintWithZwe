@@ -1,0 +1,34 @@
+[Unit]
+Description=Print with Zwe ASP.NET Core API
+After=network.target
+
+[Service]
+User=printwithzwe
+Group=www-data
+WorkingDirectory=/opt/printwithzwe/api
+ExecStart=/usr/bin/dotnet /opt/printwithzwe/api/PrintWithZwe.Api.dll
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://127.0.0.1:5000
+Environment=Storage__Root=/var/lib/printwithzwe
+Environment=DOTNET_GCHeapHardLimit=0x10000000
+Environment=DOTNET_gcServer=0
+UMask=0077
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/printwithzwe
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+MemoryHigh=384M
+MemoryMax=512M
+TasksMax=100
+
+[Install]
+WantedBy=multi-user.target

@@ -4,6 +4,15 @@ import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    watch: {
+      ignored: ["**/backend/**", "**/artifacts/**", "**/.tools/**"],
+    },
+    proxy: {
+      "/api": "http://127.0.0.1:5000",
+      "/uploads": "http://127.0.0.1:5000",
+    },
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

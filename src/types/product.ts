@@ -45,7 +45,6 @@ export interface CatalogConfig {
 }
 
 export interface LoginResult {
-  token: string;
   email: string;
 }
 
@@ -54,6 +53,5 @@ export interface ApiResponse<T> {
   error?: string;
   items?: T[];
   item?: T;
-  token?: string;
   email?: string;
 }

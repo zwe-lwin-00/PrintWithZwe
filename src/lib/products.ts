@@ -7,11 +7,8 @@ export {
   fetchProducts,
   fileToImageUpload,
   formatProductPrice,
-  getAppsScriptUrl,
-  getMockAdminPassword,
   isCatalogApiConfigured,
   loginAdmin,
   productToInput,
   updateProduct,
-  useMockCatalog,
 } from "@/api/catalogClient";

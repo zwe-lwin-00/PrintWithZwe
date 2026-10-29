@@ -1,0 +1,11 @@
+[Unit]
+Description=Encrypted off-server Print with Zwe backup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/printwithzwe-backup.env
+ExecStart=/usr/local/sbin/printwithzwe-backup
+UMask=0077
+Nice=10

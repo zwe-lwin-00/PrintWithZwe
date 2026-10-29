@@ -4,11 +4,22 @@ node_modules
 # Build
 dist
 dist-ssr
+*.tsbuildinfo
+**/bin/
+**/obj/
+.tools/
+**/TestResults/
+backend/**/data/
+*.db
+*.db-shm
+*.db-wal
+artifacts/
 
 # Environment
 .env
 .env.local
 .env.*.local
+.env.production
 
 # Editor
 .vscode/*

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ArrowLeft, LogOut, Printer } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -7,10 +8,20 @@ import { useAdminAuth } from "@/context/AdminAuthProvider";
 export function AdminLayout() {
   const { logout } = useAdminAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/admin/login", { replace: true });
+  const handleLogout = async () => {
+    setSigningOut(true);
+    setError(null);
+    try {
+      await logout();
+      navigate("/admin/login", { replace: true });
+    } catch {
+      setError("Sign out failed. Please retry.");
+    } finally {
+      setSigningOut(false);
+    }
   };
 
   return (
@@ -42,7 +53,7 @@ export function AdminLayout() {
               <ArrowLeft className="h-4 w-4" />
               Back to site
             </Link>
-            <Button variant="outline" size="default" onClick={handleLogout}>
+            <Button variant="outline" size="default" disabled={signingOut} onClick={() => void handleLogout()}>
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Logout</span>
             </Button>
@@ -52,6 +63,7 @@ export function AdminLayout() {
 
       <main className="py-6 pb-[env(safe-area-inset-bottom,0px)] sm:py-10">
         <Container>
+          {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
           <Outlet />
         </Container>
       </main>

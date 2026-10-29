@@ -22,13 +22,13 @@ function ProductStatus({ product }: { product: Product }) {
 }
 
 export function AdminProductsPage() {
-  const { token } = useAdminAuth();
-  const { items, state, reload } = useAdminProducts();
+  const { isAuthenticated } = useAdminAuth();
+  const { items, state, error: loadError, reload } = useAdminProducts();
   const [archivingId, setArchivingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleArchive = async (id: string, title: string) => {
-    if (!token) return;
+    if (!isAuthenticated) return;
     const confirmed = window.confirm(`Archive "${title}"? It will be hidden from the shop.`);
     if (!confirmed) return;
 
@@ -36,7 +36,7 @@ export function AdminProductsPage() {
     setError(null);
 
     try {
-      await archiveProduct(token, id);
+      await archiveProduct(id);
       await reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Archive failed");
@@ -53,7 +53,7 @@ export function AdminProductsPage() {
         <div className="min-w-0">
           <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Products</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {activeCount} active · stored in Google Sheets with photos in Drive
+            {activeCount} active
           </p>
         </div>
         <Link
@@ -65,9 +65,9 @@ export function AdminProductsPage() {
         </Link>
       </div>
 
-      {error && (
+      {(error || loadError) && (
         <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
-          {error}
+          {error || loadError}
         </p>
       )}
 
@@ -77,7 +77,7 @@ export function AdminProductsPage() {
         </div>
       )}
 
-      {state !== "loading" && items.length === 0 && (
+      {state === "empty" && (
         <div className="rounded-2xl border border-dashed border-border bg-card/30 p-8 text-center sm:p-10">
           <p className="font-medium">No products yet</p>
           <p className="mt-2 text-sm text-muted-foreground">

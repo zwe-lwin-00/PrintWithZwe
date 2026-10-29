@@ -25,9 +25,9 @@ export function AdminProductFormPage() {
   const { id } = useParams();
   const isEditing = !!id && id !== "new";
   const navigate = useNavigate();
-  const { token } = useAdminAuth();
+  const { isAuthenticated } = useAdminAuth();
   const { config } = useSiteConfig();
-  const { items, reload } = useAdminProducts();
+  const { items, state, error: loadError, reload } = useAdminProducts();
 
   const [form, setForm] = useState<ProductInput>(() =>
     emptyProductInput(config.pricing.currency),
@@ -50,11 +50,11 @@ export function AdminProductFormPage() {
       return;
     }
 
-    if (items.length > 0) {
-      setError("Product not found");
+    if (state !== "loading") {
+      setError(loadError ?? "Product not found");
       setLoading(false);
     }
-  }, [id, isEditing, items]);
+  }, [id, isEditing, items, state, loadError]);
 
   const updateField = <K extends keyof ProductInput>(
     key: K,
@@ -76,13 +76,21 @@ export function AdminProductFormPage() {
 
   const handleFilesSelected = async (files: FileList | null) => {
     if (!files?.length) return;
-    const uploads = await Promise.all(Array.from(files).map(fileToImageUpload));
-    setPendingImages((current) => [...current, ...uploads]);
+    try {
+      if (form.imageUrls.length + pendingImages.length + files.length > 6) {
+        throw new Error("A product can have up to 6 photos.");
+      }
+      const uploads = await Promise.all(Array.from(files).map(fileToImageUpload));
+      setPendingImages((current) => [...current, ...uploads]);
+      setError(null);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Could not read the photos.");
+    }
   };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!token) return;
+    if (!isAuthenticated) return;
 
     const payload: ProductInput = {
       ...form,
@@ -99,9 +107,9 @@ export function AdminProductFormPage() {
 
     try {
       if (isEditing && id) {
-        await updateProduct(token, id, payload);
+        await updateProduct(id, payload);
       } else {
-        await createProduct(token, payload);
+        await createProduct(payload);
       }
 
       await reload();
@@ -139,9 +147,6 @@ export function AdminProductFormPage() {
         <h1 className="mt-3 text-2xl font-bold tracking-tight">
           {isEditing ? "Edit product" : "Add product"}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Photos upload to Google Drive automatically in production.
-        </p>
       </div>
 
       <form
@@ -158,6 +163,7 @@ export function AdminProductFormPage() {
               value={form.title}
               onChange={(event) => updateField("title", event.target.value)}
               className={inputClassName}
+              maxLength={160}
               required
             />
           </div>
@@ -171,6 +177,7 @@ export function AdminProductFormPage() {
               value={form.description}
               onChange={(event) => updateField("description", event.target.value)}
               className={`${inputClassName} min-h-28 resize-y`}
+              maxLength={5000}
               required
             />
           </div>
@@ -241,41 +248,16 @@ export function AdminProductFormPage() {
           </div>
 
           <div className="sm:col-span-2">
-            <label htmlFor="imageUrl" className="mb-2 block text-sm font-medium">
-              Extra image URL (optional)
-            </label>
-            <div className="flex gap-2">
-              <input
-                id="imageUrl"
-                type="url"
-                placeholder="https://..."
-                className={inputClassName}
-                onKeyDown={(event) => {
-                  if (event.key !== "Enter") return;
-                  event.preventDefault();
-                  const value = (event.target as HTMLInputElement).value.trim();
-                  if (!value) return;
-                  updateField("imageUrls", [...form.imageUrls, value]);
-                  (event.target as HTMLInputElement).value = "";
-                }}
-              />
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Press Enter to add a URL, or upload photos below.
-            </p>
-          </div>
-
-          <div className="sm:col-span-2">
             <label className="mb-2 block text-sm font-medium">Upload photos</label>
             <label className="flex min-h-[7rem] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-6 text-center transition-colors hover:border-primary/40 hover:bg-muted/30">
               <ImagePlus className="h-6 w-6 text-muted-foreground" />
               <span className="text-sm font-medium">Choose images</span>
               <span className="text-xs text-muted-foreground">
-                JPG, PNG — multiple files supported
+                JPEG, PNG or WebP. Up to 2 MB and 2048 x 2048 per photo.
               </span>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp"
                 multiple
                 className="hidden"
                 onChange={(event) => void handleFilesSelected(event.target.files)}
