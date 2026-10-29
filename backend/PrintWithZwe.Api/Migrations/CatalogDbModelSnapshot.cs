@@ -209,6 +209,23 @@ namespace PrintWithZwe.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PrintWithZwe.Api.PricingSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("BaseFee")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("MachineRatePerHour")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PricingSettings");
+                });
+
             modelBuilder.Entity("PrintWithZwe.Api.Product", b =>
                 {
                     b.Property<string>("Id")
@@ -334,6 +351,34 @@ namespace PrintWithZwe.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PrintWithZwe.Api.PricingSettings", b =>
+                {
+                    b.OwnsMany("PrintWithZwe.Api.MaterialRate", "Materials", b1 =>
+                        {
+                            b1.Property<int>("PricingSettingsId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("Id")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Label")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.Property<decimal>("RatePerGram")
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("PricingSettingsId", "Id");
+
+                            b1.ToTable("MaterialRate");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PricingSettingsId");
+                        });
+
+                    b.Navigation("Materials");
                 });
 
             modelBuilder.Entity("PrintWithZwe.Api.ProductImage", b =>

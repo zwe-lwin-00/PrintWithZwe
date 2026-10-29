@@ -110,7 +110,7 @@ function ProductImageGallery({
   return (
     <div className="space-y-0">
       <div
-        className="relative aspect-[4/3] overflow-hidden bg-muted/60 sm:aspect-[16/10]"
+        className="relative h-[min(50dvh,28rem)] shrink-0 overflow-hidden bg-muted/60"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -119,7 +119,7 @@ function ProductImageGallery({
             key={activeImage}
             src={activeImage}
             alt={alt}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
             width={1200}
             loading="eager"
           />
@@ -149,7 +149,7 @@ function ProductImageGallery({
               <ProductImage
                 src={url}
                 alt=""
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
                 width={120}
               />
             </button>
@@ -190,7 +190,7 @@ function ProductCard({
           <ProductImage
             src={images[0]}
             alt={product.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-contain"
             width={800}
           />
         ) : (

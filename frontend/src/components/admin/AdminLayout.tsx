@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { ArrowLeft, LogOut, Printer } from "lucide-react";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { ArrowLeft, Calculator, LogOut, Package, Printer } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { useAdminAuth } from "@/context/AdminAuthProvider";
@@ -41,7 +41,7 @@ export function AdminLayout() {
             </span>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold">Print with Zwe Admin</p>
-              <p className="truncate text-xs text-muted-foreground">Product catalog</p>
+              <p className="truncate text-xs text-muted-foreground">Administration</p>
             </div>
           </div>
 
@@ -63,6 +63,14 @@ export function AdminLayout() {
 
       <main className="py-6 pb-[env(safe-area-inset-bottom,0px)] sm:py-10">
         <Container>
+          <nav aria-label="Admin navigation" className="mb-8 flex gap-6 border-b border-border">
+            <NavLink to="/admin/products" className={({ isActive }) => `inline-flex min-h-11 items-center gap-2 border-b-2 pb-3 text-sm font-medium ${isActive ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+              <Package className="h-4 w-4" />Products
+            </NavLink>
+            <NavLink to="/admin/pricing" className={({ isActive }) => `inline-flex min-h-11 items-center gap-2 border-b-2 pb-3 text-sm font-medium ${isActive ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+              <Calculator className="h-4 w-4" />Pricing
+            </NavLink>
+          </nav>
           {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
           <Outlet />
         </Container>

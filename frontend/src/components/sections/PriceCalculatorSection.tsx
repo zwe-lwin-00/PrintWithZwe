@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calculator, Info } from "lucide-react";
+import { Calculator, Info, RefreshCw } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
@@ -30,7 +30,7 @@ function isValidInput(
 }
 
 export function PriceCalculatorSection() {
-  const { config } = useSiteConfig();
+  const { config, isLoading, pricingError, reloadConfig } = useSiteConfig();
   const { pricing, contact } = config;
   const { t } = useTranslation();
   const contactLinks = buildContactLinks(contact);
@@ -62,7 +62,7 @@ export function PriceCalculatorSection() {
 
   const weight = weightGrams === "" ? 0 : Number(weightGrams);
   const hours = printHours === "" ? 0 : Number(printHours);
-  const isValid = isValidInput(weight, hours, weightGrams, printHours);
+  const isValid = !isLoading && !pricingError && isValidInput(weight, hours, weightGrams, printHours);
 
   const breakdown = useMemo(() => {
     if (!isValid) return null;
@@ -118,6 +118,7 @@ export function PriceCalculatorSection() {
                 </label>
                 <select
                   id="calc-material"
+                  disabled={isLoading || !!pricingError}
                   value={materialId}
                   onChange={(event) =>
                     setMaterialId(event.target.value as MaterialId)
@@ -126,7 +127,7 @@ export function PriceCalculatorSection() {
                 >
                   {pricing.materials.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {t(`materials.${item.id}`)} — {formatPrice(item.ratePerGram, pricing)}/g
+                      {t(`materials.${item.id}`)}{!isLoading && !pricingError ? ` - ${formatPrice(item.ratePerGram, pricing)}/g` : ""}
                     </option>
                   ))}
                 </select>
@@ -139,6 +140,7 @@ export function PriceCalculatorSection() {
                   </label>
                   <input
                     id="calc-weight"
+                    disabled={isLoading || !!pricingError}
                     type="number"
                     min={0}
                     step={1}
@@ -156,6 +158,7 @@ export function PriceCalculatorSection() {
                   </label>
                   <input
                     id="calc-hours"
+                    disabled={isLoading || !!pricingError}
                     type="number"
                     min={0}
                     step={0.5}
@@ -224,16 +227,17 @@ export function PriceCalculatorSection() {
                   className="mt-6 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center"
                 >
                   <p className="text-sm font-medium text-foreground">
-                    {t("calculator.emptyStateTitle")}
+                    {pricingError ?? (isLoading ? "Loading current rates..." : t("calculator.emptyStateTitle"))}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {t("calculator.emptyStateHint")}
+                    {!pricingError && !isLoading ? t("calculator.emptyStateHint") : ""}
                   </p>
+                  {pricingError && <ButtonRetry onRetry={() => void reloadConfig()} />}
                 </motion.div>
               )}
             </AnimatePresence>
 
-            <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+            {!isLoading && !pricingError && <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               {t("calculator.formula", {
                 machineRate: formatPrice(pricing.machineRatePerHour, pricing),
@@ -241,10 +245,14 @@ export function PriceCalculatorSection() {
                 phone: contactLinks.phoneDisplay,
                 telegram: contact.telegramUsername,
               })}
-            </p>
+            </p>}
           </div>
         </motion.div>
       </Container>
     </section>
   );
+}
+
+function ButtonRetry({ onRetry }: { onRetry: () => void }) {
+  return <button type="button" onClick={onRetry} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-medium hover:bg-muted/50"><RefreshCw className="h-4 w-4" />Retry</button>;
 }

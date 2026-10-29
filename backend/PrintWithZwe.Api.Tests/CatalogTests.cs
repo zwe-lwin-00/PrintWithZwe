@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using OtpNet;
 using PrintWithZwe.Api;
 using SkiaSharp;
@@ -82,6 +85,97 @@ public sealed class CatalogTests : IAsyncLifetime
         authenticatorKey = newKey;
         using var browser = factory.Browser();
         await Login(browser);
+    }
+
+    [Fact]
+    public async Task PricingMigrationPreservesExistingProductsImagesAndAccounts()
+    {
+        var options = new DbContextOptionsBuilder<CatalogDb>()
+            .UseSqlite($"Data Source={Path.Combine(factory.DataRoot, "upgrade.db")}").Options;
+        await using var database = new CatalogDb(options);
+        await database.GetService<IMigrator>().MigrateAsync("20261029070257_InitialCatalog");
+        database.Products.Add(new Product
+        {
+            Id = "existing-product", Title = "Existing product", Price = 30000,
+            Images = [new ProductImage { Url = "/uploads/existing.webp" }]
+        });
+        database.Users.Add(new IdentityUser { Id = "existing-admin", UserName = "existing-admin@example.test" });
+        await database.SaveChangesAsync();
+        await database.Database.MigrateAsync();
+        database.ChangeTracker.Clear();
+        var product = await database.Products.Include(item => item.Images).SingleAsync();
+        Assert.Equal("Existing product", product.Title);
+        Assert.Equal(30000m, product.Price);
+        Assert.Equal("/uploads/existing.webp", Assert.Single(product.Images).Url);
+        Assert.Equal("existing-admin", (await database.Users.SingleAsync()).Id);
+        Assert.Empty(await database.PricingSettings.ToListAsync());
+    }
+
+    [Fact]
+    public async Task PricingDefaultsArePublicButUpdatesRequireAnAdmin()
+    {
+        using var visitor = factory.Browser();
+        var response = await visitor.GetFromJsonAsync<JsonObject>("/api/pricing");
+        var pricing = response!["pricing"]!;
+        Assert.Equal(2000m, pricing["baseFee"]!.GetValue<decimal>());
+        Assert.Equal(1500m, pricing["machineRatePerHour"]!.GetValue<decimal>());
+        Assert.Equal(5, pricing["materials"]!.AsArray().Count);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await visitor.GetAsync("/api/admin/pricing")).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized,
+            (await visitor.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+    }
+
+    [Fact]
+    public async Task PricingUpdatesPersistAcrossRequestsAndAllowZeroRates()
+    {
+        using var browser = factory.Browser();
+        await Login(browser);
+        var response = await browser.GetFromJsonAsync<JsonObject>("/api/admin/pricing");
+        var pricing = response!["pricing"]!.AsObject();
+        pricing["baseFee"] = 3000.25m;
+        pricing["machineRatePerHour"] = 2000m;
+        pricing["materials"]![0]!["ratePerGram"] = 75.5m;
+        Assert.Equal(HttpStatusCode.OK, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+
+        using var visitor = factory.Browser();
+        var published = (await visitor.GetFromJsonAsync<JsonObject>("/api/pricing"))!["pricing"]!;
+        Assert.Equal(3000.25m, published["baseFee"]!.GetValue<decimal>());
+        Assert.Equal(2000m, published["machineRatePerHour"]!.GetValue<decimal>());
+        Assert.Equal(75.5m, published["materials"]![0]!["ratePerGram"]!.GetValue<decimal>());
+        Assert.Equal("MMK", published["currency"]!.GetValue<string>());
+        Assert.Equal(5, published["materials"]!.AsArray().Count);
+
+        pricing["baseFee"] = 0;
+        pricing["machineRatePerHour"] = 0;
+        foreach (var material in pricing["materials"]!.AsArray()) material!["ratePerGram"] = 0;
+        Assert.Equal(HttpStatusCode.OK, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+        var zero = (await visitor.GetFromJsonAsync<JsonObject>("/api/pricing"))!["pricing"]!;
+        Assert.Equal(0m, zero["baseFee"]!.GetValue<decimal>());
+        Assert.All(zero["materials"]!.AsArray(), material =>
+            Assert.Equal(0m, material!["ratePerGram"]!.GetValue<decimal>()));
+    }
+
+    [Fact]
+    public async Task PricingRejectsMissingCsrfNegativeExcessiveAndDuplicateRates()
+    {
+        using var browser = factory.Browser();
+        await Login(browser);
+        var pricing = (await browser.GetFromJsonAsync<JsonObject>("/api/admin/pricing"))!["pricing"]!.AsObject();
+        browser.DefaultRequestHeaders.Remove("X-CSRF-TOKEN");
+        Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+        await Csrf(browser);
+        pricing["baseFee"] = -1;
+        Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+        pricing["baseFee"] = 2000;
+        pricing["materials"]![0]!["ratePerGram"] = 1_000_001;
+        Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+        pricing["materials"]![0]!["ratePerGram"] = 50;
+        pricing["materials"]![1]!["id"] = "pla";
+        Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+        pricing["materials"] = null;
+        Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
+        var unchanged = (await browser.GetFromJsonAsync<JsonObject>("/api/pricing"))!["pricing"]!;
+        Assert.Equal(2000m, unchanged["baseFee"]!.GetValue<decimal>());
     }
 
     [Fact]

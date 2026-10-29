@@ -1,4 +1,5 @@
 import type { LoginResult, Product, ProductImageUpload, ProductInput } from "@/types/product";
+import type { PricingConfig } from "@/types/config";
 
 let csrfToken: string | null = null;
 
@@ -43,6 +44,19 @@ async function request<T>(path: string, method = "GET", body?: unknown): Promise
 
 export async function fetchProducts(): Promise<Product[]> {
   return (await request<{ items: Product[] }>("/products")).items;
+}
+
+export async function fetchPricing(admin = false): Promise<PricingConfig> {
+  const { pricing } = await request<{ pricing: PricingConfig }>(admin ? "/admin/pricing" : "/pricing");
+  if (!pricing || !Array.isArray(pricing.materials) || pricing.materials.length === 0 ||
+    !Number.isFinite(pricing.baseFee) || !Number.isFinite(pricing.machineRatePerHour)) {
+    throw new Error("The pricing API returned invalid rates.");
+  }
+  return pricing;
+}
+
+export async function savePricing(pricing: PricingConfig): Promise<PricingConfig> {
+  return (await request<{ pricing: PricingConfig }>("/admin/pricing", "PUT", pricing)).pricing;
 }
 
 export async function fetchAdminProducts(): Promise<Product[]> {

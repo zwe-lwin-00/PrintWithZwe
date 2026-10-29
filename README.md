@@ -17,6 +17,62 @@ and `npm run build` from the repository root as before. Frontend build output is
 `frontend/dist/`; frontend environment files belong in `frontend/`. Keep the
 single dependency lockfile at the repository root.
 
+## Estimator pricing
+
+Open `/admin/pricing` (the Pricing tab) after signing in. Administrators can edit
+the MMK base fee, hourly machine rate, and per-gram rates for PLA, PETG, ABS, TPU,
+and Multi-Color. Saving updates SQLite; it does not change listed product prices.
+Rates must be non-negative. Zero is allowed. Printing fees are capped at
+1,000,000,000 MMK and material rates at 1,000,000 MMK per gram.
+
+The estimator reads `/api/pricing` on page load and when the browser window
+regains focus. A save also refreshes rates in the current app. No rebuild or
+server restart is needed for subsequent rate changes. If current rates cannot
+be loaded, the estimator is disabled and offers a retry instead of using stale
+static rates. Pricing values in `site-config.json` are initialization/display
+fallbacks only; `VITE_PRICING_*` build overrides are no longer supported.
+
+`GET /api/pricing` is public. `GET /api/admin/pricing` and
+`PUT /api/admin/pricing` require an admin session; writes additionally require
+CSRF validation and use the existing write limiter. Defaults match the original
+estimator until the first save.
+
+### Upgrade an existing production installation
+
+This feature includes the additive `EstimatorPricing` EF migration. Deploy the
+updated API before the frontend. The migration is applied at API startup and
+does not recreate products, images or administrator accounts. Back up first.
+Never copy your local development database over production.
+
+After uploading and extracting a freshly built release to `/root/pzw-release`,
+run on the VPS:
+
+```bash
+systemctl stop printwithzwe
+umask 077
+sqlite3 /var/lib/printwithzwe/catalog.db ".backup '/root/printwithzwe-before-pricing-$(date +%Y%m%d-%H%M%S).db'"
+cp -a /opt/printwithzwe/api /root/printwithzwe-api-before-pricing-$(date +%Y%m%d-%H%M%S)
+rsync -a /root/pzw-release/api/ /opt/printwithzwe/api/
+chmod -R u=rwX,go=rX /opt/printwithzwe/api
+systemctl start printwithzwe
+curl -f http://127.0.0.1:5000/api/health
+curl -f https://okayselling.shop/api/pricing
+```
+
+Stop if any command fails. Wait for startup before checking health. If startup
+fails, inspect `journalctl -u printwithzwe -n 50 --no-pager` and keep the old
+frontend intact. Once both checks succeed, back up and publish the frontend:
+
+```bash
+tar -czf /root/printwithzwe-web-before-pricing-$(date +%Y%m%d-%H%M%S).tar.gz -C /var/www printwithzwe
+rsync -a --delete /root/pzw-release/dist/ /var/www/printwithzwe/
+chmod -R u=rwX,go=rX /var/www/printwithzwe
+```
+
+Do not overwrite the active Nginx configuration: Certbot has already added TLS
+settings. No Nginx change is required for this feature. Refresh the browser,
+test a rate change in admin, and verify an estimate on the public page.
+
 ## Local development (Windows)
 
 Install the .NET 10 SDK and Node.js 24 LTS. In the repository root:

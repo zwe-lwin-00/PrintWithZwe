@@ -137,6 +137,7 @@ app.Use(async (context, next) =>
 app.MapGet("/api/health", () => Results.Ok(new { ok = true }));
 app.MapAdminAuth();
 app.MapCatalog();
+app.MapPricing();
 app.Run();
 
 public partial class Program;

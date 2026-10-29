@@ -8,6 +8,7 @@ public sealed class CatalogDb(DbContextOptions<CatalogDb> options)
     : IdentityDbContext<IdentityUser>(options)
 {
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<PricingSettings> PricingSettings => Set<PricingSettings>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -15,6 +16,11 @@ public sealed class CatalogDb(DbContextOptions<CatalogDb> options)
         builder.Entity<Product>().HasIndex(product => product.Archived);
         builder.Entity<Product>().HasMany(product => product.Images).WithOne().OnDelete(DeleteBehavior.Cascade);
         builder.Entity<ProductImage>().HasIndex(image => image.Url).IsUnique();
+        builder.Entity<PricingSettings>().OwnsMany(settings => settings.Materials, material =>
+        {
+            material.WithOwner().HasForeignKey("PricingSettingsId");
+            material.HasKey("PricingSettingsId", nameof(MaterialRate.Id));
+        });
     }
 }
 
