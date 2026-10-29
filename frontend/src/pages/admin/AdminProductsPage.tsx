@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Archive, Pencil, Plus } from "lucide-react";
+import { Archive, Pencil, Plus, RotateCcw } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
 import { useAdminAuth } from "@/context/AdminAuthProvider";
 import { useAdminProducts } from "@/hooks/useAdminProducts";
-import { archiveProduct, formatProductPrice } from "@/api/catalogClient";
+import { archiveProduct, formatProductPrice, restoreProduct } from "@/api/catalogClient";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
@@ -40,6 +40,22 @@ export function AdminProductsPage() {
       await reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Archive failed");
+    } finally {
+      setArchivingId(null);
+    }
+  };
+
+  const handleRestore = async (id: string, title: string) => {
+    if (!isAuthenticated) return;
+    const confirmed = window.confirm(`Restore "${title}"? It will be visible in the shop again.`);
+    if (!confirmed) return;
+    setArchivingId(id);
+    setError(null);
+    try {
+      await restoreProduct(id);
+      await reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Restore failed");
     } finally {
       setArchivingId(null);
     }
@@ -126,7 +142,7 @@ export function AdminProductsPage() {
                   </div>
                 </div>
 
-                {!product.archived && (
+                {!product.archived ? (
                   <div className="mt-4 flex gap-2">
                     <Link
                       to={`/admin/products/${product.id}`}
@@ -145,6 +161,12 @@ export function AdminProductsPage() {
                     >
                       <Archive className="h-4 w-4" />
                       <span className="text-sm font-medium sm:hidden">Archive</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="mt-4 flex gap-2">
+                    <button type="button" onClick={() => void handleRestore(product.id, product.title)} disabled={archivingId === product.id} className={cn(actionButtonClass, "flex-1 gap-2 px-4 sm:flex-none sm:w-auto")} aria-label={`Restore ${product.title}`}>
+                      <RotateCcw className="h-4 w-4" /><span className="text-sm font-medium sm:hidden">Restore</span>
                     </button>
                   </div>
                 )}
@@ -194,25 +216,29 @@ export function AdminProductsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          {!product.archived && (
-                            <Link
-                              to={`/admin/products/${product.id}`}
-                              className={actionButtonClass}
-                              aria-label={`Edit ${product.title}`}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Link>
-                          )}
-                          {!product.archived && (
-                            <button
-                              type="button"
-                              onClick={() => void handleArchive(product.id, product.title)}
-                              disabled={archivingId === product.id}
-                              className={cn(actionButtonClass, "text-muted-foreground")}
-                              aria-label={`Archive ${product.title}`}
-                            >
-                              <Archive className="h-4 w-4" />
+                          {product.archived ? (
+                            <button type="button" onClick={() => void handleRestore(product.id, product.title)} disabled={archivingId === product.id} className={cn(actionButtonClass, "text-muted-foreground")} aria-label={`Restore ${product.title}`}>
+                              <RotateCcw className="h-4 w-4" />
                             </button>
+                          ) : (
+                            <>
+                              <Link
+                                to={`/admin/products/${product.id}`}
+                                className={actionButtonClass}
+                                aria-label={`Edit ${product.title}`}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Link>
+                              <button
+                                type="button"
+                                onClick={() => void handleArchive(product.id, product.title)}
+                                disabled={archivingId === product.id}
+                                className={cn(actionButtonClass, "text-muted-foreground")}
+                                aria-label={`Archive ${product.title}`}
+                              >
+                                <Archive className="h-4 w-4" />
+                              </button>
+                            </>
                           )}
                         </div>
                       </td>

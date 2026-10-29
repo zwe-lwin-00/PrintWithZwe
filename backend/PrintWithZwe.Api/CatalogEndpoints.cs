@@ -36,6 +36,16 @@ public static class CatalogEndpoints
             await database.SaveChangesAsync(cancellation);
             return Results.Ok(new { ok = true });
         }).RequireRateLimiting("writes");
+        admin.MapPost("/{id}/restore", async (string id, CatalogDb database, CancellationToken cancellation) =>
+        {
+            var product = await database.Products.FindAsync([id], cancellation);
+            if (product is null) return Results.NotFound(new { ok = false, error = "Product not found." });
+            if (!product.Archived) return Results.Ok(new { ok = true });
+            product.Archived = false;
+            product.UpdatedAt = DateTime.UtcNow;
+            await database.SaveChangesAsync(cancellation);
+            return Results.Ok(new { ok = true });
+        }).RequireRateLimiting("writes");
     }
 
     private static async Task<IResult> SaveProduct(string? id, ProductRequest input,

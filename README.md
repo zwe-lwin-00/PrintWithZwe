@@ -174,6 +174,14 @@ products are automatically imported. The legacy Google scripts and demo catalog
 have been removed. Export and back up any existing external catalog before
 migrating it; this cleanup does not delete data hosted in Google or on your VPS.
 
+## Product archive and restore
+
+Admin Archive hides a product from the public catalog without deleting its
+database row or image files. In the admin Products page, archived rows show a
+Restore action. Restoring clears the archived flag and makes the existing
+product and images public again. Archive and Restore require the authenticated
+admin session, CSRF validation, and the write rate limiter.
+
 Old `VITE_APPS_SCRIPT_URL`, `VITE_USE_MOCK`, and `VITE_MOCK_ADMIN_PASSWORD` settings
 are no longer used. Never put administrator credentials or backend secrets in
 `VITE_*`, since those values are public build inputs.

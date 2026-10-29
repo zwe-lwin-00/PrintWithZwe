@@ -113,6 +113,10 @@ export async function archiveProduct(id: string): Promise<void> {
   await request(`/admin/products/${encodeURIComponent(id)}`, "DELETE");
 }
 
+export async function restoreProduct(id: string): Promise<void> {
+  await request(`/admin/products/${encodeURIComponent(id)}/restore`, "POST", {});
+}
+
 export function formatProductPrice(price: number, currency: string, locale = "en-MM"): string {
   return new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 0 }).format(price);
 }

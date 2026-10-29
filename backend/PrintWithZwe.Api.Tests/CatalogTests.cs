@@ -288,6 +288,10 @@ public sealed class CatalogTests : IAsyncLifetime
         Assert.Empty(listed!["items"]!.AsArray());
         var adminList = await browser.GetFromJsonAsync<JsonObject>("/api/admin/products");
         Assert.True(adminList!["items"]![0]!["archived"]!.GetValue<bool>());
+        Assert.Equal(HttpStatusCode.OK, (await browser.PostAsJsonAsync("/api/admin/products/" + id + "/restore", new { })).StatusCode);
+        listed = await visitor.GetFromJsonAsync<JsonObject>("/api/products");
+        Assert.Single(listed!["items"]!.AsArray());
+        Assert.False(listed["items"]![0]!["archived"]!.GetValue<bool>());
         Assert.Equal(HttpStatusCode.OK, (await browser.PostAsJsonAsync("/api/auth/logout", new { })).StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized, (await browser.GetAsync("/api/auth/session")).StatusCode);
     }
