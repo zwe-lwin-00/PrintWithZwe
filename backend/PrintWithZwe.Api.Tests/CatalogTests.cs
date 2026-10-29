@@ -88,6 +88,53 @@ public sealed class CatalogTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task SiteInformationIsPublicButUpdatesRequireAdminAndPersist()
+    {
+        using var visitor = factory.Browser();
+        var defaults = (await visitor.GetFromJsonAsync<JsonObject>("/api/site-config"))!["config"]!;
+        Assert.Equal("Print with Zwe", defaults["brand"]!["name"]!.GetValue<string>());
+        Assert.Equal(HttpStatusCode.Unauthorized, (await visitor.GetAsync("/api/admin/site-config")).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await visitor.PutAsJsonAsync("/api/admin/site-config", new { })).StatusCode);
+
+        using var browser = factory.Browser();
+        await Login(browser);
+        var config = (await browser.GetFromJsonAsync<JsonObject>("/api/admin/site-config"))!["config"]!.AsObject();
+        config["brand"]!["name"] = "Updated Print with Zwe";
+        config["brand"]!["tagline"] = "Updated tagline";
+        config["brand"]!["heroBadge"] = "Updated quality";
+        config["brand"]!["heroBadgeShort"] = "Updated prints";
+        config["contact"]!["phoneNumber"] = "+959700000000";
+        config["contact"]!["telegramUsername"] = "updated_handle";
+        config["contact"]!["whatsappNumber"] = "959700000000";
+        config["contact"]!["messengerPageId"] = "updated-page";
+        Assert.Equal(HttpStatusCode.OK, (await browser.PutAsJsonAsync("/api/admin/site-config", new
+        {
+            brandName = "Updated Print with Zwe", brandTagline = "Updated tagline", heroBadge = "Updated quality",
+            heroBadgeShort = "Updated prints", phoneNumber = "+959700000000", telegramUsername = "updated_handle",
+            whatsappNumber = "959700000000", messengerPageId = "updated-page"
+        })).StatusCode);
+        var published = (await visitor.GetFromJsonAsync<JsonObject>("/api/site-config"))!["config"]!;
+        Assert.Equal("Updated Print with Zwe", published["brand"]!["name"]!.GetValue<string>());
+        Assert.Equal("+959700000000", published["contact"]!["phoneNumber"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task SiteInformationRejectsInvalidLengthsWithoutChangingSavedValues()
+    {
+        using var browser = factory.Browser();
+        await Login(browser);
+        var tooLong = new string('x', 181);
+        var response = await browser.PutAsJsonAsync("/api/admin/site-config", new
+        {
+            brandName = "Valid", brandTagline = tooLong, heroBadge = "Valid", heroBadgeShort = "Valid",
+            phoneNumber = "+959700000000", telegramUsername = "valid", whatsappNumber = "", messengerPageId = ""
+        });
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var published = (await browser.GetFromJsonAsync<JsonObject>("/api/site-config"))!["config"]!;
+        Assert.NotEqual(tooLong, published["brand"]!["tagline"]!.GetValue<string>());
+    }
+
+    [Fact]
     public async Task PricingMigrationPreservesExistingProductsImagesAndAccounts()
     {
         var options = new DbContextOptionsBuilder<CatalogDb>()

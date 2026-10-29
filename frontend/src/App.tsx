@@ -7,6 +7,7 @@ import { AdminLoginPage } from "@/pages/admin/AdminLoginPage";
 import { AdminProductFormPage } from "@/pages/admin/AdminProductFormPage";
 import { AdminProductsPage } from "@/pages/admin/AdminProductsPage";
 import { AdminPricingPage } from "@/pages/admin/AdminPricingPage";
+import { AdminSiteSettingsPage } from "@/pages/admin/AdminSiteSettingsPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="products/new" element={<AdminProductFormPage />} />
             <Route path="products/:id" element={<AdminProductFormPage />} />
             <Route path="pricing" element={<AdminPricingPage />} />
+            <Route path="settings" element={<AdminSiteSettingsPage />} />
           </Route>
         </Routes>
       </Router>

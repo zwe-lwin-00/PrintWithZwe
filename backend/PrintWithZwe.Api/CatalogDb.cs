@@ -9,6 +9,7 @@ public sealed class CatalogDb(DbContextOptions<CatalogDb> options)
 {
     public DbSet<Product> Products => Set<Product>();
     public DbSet<PricingSettings> PricingSettings => Set<PricingSettings>();
+    public DbSet<SiteSettings> SiteSettings => Set<SiteSettings>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

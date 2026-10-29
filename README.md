@@ -37,6 +37,13 @@ fallbacks only; `VITE_PRICING_*` build overrides are no longer supported.
 CSRF validation and use the existing write limiter. Defaults match the original
 estimator until the first save.
 
+Open `/admin/settings` (the Site info tab) to change the public brand name,
+tagline, hero badges, phone number, Telegram username, WhatsApp number, and
+Messenger page ID. These values are stored in SQLite and are loaded publicly at
+`/api/site-config`; they never contain passwords, authenticator keys, or other
+secrets. The old `public/site-config.json` values remain safe fallbacks for
+offline development only.
+
 ### Upgrade an existing production installation
 
 This feature includes the additive `EstimatorPricing` EF migration. Deploy the

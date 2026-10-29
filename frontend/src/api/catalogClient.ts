@@ -1,5 +1,6 @@
 import type { LoginResult, Product, ProductImageUpload, ProductInput } from "@/types/product";
 import type { PricingConfig } from "@/types/config";
+import type { SiteConfig } from "@/types/config";
 
 let csrfToken: string | null = null;
 
@@ -57,6 +58,23 @@ export async function fetchPricing(admin = false): Promise<PricingConfig> {
 
 export async function savePricing(pricing: PricingConfig): Promise<PricingConfig> {
   return (await request<{ pricing: PricingConfig }>("/admin/pricing", "PUT", pricing)).pricing;
+}
+
+export async function fetchSiteConfig(admin = false): Promise<Pick<SiteConfig, "brand" | "contact">> {
+  return (await request<{ config: Pick<SiteConfig, "brand" | "contact"> }>(admin ? "/admin/site-config" : "/site-config")).config;
+}
+
+export async function saveSiteConfig(config: Pick<SiteConfig, "brand" | "contact">): Promise<Pick<SiteConfig, "brand" | "contact">> {
+  return (await request<{ config: Pick<SiteConfig, "brand" | "contact"> }>("/admin/site-config", "PUT", {
+    brandName: config.brand.name,
+    brandTagline: config.brand.tagline,
+    heroBadge: config.brand.heroBadge,
+    heroBadgeShort: config.brand.heroBadgeShort,
+    phoneNumber: config.contact.phoneNumber,
+    telegramUsername: config.contact.telegramUsername,
+    whatsappNumber: config.contact.whatsappNumber,
+    messengerPageId: config.contact.messengerPageId,
+  })).config;
 }
 
 export async function fetchAdminProducts(): Promise<Product[]> {

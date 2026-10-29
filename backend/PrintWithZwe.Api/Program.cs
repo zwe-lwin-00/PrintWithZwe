@@ -138,6 +138,7 @@ app.MapGet("/api/health", () => Results.Ok(new { ok = true }));
 app.MapAdminAuth();
 app.MapCatalog();
 app.MapPricing();
+app.MapSiteSettings();
 app.Run();
 
 public partial class Program;

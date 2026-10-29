@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calculator, LogOut, Package, Printer } from "lucide-react";
+import { ArrowLeft, Calculator, LogOut, Package, Printer, Settings } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/layout/Container";
 import { useAdminAuth } from "@/context/AdminAuthProvider";
@@ -69,6 +69,9 @@ export function AdminLayout() {
             </NavLink>
             <NavLink to="/admin/pricing" className={({ isActive }) => `inline-flex min-h-11 items-center gap-2 border-b-2 pb-3 text-sm font-medium ${isActive ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
               <Calculator className="h-4 w-4" />Pricing
+            </NavLink>
+            <NavLink to="/admin/settings" className={({ isActive }) => `inline-flex min-h-11 items-center gap-2 border-b-2 pb-3 text-sm font-medium ${isActive ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+              <Settings className="h-4 w-4" />Site info
             </NavLink>
           </nav>
           {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
