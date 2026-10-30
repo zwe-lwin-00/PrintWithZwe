@@ -9,6 +9,13 @@ fi
 
 root=$(git -C "$(dirname "$0")" rev-parse --show-toplevel)
 cd "$root"
+if [ ! -r /etc/printwithzwe-docker.env ]; then
+    printf 'Missing /etc/printwithzwe-docker.env. Complete Docker setup first.\n' >&2
+    exit 1
+fi
+set -a
+. /etc/printwithzwe-docker.env
+set +a
 if [ -n "$(git status --porcelain)" ]; then
     printf 'Repository has uncommitted changes. Commit or preserve them before deploying.\n' >&2
     exit 1
@@ -45,9 +52,9 @@ if ! grep -Eq '^PZW_BACKUP_MODE=docker$' /etc/printwithzwe-backup.env; then
     exit 1
 fi
 
-export PZW_UID="$(id -u printwithzwe)"
-export PZW_GID="$(getent group www-data | cut -d: -f3)"
-export PZW_IMAGE_TAG="$(git rev-parse --short=12 HEAD)"
+export PZW_UID="${PZW_UID:-$(id -u printwithzwe)}"
+export PZW_GID="${PZW_GID:-$(getent group www-data | cut -d: -f3)}"
+export PZW_IMAGE_TAG="${PZW_IMAGE_TAG:-$(git rev-parse --short=12 HEAD)}"
 compose=(docker compose --project-name "$project" -f "$root/compose.yaml")
 "${compose[@]}" config --quiet
 

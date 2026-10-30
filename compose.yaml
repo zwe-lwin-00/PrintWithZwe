@@ -11,13 +11,13 @@ services:
       - "80:8080"
       - "443:8443"
     volumes:
-      - /var/lib/printwithzwe/uploads:/srv/uploads:ro
-      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
-      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
-      - /var/lib/printwithzwe-acme:/var/www/acme:ro
+      - ${PZW_HOST_DATA:?Set PZW_HOST_DATA}/uploads:/srv/uploads:ro
+      - ${PZW_CERT_ROOT:?Set PZW_CERT_ROOT}/live:/etc/letsencrypt/live:ro
+      - ${PZW_CERT_ROOT}/archive:/etc/letsencrypt/archive:ro
+      - ${PZW_ACME_ROOT:?Set PZW_ACME_ROOT}:/var/www/acme:ro
     networks:
       internal_api:
-        ipv4_address: 172.30.42.2
+        ipv4_address: ${PZW_WEB_IP:?Set PZW_WEB_IP}
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=32m
@@ -48,12 +48,17 @@ services:
       dockerfile: backend/PrintWithZwe.Api/Dockerfile
     user: "${PZW_UID:?Set PZW_UID to the existing printwithzwe service user ID}:${PZW_GID:?Set PZW_GID to the existing www-data group ID}"
     environment:
-      ReverseProxy__TrustedProxy: 172.30.42.2
+      ReverseProxy__TrustedProxy: ${PZW_WEB_IP:?Set PZW_WEB_IP}
+      AllowedHosts: ${PZW_ALLOWED_HOSTS:?Set PZW_ALLOWED_HOSTS}
+      Uploads__MaxRequestBodyBytes: ${PZW_MAX_REQUEST_BODY_BYTES:-12582912}
+      Uploads__MaxBytesPerImage: ${PZW_MAX_IMAGE_BYTES:-2097152}
+      Uploads__MaxTotalBytes: ${PZW_MAX_TOTAL_IMAGE_BYTES:-8388608}
+      Uploads__MaxDimension: ${PZW_MAX_IMAGE_DIMENSION:-2048}
     volumes:
-      - /var/lib/printwithzwe:/var/lib/printwithzwe
+      - ${PZW_HOST_DATA}:/var/lib/printwithzwe
     networks:
       internal_api:
-        ipv4_address: 172.30.42.3
+        ipv4_address: ${PZW_API_IP:?Set PZW_API_IP}
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=32m
@@ -94,5 +99,5 @@ networks:
   internal_api:
     ipam:
       config:
-        - subnet: 172.30.42.0/29
-          gateway: 172.30.42.1
+        - subnet: ${PZW_NETWORK_SUBNET:?Set PZW_NETWORK_SUBNET}
+          gateway: ${PZW_NETWORK_GATEWAY:?Set PZW_NETWORK_GATEWAY}

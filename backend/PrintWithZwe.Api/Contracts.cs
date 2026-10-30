@@ -17,8 +17,8 @@ public sealed class ProductRequest
     [Required, StringLength(60)] public string Category { get; init; } = "Custom";
     public bool InStock { get; init; } = true;
     public bool Featured { get; init; }
-    [Required, MaxLength(6)] public string[] ImageUrls { get; init; } = [];
-    [Required, MaxLength(6)] public ImageUpload[] Images { get; init; } = [];
+    [Required, MaxLength(5)] public string[] ImageUrls { get; init; } = [];
+    [Required, MaxLength(5)] public ImageUpload[] Images { get; init; } = [];
 }
 
 public sealed record ImageUpload(string Name, string MimeType, string Data);

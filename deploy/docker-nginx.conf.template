@@ -17,31 +17,23 @@ http {
     uwsgi_temp_path /tmp/uwsgi;
     scgi_temp_path /tmp/scgi;
 
-    server {
-        listen 8080 default_server;
-        server_name _;
-        return 444;
-    }
+    server { listen 8080 default_server; server_name _; return 444; }
     server {
         listen 8080;
-        server_name okayselling.shop www.okayselling.shop;
+        server_name ${PZW_PRIMARY_DOMAIN} ${PZW_WWW_DOMAIN};
         location ^~ /.well-known/acme-challenge/ { root /var/www/acme; }
         location / { return 301 https://$host$request_uri; }
     }
-    server {
-        listen 8443 ssl default_server;
-        server_name _;
-        ssl_reject_handshake on;
-    }
+    server { listen 8443 ssl default_server; server_name _; ssl_reject_handshake on; }
     server {
         listen 8443 ssl;
-        server_name okayselling.shop www.okayselling.shop;
-        ssl_certificate /etc/letsencrypt/live/okayselling.shop/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/okayselling.shop/privkey.pem;
+        server_name ${PZW_PRIMARY_DOMAIN} ${PZW_WWW_DOMAIN};
+        ssl_certificate /etc/letsencrypt/live/${PZW_CERT_NAME}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/${PZW_CERT_NAME}/privkey.pem;
         ssl_protocols TLSv1.2 TLSv1.3;
         root /var/www/printwithzwe;
         index index.html;
-        client_max_body_size 12m;
+        client_max_body_size ${PZW_MAX_REQUEST_BODY};
         client_body_timeout 15s;
 
         add_header X-Content-Type-Options "nosniff" always;
@@ -52,7 +44,7 @@ http {
         add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests" always;
 
         location ^~ /api/ {
-            proxy_pass http://api:5000;
+            proxy_pass http://${PZW_API_PROXY_HOST}:5000;
             proxy_http_version 1.1;
             proxy_set_header Host $host;
             proxy_set_header X-Forwarded-For $remote_addr;
@@ -61,10 +53,7 @@ http {
             proxy_connect_timeout 5s;
             proxy_read_timeout 30s;
         }
-        location ~ "^/uploads/(?<image>[a-f0-9]{32}\.webp)$" {
-            alias /srv/uploads/$image;
-            expires 7d;
-        }
+        location ~ "^/uploads/(?<image>[a-f0-9]{32}\.webp)$" { alias /srv/uploads/$image; expires 7d; }
         location /uploads/ { return 404; }
         location ~ /\. { deny all; }
         location / { try_files $uri $uri/ /index.html; }

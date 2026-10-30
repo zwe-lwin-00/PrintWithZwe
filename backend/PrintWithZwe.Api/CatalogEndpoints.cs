@@ -51,8 +51,8 @@ public static class CatalogEndpoints
     private static async Task<IResult> SaveProduct(string? id, ProductRequest input,
         CatalogDb database, ImageStorage images, CancellationToken cancellation)
     {
-        if (!RequestValidation.IsValid(input) || input.ImageUrls.Length + input.Images.Length is < 1 or > 6)
-            return Results.BadRequest(new { ok = false, error = "Check product fields and include 1 to 6 photos." });
+        if (!RequestValidation.IsValid(input) || input.ImageUrls.Length + input.Images.Length is < 1 or > 5)
+            return Results.BadRequest(new { ok = false, error = "Check product fields and include 1 to 5 photos." });
 
         var product = id is null ? new Product() : await database.Products.Include(item => item.Images)
             .SingleOrDefaultAsync(item => item.Id == id, cancellation);

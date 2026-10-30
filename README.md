@@ -149,7 +149,7 @@ the internet. Data defaults to `backend/PrintWithZwe.Api/data/`, outside Git.
   `/api/auth/csrf`, sent as `X-CSRF-TOKEN`. POST and PUT accept JSON only.
 - Login has per-IP throttling and per-account lockout; writes are serialized
   and rejected with 429 when another write is running. SQLite uses WAL mode.
-- Uploads accept 1-6 JPEG, PNG or WebP photos, at most 2 MiB each and 8 MiB total.
+- Uploads accept 1-5 JPEG, PNG or WebP photos, at most 2 MiB each and 8 MiB total.
   Actual decoding, dimensions (maximum 2048 x 2048), animation checks, generated
   filenames, and WebP re-encoding are enforced on the server. Original metadata
   is not copied. One upload batch is processed at a time.

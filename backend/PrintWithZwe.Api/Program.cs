@@ -14,7 +14,7 @@ builder.WebHost.UseUrls(builder.Configuration["ASPNETCORE_URLS"] ?? "http://127.
 builder.WebHost.ConfigureKestrel(options =>
 {
 	options.AddServerHeader = false;
-	options.Limits.MaxRequestBodySize = 12 * 1024 * 1024;
+	options.Limits.MaxRequestBodySize = builder.Configuration.GetValue<long>("Uploads:MaxRequestBodyBytes", 12 * 1024 * 1024);
 	options.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(15);
 });
 var paths = new StoragePaths(Path.GetFullPath(builder.Configuration["Storage:Root"]

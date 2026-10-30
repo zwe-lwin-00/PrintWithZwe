@@ -2,14 +2,16 @@ using SkiaSharp;
 
 namespace PrintWithZwe.Api;
 
-public sealed class ImageStorage(StoragePaths paths)
+public sealed class ImageStorage(StoragePaths paths, IConfiguration configuration)
 {
-    private const int MaxBytes = 2 * 1024 * 1024;
+    private readonly int maxBytes = configuration.GetValue("Uploads:MaxBytesPerImage", 2 * 1024 * 1024);
+    private readonly int maxTotalBytes = configuration.GetValue("Uploads:MaxTotalBytes", 8 * 1024 * 1024);
+    private readonly int maxDimension = configuration.GetValue("Uploads:MaxDimension", 2048);
     private readonly SemaphoreSlim uploadGate = new(1, 1);
 
     public async Task<List<string>> SaveAsync(ImageUpload[] uploads, CancellationToken cancellation)
     {
-        if (uploads.Length > 6) throw new CatalogException("At most 6 photos are allowed.");
+        if (uploads.Length > 5) throw new CatalogException("At most 5 photos are allowed.");
         if (!await uploadGate.WaitAsync(0, cancellation))
             throw new CatalogException("An image upload is in progress. Please retry shortly.");
 
@@ -26,7 +28,7 @@ public sealed class ImageStorage(StoragePaths paths)
                 try { bytes = Convert.FromBase64String(upload.Data); }
                 catch (FormatException) { throw new CatalogException("Invalid image data."); }
                 totalBytes += bytes.Length;
-                if (bytes.Length > MaxBytes || totalBytes > 8 * 1024 * 1024)
+                if (bytes.Length > maxBytes || totalBytes > maxTotalBytes)
                     throw new CatalogException("Photos exceed the upload limit (2 MB each, 8 MB total).");
 
                 using var stream = new SKMemoryStream(bytes);
@@ -34,7 +36,7 @@ public sealed class ImageStorage(StoragePaths paths)
                 if (codec is null || codec.EncodedFormat is not (SKEncodedImageFormat.Jpeg or SKEncodedImageFormat.Png or SKEncodedImageFormat.Webp))
                     throw new CatalogException("Only JPEG, PNG and WebP photos are accepted.");
                 var info = codec.Info;
-                if (info.Width < 1 || info.Height < 1 || info.Width > 2048 || info.Height > 2048 || codec.FrameCount > 1)
+                if (info.Width < 1 || info.Height < 1 || info.Width > maxDimension || info.Height > maxDimension || codec.FrameCount > 1)
                     throw new CatalogException("Use a non-animated photo no larger than 2048 x 2048.");
                 using var bitmap = SKBitmap.Decode(codec);
                 if (bitmap is null) throw new CatalogException("The photo is corrupt or invalid.");

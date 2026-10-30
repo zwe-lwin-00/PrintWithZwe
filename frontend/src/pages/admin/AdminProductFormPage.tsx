@@ -77,8 +77,8 @@ export function AdminProductFormPage() {
   const handleFilesSelected = async (files: FileList | null) => {
     if (!files?.length) return;
     try {
-      if (form.imageUrls.length + pendingImages.length + files.length > 6) {
-        throw new Error("A product can have up to 6 photos.");
+      if (form.imageUrls.length + pendingImages.length + files.length > 5) {
+        throw new Error("A product can have up to 5 photos.");
       }
       const uploads = await Promise.all(Array.from(files).map(fileToImageUpload));
       setPendingImages((current) => [...current, ...uploads]);
@@ -253,7 +253,7 @@ export function AdminProductFormPage() {
               <ImagePlus className="h-6 w-6 text-muted-foreground" />
               <span className="text-sm font-medium">Choose images</span>
               <span className="text-xs text-muted-foreground">
-                JPEG, PNG or WebP. Up to 2 MB and 2048 x 2048 per photo.
+                iPhone photos supported. Up to 5 photos; resized to 2048px and 2 MB each.
               </span>
               <input
                 type="file"

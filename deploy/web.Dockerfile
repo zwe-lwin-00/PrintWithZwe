@@ -11,6 +11,8 @@ ARG PZW_GID=33
 RUN existing="$(awk -F: -v gid="$PZW_GID" '$3 == gid { print $1; exit }' /etc/group)" \
     && if [ -z "$existing" ]; then addgroup -g "$PZW_GID" -S pzwuploads; existing=pzwuploads; fi \
     && addgroup nginx "$existing"
-COPY deploy/docker-nginx.conf /etc/nginx/nginx.conf
+COPY deploy/docker-nginx.conf.template /etc/nginx/nginx.conf.template
+COPY deploy/docker-nginx-entrypoint.sh /docker-entrypoint.d/40-printwithzwe-envsubst.sh
+RUN chmod 0755 /docker-entrypoint.d/40-printwithzwe-envsubst.sh
 COPY --from=build /src/frontend/dist/ /var/www/printwithzwe/
 EXPOSE 8080 8443

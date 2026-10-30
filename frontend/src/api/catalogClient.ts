@@ -138,12 +138,71 @@ export function productToInput(product: Product): ProductInput {
 }
 
 export async function fileToImageUpload(file: File): Promise<ProductImageUpload> {
-  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 2 * 1024 * 1024) {
-    throw new Error("Choose JPEG, PNG or WebP photos up to 2 MB each.");
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    throw new Error("Use iPhone Most Compatible format, JPEG, PNG or WebP. HEIC/ProRAW is not supported by every browser.");
   }
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  const image = await decodeImage(file);
+  if (!image) throw new Error("The photo could not be decoded. Try iPhone Most Compatible format.");
+  const maxDimension = 2048;
+  const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(image.width * scale));
+  canvas.height = Math.max(1, Math.round(image.height * scale));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Your browser cannot process this photo.");
+  image.draw(context, canvas.width, canvas.height);
+  image.close();
+  let blob: Blob | null = null;
+  for (const quality of [0.86, 0.78, 0.68, 0.58, 0.48]) {
+    blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", quality));
+    if (blob && blob.size <= 2 * 1024 * 1024) break;
+  }
+  if (!blob || blob.size > 2 * 1024 * 1024) {
+    throw new Error("This photo is still larger than 2 MB after compression. Choose a smaller photo.");
+  }
+  const bytes = new Uint8Array(await blob.arrayBuffer());
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
-  return { name: file.name, mimeType: file.type, data: btoa(binary) };
+  return { name: file.name.replace(/\.[^.]+$/, ".webp"), mimeType: "image/webp", data: btoa(binary) };
+}
+
+type DecodedImage = {
+  width: number;
+  height: number;
+  close: () => void;
+  draw: (context: CanvasRenderingContext2D, width: number, height: number) => void;
+};
+
+async function decodeImage(file: File): Promise<DecodedImage | null> {
+  if (typeof createImageBitmap === "function") {
+    const bitmap = await createImageBitmap(file).catch(() => null);
+    if (bitmap) {
+      return {
+        width: bitmap.width,
+        height: bitmap.height,
+        close: () => bitmap.close(),
+        draw: (context, width, height) => context.drawImage(bitmap, 0, 0, width, height),
+      };
+    }
+  }
+
+  const url = URL.createObjectURL(file);
+  try {
+    const image = await new Promise<HTMLImageElement | null>((resolve) => {
+      const element = new Image();
+      element.onload = () => resolve(element);
+      element.onerror = () => resolve(null);
+      element.src = url;
+    });
+    if (!image) return null;
+    return {
+      width: image.naturalWidth,
+      height: image.naturalHeight,
+      close: () => undefined,
+      draw: (context, width, height) => context.drawImage(image, 0, 0, width, height),
+    };
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
