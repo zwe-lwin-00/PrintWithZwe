@@ -86,8 +86,8 @@ services:
     image: certbot/certbot:v3.0.1
     profiles: [tools]
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /var/lib/printwithzwe-acme:/var/www/acme
+      - ${PZW_CERT_ROOT:?Set PZW_CERT_ROOT}:/etc/letsencrypt
+      - ${PZW_ACME_ROOT:?Set PZW_ACME_ROOT}:/var/www/acme
     cap_drop:
       - ALL
     cap_add:

@@ -329,8 +329,7 @@ the Compose file in `/opt/printwithzwe-stack`, install
 install the accompanying renewal service and timer. Run a dry run first:
 
 ```bash
-docker compose --profile tools run --rm --no-deps certbot renew --dry-run --webroot --webroot-path /var/www/acme
-docker compose exec -T web nginx -s reload
+/usr/local/sbin/printwithzwe-cert-renew --dry-run
 systemctl enable --now printwithzwe-cert-renew.timer
 ```
 
@@ -361,20 +360,56 @@ git pull --ff-only
 bash deploy/docker-deploy.sh
 ```
 
-The command requires a clean repository and the existing Docker stack. It
+The command requires a clean repository and a healthy existing Docker stack. It
 builds the API and web images **sequentially on the VPS**, tagged with the current
-Git commit, runs the configured encrypted backup, preserves the prior
-Compose configuration, updates the containers, and checks HTTPS health. Builds
+Git commit and a UTC timestamp, runs the configured encrypted backup, preserves
+the prior images and Compose configuration, updates the containers, and checks HTTPS health. Builds
 can temporarily use substantial memory on the 2 GB VPS; monitor memory and run
 the update during a maintenance window. It does not configure backups for you.
 You must test backup restoration separately before relying on this procedure.
 
 For lower VPS build load, build both images for `linux/amd64` on your computer
 using `git rev-parse --short=12 HEAD` as their tag, transfer and `docker load`
-them, then run `PZW_SKIP_BUILD=1 bash deploy/docker-deploy.sh`. The script
-checks both images exist. If an update or health check fails, it reports the
-saved configuration location. Inspect logs and use the rollback guidance above;
-do not blindly restore a database after customers may have submitted changes.
+them, then run `PZW_RELEASE_TAG=$(git rev-parse --short=12 HEAD) PZW_SKIP_BUILD=1 bash deploy/docker-deploy.sh`.
+Use a new tag for each release. The script checks both images exist and preserves
+all settings in `/etc/printwithzwe-docker.env`. If an update or health check fails,
+it saves container logs in the reported `previous-*` directory and attempts to
+restore the prior Docker images and configuration, not the legacy host services.
+It does not restore the database; incompatible schema changes need a separately
+planned recovery. Build or backup failures leave the running containers alone.
+Successful updates also install the repository's backup and certificate-renewal
+scripts into `/usr/local/sbin`; keep their existing systemd timers enabled.
+
+Docker backups verify API readiness before stopping it, so they do not interrupt
+startup migrations. If a previously interrupted SQLite migration leaves startup
+stalled, inspect `__EFMigrationsLock`. Only clear a confirmed stale lock after
+stopping every API process and making a verified database backup; never clear it
+while a migration could still be running.
+
+### Deployment regression checks
+
+From a Windows PowerShell repository terminal with Docker Desktop running:
+
+```powershell
+npm run build
+dotnet test backend/PrintWithZwe.Api.Tests/PrintWithZwe.Api.Tests.csproj
+docker build -f backend/PrintWithZwe.Api/Dockerfile -t printwithzwe-api:verification .
+docker build -f deploy/web.Dockerfile --build-arg PZW_GID=33 -t printwithzwe-web:verification .
+docker compose --env-file deploy/docker.env.example config --quiet
+docker run --rm --user 0:0 -e PZW_TEST_CONTAINER=1 --entrypoint /bin/bash --mount "type=bind,source=${PWD},target=/repo,readonly" printwithzwe-api:verification /repo/deploy/docker-operations.test.sh
+./deploy/docker-stack.test.ps1
+```
+
+The operational tests mock external commands inside a disposable container and
+cover refusal checks, failed builds/backups/updates, Docker rollback, retained
+settings, backup readiness, and renewal/reload behavior. Never run this shell
+test on the VPS: it creates fixtures at system paths inside the test container.
+The stack smoke test runs real read-only containers with disposable TLS, checks
+HTTPS API/SPA/uploads, reloads Nginx, and checks restart/recreation with persistent
+data. It uses local ports 18080/18443 and subnet `172.29.231.0/29`, which must be
+free, and removes only its own temporary containers, network and files.
+These tests do not verify public ACME renewal, VPS reboot recovery, or a full
+deployment on the real server; those require separate production verification.
 
 ## Publish from Windows (systemd option)
 

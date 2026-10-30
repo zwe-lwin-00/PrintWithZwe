@@ -12,6 +12,11 @@ case "$mode" in
     docker)
         command -v docker >/dev/null
         [ "$(docker inspect -f '{{.State.Running}}' printwithzwe-api)" = true ]
+        api_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' printwithzwe-api)
+        allowed_hosts=$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' printwithzwe-api | sed -n 's/^AllowedHosts=//p')
+        api_host=${allowed_hosts%%;*}
+        curl -fsS --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 \
+            -H "Host: ${api_host:-localhost}" "http://$api_ip:5000/api/health" >/dev/null
         ;;
     *) printf 'Invalid PZW_BACKUP_MODE: use systemd or docker\n' >&2; exit 1 ;;
 esac

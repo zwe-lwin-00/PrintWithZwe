@@ -51,22 +51,59 @@ if ! grep -Eq '^PZW_BACKUP_MODE=docker$' /etc/printwithzwe-backup.env; then
     printf 'Set PZW_BACKUP_MODE=docker in the root-only backup configuration.\n' >&2
     exit 1
 fi
+curl -fsS --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 "https://$PZW_PRIMARY_DOMAIN/api/health" >/dev/null
 
 export PZW_UID="${PZW_UID:-$(id -u printwithzwe)}"
 export PZW_GID="${PZW_GID:-$(getent group www-data | cut -d: -f3)}"
-export PZW_IMAGE_TAG="${PZW_IMAGE_TAG:-$(git rev-parse --short=12 HEAD)}"
+export PZW_IMAGE_TAG="${PZW_RELEASE_TAG:-$(git rev-parse --short=12 HEAD)-$(date -u +%Y%m%dT%H%M%SZ)}"
 compose=(docker compose --project-name "$project" -f "$root/compose.yaml")
 "${compose[@]}" config --quiet
+for script in backup.sh docker-cert-renew.sh; do
+    bash -n "$root/deploy/$script"
+done
+
+state=/opt/printwithzwe-stack
+previous="$state/previous-$(date -u +%Y%m%dT%H%M%SZ)"
+install -d -m 0700 "$previous"
+cp -a "$state/compose.yaml" "$previous/compose.yaml"
+cp -a /etc/printwithzwe-docker.env "$previous/docker.env"
+cp -a /usr/local/sbin/printwithzwe-backup "$previous/backup.sh"
+if [ -f /usr/local/sbin/printwithzwe-cert-renew ]; then
+    cp -a /usr/local/sbin/printwithzwe-cert-renew "$previous/cert-renew.sh"
+fi
+api_image=$(docker inspect -f '{{.Image}}' printwithzwe-api)
+web_image=$(docker inspect -f '{{.Image}}' printwithzwe-web)
+api_reference=$(docker inspect -f '{{.Config.Image}}' printwithzwe-api)
+web_reference=$(docker inspect -f '{{.Config.Image}}' printwithzwe-web)
 
 rollback() {
     status=$?
     if [ "$status" -ne 0 ]; then
-        printf 'Deployment failed; restoring the previous host services.\n' >&2
-        "${compose[@]}" down >/dev/null 2>&1 || true
-        systemctl start printwithzwe nginx >/dev/null 2>&1 || true
+        trap - EXIT
+        "${compose[@]}" logs --no-color --tail 100 > "$previous/failed-containers.log" 2>&1 || true
+        printf 'Deployment failed; restoring the previous Docker release. Logs: %s/failed-containers.log\n' "$previous" >&2
+        if (
+            docker tag "$api_image" "$api_reference" || exit 1
+            docker tag "$web_image" "$web_reference" || exit 1
+            cp -a "$previous/docker.env" /etc/printwithzwe-docker.env || exit 1
+            cp -a "$previous/compose.yaml" "$state/compose.yaml" || exit 1
+            cp -a "$previous/backup.sh" /usr/local/sbin/printwithzwe-backup || exit 1
+            if [ -f "$previous/cert-renew.sh" ]; then
+                cp -a "$previous/cert-renew.sh" /usr/local/sbin/printwithzwe-cert-renew || exit 1
+            fi
+            set -a
+            . /etc/printwithzwe-docker.env || exit 1
+            set +a
+            docker compose --project-name "$project" --project-directory "$root" -f "$state/compose.yaml" up -d --no-build --force-recreate || exit 1
+            curl -fsS --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 "https://$PZW_PRIMARY_DOMAIN/api/health" >/dev/null
+        ); then
+            printf 'Previous Docker release is healthy.\n' >&2
+        else
+            printf 'Docker rollback failed. Inspect %s before further changes.\n' "$previous" >&2
+        fi
     fi
+    exit "$status"
 }
-trap rollback EXIT
 
 if [ "${PZW_SKIP_BUILD:-0}" = 1 ]; then
     docker image inspect "printwithzwe-api:$PZW_IMAGE_TAG" "printwithzwe-web:$PZW_IMAGE_TAG" >/dev/null
@@ -79,25 +116,24 @@ fi
 printf 'Running the configured encrypted backup before deployment.\n'
 systemctl start printwithzwe-backup.service
 
-state=/opt/printwithzwe-stack
-previous="$state/previous-$(date -u +%Y%m%dT%H%M%SZ)"
-install -d -m 0700 "$previous"
-cp -a "$state/compose.yaml" "$previous/compose.yaml"
-cp -a /etc/printwithzwe-docker.env "$previous/docker.env"
-
 printf 'Starting release %s.\n' "$PZW_IMAGE_TAG"
+trap rollback EXIT
 if ! "${compose[@]}" up -d --no-build; then
     printf 'Container update failed. Inspect logs; previous configuration is saved in %s.\n' "$previous" >&2
     exit 1
 fi
-if ! curl -fsS --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 https://okayselling.shop/api/health >/dev/null; then
+if ! curl -fsS --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 "https://$PZW_PRIMARY_DOMAIN/api/health" >/dev/null; then
     printf 'Health check failed. Inspect logs; previous configuration is saved in %s. Do not restore the database blindly.\n' "$previous" >&2
     exit 1
 fi
 
 install -m 0600 "$root/compose.yaml" "$state/compose.yaml"
+install -m 0750 "$root/deploy/backup.sh" /usr/local/sbin/printwithzwe-backup
+install -m 0750 "$root/deploy/docker-cert-renew.sh" /usr/local/sbin/printwithzwe-cert-renew
 env_file=$(mktemp /etc/printwithzwe-docker.env.XXXXXX)
-printf 'PZW_UID=%s\nPZW_GID=%s\nPZW_IMAGE_TAG=%s\n' "$PZW_UID" "$PZW_GID" "$PZW_IMAGE_TAG" > "$env_file"
+cp /etc/printwithzwe-docker.env "$env_file"
+sed -i '/^PZW_IMAGE_TAG=/d' "$env_file"
+printf '\nPZW_IMAGE_TAG=%s\n' "$PZW_IMAGE_TAG" >> "$env_file"
 chmod 0600 "$env_file"
 mv "$env_file" /etc/printwithzwe-docker.env
 trap - EXIT
