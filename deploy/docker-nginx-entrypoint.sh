@@ -9,4 +9,4 @@ set -eu
 
 envsubst '${PZW_PRIMARY_DOMAIN} ${PZW_WWW_DOMAIN} ${PZW_CERT_NAME} ${PZW_API_PROXY_HOST} ${PZW_MAX_REQUEST_BODY}' \
   < /etc/nginx/nginx.conf.template > /tmp/nginx.conf
-cp /tmp/nginx.conf /etc/nginx/nginx.conf
+exec nginx -c /tmp/nginx.conf -g 'daemon off;'
