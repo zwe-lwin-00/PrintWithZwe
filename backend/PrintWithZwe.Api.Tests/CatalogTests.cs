@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,8 @@ namespace PrintWithZwe.Api.Tests;
 public sealed class ApiFactory : WebApplicationFactory<Program>
 {
     public string EnvironmentName { get; init; } = "Development";
+    public string? TrustedProxy { get; init; }
+    public bool SimulateRemoteAddress { get; init; }
     public string DataRoot { get; } = Path.Combine(Path.GetTempPath(), "pzw-tests-" + Guid.NewGuid().ToString("N"));
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -25,6 +29,9 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         builder.UseEnvironment(EnvironmentName);
         builder.UseSetting("Storage:Root", DataRoot);
         builder.UseSetting("Logging:LogLevel:Default", "Warning");
+        if (TrustedProxy is not null) builder.UseSetting("ReverseProxy:TrustedProxy", TrustedProxy);
+        if (SimulateRemoteAddress)
+            builder.ConfigureServices(services => services.AddTransient<IStartupFilter, ProxyTestStartupFilter>());
     }
 
     public HttpClient Browser() => CreateClient(new WebApplicationFactoryClientOptions
@@ -248,6 +255,31 @@ public sealed class CatalogTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task DockerProxyTrustIsRestrictedToConfiguredGateway()
+    {
+        await using var container = new ApiFactory
+        {
+            EnvironmentName = "Production", TrustedProxy = "172.30.42.2", SimulateRemoteAddress = true
+        };
+        using var browser = container.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            BaseAddress = new Uri("http://localhost"), AllowAutoRedirect = false
+        });
+        browser.DefaultRequestHeaders.Add("X-Forwarded-Proto", "https");
+        browser.DefaultRequestHeaders.Add("X-Test-Remote", "172.30.42.4");
+        Assert.Equal(HttpStatusCode.BadRequest, (await browser.GetAsync("/api/products")).StatusCode);
+        browser.DefaultRequestHeaders.Remove("X-Test-Remote");
+        browser.DefaultRequestHeaders.Add("X-Test-Remote", "172.30.42.2");
+        Assert.Equal(HttpStatusCode.OK, (await browser.GetAsync("/api/products")).StatusCode);
+        using var cookieResponse = await browser.GetAsync("/api/auth/csrf");
+        Assert.Contains(cookieResponse.Headers.GetValues("Set-Cookie"), cookie =>
+            cookie.StartsWith("__Host-pzw-csrf=") && cookie.Contains("secure", StringComparison.OrdinalIgnoreCase));
+        await container.DisposeAsync();
+        Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
+        Directory.Delete(container.DataRoot, recursive: true);
+    }
+
+    [Fact]
     public async Task PublicCatalogAndHealthAreAccessibleButAdminIsNot()
     {
         using var browser = factory.Browser();
@@ -449,4 +481,17 @@ public sealed class CatalogTests : IAsyncLifetime
             ["name"] = "photo.png", ["mimeType"] = "image/png", ["data"] = Convert.ToBase64String(encoded.ToArray())
         };
     }
+}
+
+public sealed class ProxyTestStartupFilter : IStartupFilter
+{
+    public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next) => app =>
+    {
+        app.Use(async (context, nextMiddleware) =>
+        {
+            context.Connection.RemoteIpAddress = IPAddress.Parse(context.Request.Headers["X-Test-Remote"].ToString());
+            await nextMiddleware();
+        });
+        next(app);
+    };
 }

@@ -1,0 +1,11 @@
+[Unit]
+Description=Renew Print with Zwe container TLS certificates
+After=docker.service network-online.target
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/printwithzwe-docker.env
+ExecStart=/usr/local/sbin/printwithzwe-cert-renew
+UMask=0077

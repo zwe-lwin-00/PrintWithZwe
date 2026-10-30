@@ -1,0 +1,88 @@
+services:
+  web:
+    image: printwithzwe-web:${PZW_IMAGE_TAG:?Set PZW_IMAGE_TAG to the tested image version}
+    container_name: printwithzwe-web
+    build:
+      context: .
+      dockerfile: deploy/web.Dockerfile
+      args:
+        PZW_GID: ${PZW_GID:?Set PZW_GID to the existing www-data group ID}
+    ports:
+      - "80:8080"
+      - "443:8443"
+    volumes:
+      - /var/lib/printwithzwe/uploads:/srv/uploads:ro
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+      - /var/lib/printwithzwe-acme:/var/www/acme:ro
+    networks:
+      internal_api:
+        ipv4_address: 172.30.42.2
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    mem_limit: 128m
+    restart: unless-stopped
+    depends_on:
+      - api
+
+  api:
+    image: printwithzwe-api:${PZW_IMAGE_TAG:?Set PZW_IMAGE_TAG to the tested image version}
+    container_name: printwithzwe-api
+    build:
+      context: .
+      dockerfile: backend/PrintWithZwe.Api/Dockerfile
+    user: "${PZW_UID:?Set PZW_UID to the existing printwithzwe service user ID}:${PZW_GID:?Set PZW_GID to the existing www-data group ID}"
+    environment:
+      ReverseProxy__TrustedProxy: 172.30.42.2
+    volumes:
+      - /var/lib/printwithzwe:/var/lib/printwithzwe
+    networks:
+      internal_api:
+        ipv4_address: 172.30.42.3
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    mem_limit: 512m
+    restart: unless-stopped
+    stop_grace_period: 30s
+
+  certbot:
+    image: certbot/certbot:v3.0.1
+    profiles: [tools]
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/printwithzwe-acme:/var/www/acme
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - NET_BIND_SERVICE
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+
+networks:
+  internal_api:
+    ipam:
+      config:
+        - subnet: 172.30.42.0/29
+          gateway: 172.30.42.1

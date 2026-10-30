@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using System.Net;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -59,6 +60,13 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
 	options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 	options.ForwardLimit = 1;
+	var trustedProxy = builder.Configuration["ReverseProxy:TrustedProxy"];
+	if (!string.IsNullOrWhiteSpace(trustedProxy))
+	{
+		if (!IPAddress.TryParse(trustedProxy, out var address))
+			throw new InvalidOperationException("ReverseProxy:TrustedProxy must be a valid IP address.");
+		options.KnownProxies.Add(address);
+	}
 });
 builder.Services.AddRateLimiter(options =>
 {

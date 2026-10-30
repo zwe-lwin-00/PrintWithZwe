@@ -1,0 +1,12 @@
+.git
+**/bin
+**/obj
+**/node_modules
+**/data
+**/.env
+**/.env.*
+**/*.db
+**/*.db-*
+artifacts
+.tools
+frontend/dist

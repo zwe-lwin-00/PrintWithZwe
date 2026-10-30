@@ -157,8 +157,10 @@ the internet. Data defaults to `backend/PrintWithZwe.Api/data/`, outside Git.
   existing image URLs. Archived products disappear from public listing; already
   published image URLs remain public. Removed images are retained on disk for
   recovery, so storage usage needs monitoring and deliberate cleanup.
-- Nginx forwards only the actual client address and scheme; ASP.NET Core trusts
-  only its default loopback proxy networks. No wildcard CORS is enabled.
+- Nginx forwards only the actual client address and scheme. ASP.NET Core trusts
+  its default loopback proxies and, only in Docker mode, the explicitly configured
+  bridge gateway. No wildcard CORS is enabled. Never publish port 5000 publicly
+  or add untrusted containers to the API network.
 - Database, authentication keys and upload metadata are not public files.
   Data-protection keys and authenticator secrets depend on filesystem protection
   at rest; they are not automatically encrypted on the VPS disk. Encrypt backups
@@ -199,7 +201,147 @@ Integration tests use isolated temporary SQLite databases. They cover MFA login,
 CSRF, authorization, rate limits, valid/invalid uploads, updates, archiving, and
 logout. Test accounts are not installed into your local or production database.
 
-## Publish from Windows
+## Docker option
+
+Docker Compose runs Nginx (with the built React website) and the ASP.NET Core API
+as separate containers. The API has no published port; only Nginx publishes 80
+and 443. SQLite, uploaded images and authentication keys remain in the existing
+host directory `/var/lib/printwithzwe`. Nginx mounts only `uploads` read-only.
+TLS certificates remain under `/etc/letsencrypt`; ACME challenges use the host
+directory `/var/lib/printwithzwe-acme`. These directories must not be baked into
+images or deleted when containers are replaced. Data-protection keys and TOTP
+secrets require restricted permissions and encrypted off-server backups.
+
+The API uses the existing `printwithzwe` UID and `www-data` GID, with a read-only
+root filesystem, no Linux capabilities, umask 077, 512 MiB memory and 100 task
+limits. Nginx has a read-only root filesystem, a 128 MiB memory limit and only the
+capabilities needed to initialize temporary directories and drop privileges.
+Nginx listens on unprivileged ports inside the container.
+
+The private Docker subnet `172.30.42.0/29` gives Nginx `172.30.42.2`, the only
+additional trusted forwarded-header proxy for the API, and the API `172.30.42.3`.
+Check for subnet conflicts before deployment. Never attach untrusted containers
+to this network, and do not expose the API port. Docker administrator access is
+root-equivalent, and Docker-published ports can bypass UFW. Check both VPS-provider
+and host firewall behavior before and after the switch.
+
+### Build a versioned image on Windows
+
+Use Docker Desktop with the Linux engine and build for the VPS's x86-64 CPU:
+
+```powershell
+docker build --platform linux/amd64 -f backend/PrintWithZwe.Api/Dockerfile -t printwithzwe-api:release-1 .
+docker build --platform linux/amd64 --build-arg PZW_GID=33 -f deploy/web.Dockerfile -t printwithzwe-web:release-1 .
+New-Item -ItemType Directory -Force artifacts | Out-Null
+docker save -o artifacts/printwithzwe-images-release-1.tar printwithzwe-api:release-1 printwithzwe-web:release-1
+```
+
+Use the target VPS's actual `www-data` group ID instead of 33 if different: the
+web image is built with that group to read uploads. Use a unique tag per release.
+Test both images and run backend tests before deploying. Transfer the image
+archive, `compose.yaml`, and the reviewed `deploy/` scripts to the VPS; keep
+production data separate.
+
+### First cutover on the VPS
+
+Do not perform this automatically. First configure and test an encrypted
+off-server backup and restore, and verify provider-console access. Confirm
+Docker Engine and Compose are installed from Docker's official Ubuntu
+instructions; installation and firewall changes require review. Keep the
+existing systemd unit available for rollback.
+
+After transferring the image to `/root/printwithzwe-images-release-1.tar` and
+the Compose file to `/opt/printwithzwe-stack/compose.yaml`, set these values in
+your VPS SSH session:
+
+```bash
+cd /opt/printwithzwe-stack
+export PZW_UID="$(id -u printwithzwe)"
+export PZW_GID="$(getent group www-data | cut -d: -f3)"
+export PZW_IMAGE_TAG=release-1
+docker load -i /root/printwithzwe-images-release-1.tar
+docker compose config --quiet
+```
+
+Inspect `/var/lib/printwithzwe` ownership and permissions before starting: the
+database and keys must be owned by `printwithzwe`, keys must remain private,
+and the uploads directory and images must be accessible to the web image's
+configured group. Do not copy a local test database to production. Back up the
+database, uploads, keys, certificate files, and current Nginx configuration with
+the documented encrypted off-server backup process. Store certificate private
+keys securely. Verify existing certificate symlinks under `live/` point into
+`archive/`; the web container mounts both read-only.
+
+Stop the existing API only during the approved cutover, then start the container:
+
+```bash
+install -d -m 0755 /var/lib/printwithzwe-acme
+systemctl stop printwithzwe nginx
+docker compose up -d --no-build
+docker logs --tail 40 printwithzwe-api
+docker logs --tail 40 printwithzwe-web
+curl -f https://okayselling.shop/api/health
+curl -f https://okayselling.shop/api/products
+```
+
+Stop if any step fails; inspect logs without posting secrets. Test an HTTPS admin
+login, image upload, public image, HTTP-to-HTTPS redirect, and client IP rate
+limiting before completing cutover. After validation, disable the old systemd API
+and host Nginx services so they cannot compete for ports on reboot. Keep the old
+service and Nginx configuration for rollback.
+
+For rollback, stop the Docker container (`docker compose down`, never `-v`),
+then start the previous systemd API and host Nginx services. Database migrations may be irreversible:
+if the new release changed the schema, restore its matching pre-release SQLite
+backup before starting the old version. Restore uploads and keys only from a
+coherent tested backup if necessary. Do not blindly overwrite existing state.
+
+After cutover, update the installed backup script from `deploy/backup.sh` and set
+`PZW_BACKUP_MODE=docker` in the root-only `/etc/printwithzwe-backup.env`; otherwise
+the backup will refuse to run when the systemd API is stopped. The Docker backup
+briefly stops `printwithzwe-api`, snapshots the SQLite database, images, and keys,
+then restarts it before encrypted off-server transfer. Test the backup and an
+independent restore before relying on the timer. Removing containers or images
+must never delete `/var/lib/printwithzwe` or backup files.
+
+For admin creation or MFA reset in Docker, use an interactive `docker exec` as
+the container's service user and set `umask 077`; never enter secrets in chat or
+shell arguments. Existing production administrators and MFA keys stay in the
+mounted database; do not create a replacement account during cutover.
+
+### Certificate renewal and a new VPS
+
+The `certbot` Compose service is a one-off tool using the shared ACME webroot;
+it must not publish port 80 while Nginx is running. Set `PZW_UID`, `PZW_GID` and
+`PZW_IMAGE_TAG` in the root-owned `/etc/printwithzwe-docker.env` (mode 0600), put
+the Compose file in `/opt/printwithzwe-stack`, install
+`deploy/docker-cert-renew.sh` as `/usr/local/sbin/printwithzwe-cert-renew`, and
+install the accompanying renewal service and timer. Run a dry run first:
+
+```bash
+docker compose --profile tools run --rm --no-deps certbot renew --dry-run --webroot --webroot-path /var/www/acme
+docker compose exec -T web nginx -s reload
+systemctl enable --now printwithzwe-cert-renew.timer
+```
+
+This renewal path must be tested on the real VPS; certificate issuance and public
+ACME challenges cannot be proven by local self-signed tests. Disable the old
+host Certbot timer only after this timer succeeds, so two renewal managers do not
+race. Monitor timer and certificate failures.
+
+On a new VPS without an existing certificate, point both domain names at the new
+server and, before starting `web`, issue a certificate with the Certbot container
+in standalone mode using a temporary port mapping (`docker compose --profile
+tools run --rm -p 80:80 certbot certonly --standalone -d okayselling.shop -d
+www.okayselling.shop`). Port 80 must be free and reachable. Complete Certbot's
+email and terms prompts privately. Then start Compose, switch renewal to webroot,
+and verify renewal with the dry run above. Alternatively restore valid certificate
+files securely; never commit them. For a different domain, update Nginx server
+names and certificate paths, the API's allowed hosts, DNS, and the renewal command
+before deploying. Keep the old VPS online until HTTPS, data restoration and backup
+recovery are verified.
+
+## Publish from Windows (systemd option)
 
 Build the Linux backend locally to avoid SDK/build memory pressure on the VPS:
 
