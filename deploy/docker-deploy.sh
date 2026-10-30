@@ -58,6 +58,16 @@ export PZW_IMAGE_TAG="${PZW_IMAGE_TAG:-$(git rev-parse --short=12 HEAD)}"
 compose=(docker compose --project-name "$project" -f "$root/compose.yaml")
 "${compose[@]}" config --quiet
 
+rollback() {
+    status=$?
+    if [ "$status" -ne 0 ]; then
+        printf 'Deployment failed; restoring the previous host services.\n' >&2
+        "${compose[@]}" down >/dev/null 2>&1 || true
+        systemctl start printwithzwe nginx >/dev/null 2>&1 || true
+    fi
+}
+trap rollback EXIT
+
 if [ "${PZW_SKIP_BUILD:-0}" = 1 ]; then
     docker image inspect "printwithzwe-api:$PZW_IMAGE_TAG" "printwithzwe-web:$PZW_IMAGE_TAG" >/dev/null
 else
@@ -90,4 +100,5 @@ env_file=$(mktemp /etc/printwithzwe-docker.env.XXXXXX)
 printf 'PZW_UID=%s\nPZW_GID=%s\nPZW_IMAGE_TAG=%s\n' "$PZW_UID" "$PZW_GID" "$PZW_IMAGE_TAG" > "$env_file"
 chmod 0600 "$env_file"
 mv "$env_file" /etc/printwithzwe-docker.env
+trap - EXIT
 printf 'Release %s is healthy. Verify login, products, images and backup monitoring.\n' "$PZW_IMAGE_TAG"

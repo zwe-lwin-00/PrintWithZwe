@@ -7,6 +7,12 @@ services:
       dockerfile: deploy/web.Dockerfile
       args:
         PZW_GID: ${PZW_GID:?Set PZW_GID to the existing www-data group ID}
+    environment:
+      PZW_PRIMARY_DOMAIN: ${PZW_PRIMARY_DOMAIN:?Set PZW_PRIMARY_DOMAIN}
+      PZW_WWW_DOMAIN: ${PZW_WWW_DOMAIN:?Set PZW_WWW_DOMAIN}
+      PZW_CERT_NAME: ${PZW_CERT_NAME:?Set PZW_CERT_NAME}
+      PZW_API_PROXY_HOST: ${PZW_API_PROXY_HOST:?Set PZW_API_PROXY_HOST}
+      PZW_MAX_REQUEST_BODY: ${PZW_MAX_REQUEST_BODY:-12m}
     ports:
       - "80:8080"
       - "443:8443"
