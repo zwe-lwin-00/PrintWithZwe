@@ -37,7 +37,7 @@ if [ ! -f /etc/printwithzwe-docker.env ] || [ ! -f /opt/printwithzwe-stack/compo
     exit 1
 fi
 if [ ! -f /etc/printwithzwe-backup.env ] || [ ! -x /usr/local/sbin/printwithzwe-backup ]; then
-    printf 'The off-server backup is not configured. Deployment was not started.\n' >&2
+    printf 'The encrypted backup is not configured. Deployment was not started.\n' >&2
     exit 1
 fi
 if ! grep -Eq '^PZW_BACKUP_MODE=docker$' /etc/printwithzwe-backup.env; then
@@ -59,7 +59,7 @@ else
     "${compose[@]}" build web
 fi
 
-printf 'Running the encrypted off-server backup before deployment.\n'
+printf 'Running the configured encrypted backup before deployment.\n'
 systemctl start printwithzwe-backup.service
 
 state=/opt/printwithzwe-stack

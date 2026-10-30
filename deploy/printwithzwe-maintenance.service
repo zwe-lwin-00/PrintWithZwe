@@ -1,0 +1,10 @@
+[Unit]
+Description=Clean old package cache and archived system journals
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/apt-get -y autoclean
+ExecStart=/usr/bin/journalctl --rotate
+ExecStart=/usr/bin/journalctl --vacuum-size=200M --vacuum-time=30d
+Nice=10
+IOSchedulingClass=idle

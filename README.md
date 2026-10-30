@@ -203,6 +203,13 @@ logout. Test accounts are not installed into your local or production database.
 
 ## Docker option
 
+Container logs rotate at 10 MiB per file, keeping at most three files per service.
+The optional `printwithzwe-maintenance.timer` runs weekly to remove obsolete APT
+cache packages and rotate/vacuum archived system journals to 200 MiB or 30 days.
+It does not delete database files, uploads, certificates, backups, Docker images,
+containers, or volumes. Backup snapshots are retained until a deliberate
+retention policy is chosen. Monitor free disk and backup failures separately.
+
 Docker Compose runs Nginx (with the built React website) and the ASP.NET Core API
 as separate containers. The API has no published port; only Nginx publishes 80
 and 443. SQLite, uploaded images and authentication keys remain in the existing
@@ -210,7 +217,8 @@ host directory `/var/lib/printwithzwe`. Nginx mounts only `uploads` read-only.
 TLS certificates remain under `/etc/letsencrypt`; ACME challenges use the host
 directory `/var/lib/printwithzwe-acme`. These directories must not be baked into
 images or deleted when containers are replaced. Data-protection keys and TOTP
-secrets require restricted permissions and encrypted off-server backups.
+secrets require restricted permissions and encrypted backups. A backup stored
+only on the VPS cannot recover data after the VPS itself is lost.
 
 The API uses the existing `printwithzwe` UID and `www-data` GID, with a read-only
 root filesystem, no Linux capabilities, umask 077, 512 MiB memory and 100 task
@@ -245,7 +253,8 @@ production data separate.
 ### First cutover on the VPS
 
 Do not perform this automatically. First configure and test an encrypted
-off-server backup and restore, and verify provider-console access. Confirm
+backup and restore, and verify provider-console access. An independently stored
+backup is recommended because a VPS-local backup shares the VPS's failure risk. Confirm
 Docker Engine and Compose are installed from Docker's official Ubuntu
 instructions; installation and firewall changes require review. Keep the
 existing systemd unit available for rollback.
@@ -268,7 +277,7 @@ database and keys must be owned by `printwithzwe`, keys must remain private,
 and the uploads directory and images must be accessible to the web image's
 configured group. Do not copy a local test database to production. Back up the
 database, uploads, keys, certificate files, and current Nginx configuration with
-the documented encrypted off-server backup process. Store certificate private
+the documented encrypted backup process. Store certificate private
 keys securely. Verify existing certificate symlinks under `live/` point into
 `archive/`; the web container mounts both read-only.
 
@@ -300,8 +309,8 @@ After cutover, update the installed backup script from `deploy/backup.sh` and se
 `PZW_BACKUP_MODE=docker` in the root-only `/etc/printwithzwe-backup.env`; otherwise
 the backup will refuse to run when the systemd API is stopped. The Docker backup
 briefly stops `printwithzwe-api`, snapshots the SQLite database, images, keys,
-and existing TLS and host Nginx configuration, then restarts it before encrypted
-off-server transfer. Test the backup and an
+and existing TLS and host Nginx configuration, then restarts it before writing
+the encrypted backup to the configured repository. Test the backup and an
 independent restore before relying on the timer. Removing containers or images
 must never delete `/var/lib/printwithzwe` or backup files.
 
@@ -344,7 +353,7 @@ recovery are verified.
 
 ### Later Docker updates
 
-Once the initial cutover and off-server backup configuration are complete, run
+Once the initial cutover and encrypted backup configuration are complete, run
 from the VPS repository as root:
 
 ```bash
@@ -354,7 +363,7 @@ bash deploy/docker-deploy.sh
 
 The command requires a clean repository and the existing Docker stack. It
 builds the API and web images **sequentially on the VPS**, tagged with the current
-Git commit, runs the configured encrypted off-server backup, preserves the prior
+Git commit, runs the configured encrypted backup, preserves the prior
 Compose configuration, updates the containers, and checks HTTPS health. Builds
 can temporarily use substantial memory on the 2 GB VPS; monitor memory and run
 the update during a maintenance window. It does not configure backups for you.
@@ -490,14 +499,21 @@ check health/logs, then publish the frontend. Never delete or overwrite
 Restoring an old binary after a schema change may be unsafe; restore its matching
 database backup too. Retain the previous frontend/backend until checks pass.
 
-## Encrypted off-server backups
+## Encrypted backups
 
 The supplied script briefly stops the API to capture a consistent SQLite backup,
 upload directory and authentication keys. Nginx can still serve static files;
-API requests may briefly fail. It restarts the API before transferring encrypted
+API requests may briefly fail. It restarts the API before writing encrypted
 data with restic. Backup files contain credentials and require strict protection.
 
-Configure a restic repository on a DIFFERENT machine or object-storage provider.
+The currently configured VPS-local repository is `/var/backups/printwithzwe-restic`.
+Its password is in the root-only `/etc/printwithzwe-restic-password`, and its
+daily timer is `printwithzwe-backup.timer`. This local backup does not protect
+against VPS loss or disk failure. Recovery after losing the VPS also requires a
+securely stored independent copy of the repository password.
+
+For stronger disaster recovery, configure a restic repository on a different
+machine or object-storage provider instead of the local directory.
 In root-only `/etc/printwithzwe-backup.env`, set `RESTIC_REPOSITORY` and
 `RESTIC_PASSWORD_FILE`, plus any provider credentials. Keep this file and the
 password file mode 0600. Do not store credentials in Git, shell history, chat,
