@@ -46,12 +46,20 @@ curl() {
     printf 'call\n' >> /tmp/curl-count
     case "$TEST_MODE" in
         unhealthy|backup-unready) return 7 ;;
-        health-failure|rollback-failure) if [ "$count" = 1 ]; then return 22; fi ;;
+        backup-restart-failure) if [ "$count" = 1 ]; then return 7; fi ;;
+        health-failure|rollback-failure) if [ "$count" = 2 ]; then return 22; fi ;;
     esac
 }
 restic() { printf 'restic %s\n' "$*" >> /tmp/test-calls; }
 sqlite3() { printf 'sqlite3 %s\n' "$*" >> /tmp/test-calls; }
 export -f git docker systemctl curl restic sqlite3
+
+assert_absent() {
+    if grep -q -- "$1" "$2"; then
+        printf 'Unexpected match: %s in %s\n' "$1" "$2" >&2
+        exit 1
+    fi
+}
 
 reset_fixture() {
     printf 'PZW_UID=999\nPZW_GID=33\nPZW_IMAGE_TAG=latest\nPZW_PRIMARY_DOMAIN=example.test\nPZW_ALLOWED_HOSTS="example.test;www.example.test"\nPZW_CERT_ROOT=/etc/letsencrypt\nCUSTOM_SETTING=keep-me\n' > /etc/printwithzwe-docker.env
@@ -60,7 +68,7 @@ reset_fixture() {
     : > /tmp/curl-count
 }
 
-for TEST_MODE in dirty-repo unhealthy build-failure backup-failure update-failure health-failure rollback-failure success; do
+for TEST_MODE in dirty-repo unhealthy build-failure backup-failure backup-restart-failure update-failure health-failure rollback-failure success; do
     export TEST_MODE
     reset_fixture
     result=0
@@ -75,8 +83,8 @@ for TEST_MODE in dirty-repo unhealthy build-failure backup-failure update-failur
     else
         test "$result" != 0
         case "$TEST_MODE" in
-            dirty-repo|unhealthy|build-failure|backup-failure)
-                ! grep -q ' up ' /tmp/test-calls
+            dirty-repo|unhealthy|build-failure|backup-failure|backup-restart-failure)
+                assert_absent ' up ' /tmp/test-calls
                 ;;
             update-failure|health-failure|rollback-failure)
                 grep -q 'docker tag sha256:old-api printwithzwe-api:latest' /tmp/test-calls
@@ -85,15 +93,15 @@ for TEST_MODE in dirty-repo unhealthy build-failure backup-failure update-failur
                 grep -q '^PZW_IMAGE_TAG=latest$' /etc/printwithzwe-docker.env
                 if [ "$TEST_MODE" = rollback-failure ]; then
                     grep -q 'Docker rollback failed' /tmp/test-output
-                    ! grep -q 'Previous Docker release is healthy' /tmp/test-output
+                    assert_absent 'Previous Docker release is healthy' /tmp/test-output
                 else
                     grep -q 'Previous Docker release is healthy' /tmp/test-output
                 fi
                 ;;
         esac
     fi
-    ! grep -q 'systemctl start printwithzwe nginx' /tmp/test-calls
-    ! grep -q ' down' /tmp/test-calls
+    assert_absent 'systemctl start printwithzwe nginx' /tmp/test-calls
+    assert_absent ' down' /tmp/test-calls
     printf 'PASS: deployment %s\n' "$TEST_MODE"
 done
 
@@ -103,10 +111,29 @@ reset_fixture
 result=0
 bash /repo/deploy/backup.sh > /tmp/test-output 2>&1 || result=$?
 test "$result" != 0
-! grep -q 'docker stop' /tmp/test-calls
-! grep -q '^sqlite3' /tmp/test-calls
-! grep -q '^restic' /tmp/test-calls
+assert_absent 'docker stop' /tmp/test-calls
+assert_absent '^sqlite3' /tmp/test-calls
+assert_absent '^restic' /tmp/test-calls
 printf 'PASS: backup does not interrupt API startup\n'
+
+mkdir -p /var/lib/printwithzwe/uploads /var/lib/printwithzwe/keys
+for TEST_MODE in backup-restart-failure backup-success; do
+    export TEST_MODE
+    reset_fixture
+    result=0
+    bash /repo/deploy/backup.sh > /tmp/test-output 2>&1 || result=$?
+    grep -q 'docker stop printwithzwe-api' /tmp/test-calls
+    grep -q 'docker start printwithzwe-api' /tmp/test-calls
+    if [ "$TEST_MODE" = backup-restart-failure ]; then
+        test "$result" != 0
+        assert_absent '^restic' /tmp/test-calls
+    else
+        test "$result" = 0
+        sequence=$(grep -E '^(curl|docker (start|stop)|restic)' /tmp/test-calls)
+        [[ "$sequence" == *curl*'docker stop'*'docker start'*curl*restic* ]]
+    fi
+    printf 'PASS: backup %s\n' "$TEST_MODE"
+done
 
 for TEST_MODE in renew-failure renew-success; do
     export TEST_MODE
@@ -119,7 +146,7 @@ for TEST_MODE in renew-failure renew-success; do
     if [ "$TEST_MODE" = renew-failure ]; then
         test "$result" != 0
         grep -q 'Log: /etc/letsencrypt/renewal-logs/letsencrypt.log' /tmp/test-output
-        ! grep -q 'nginx .*reload' /tmp/test-calls
+        assert_absent 'nginx .*reload' /tmp/test-calls
     else
         test "$result" = 0
         grep -q -- 'nginx -c /tmp/nginx.conf -t' /tmp/test-calls

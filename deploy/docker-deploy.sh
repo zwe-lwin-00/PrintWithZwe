@@ -115,6 +115,8 @@ fi
 
 printf 'Running the configured encrypted backup before deployment.\n'
 systemctl start printwithzwe-backup.service
+printf 'Waiting for the existing API to recover from the backup restart.\n'
+curl -fsS --retry 30 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 "https://$PZW_PRIMARY_DOMAIN/api/health" >/dev/null
 
 printf 'Starting release %s.\n' "$PZW_IMAGE_TAG"
 trap rollback EXIT

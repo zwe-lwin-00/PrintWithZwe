@@ -7,6 +7,10 @@ umask 077
 command -v restic >/dev/null
 command -v sqlite3 >/dev/null
 mode=${PZW_BACKUP_MODE:-systemd}
+wait_for_api() {
+    curl -fsS --retry 30 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 \
+        -H "Host: ${api_host:-localhost}" "http://$api_ip:5000/api/health" >/dev/null
+}
 case "$mode" in
     systemd) systemctl is-active --quiet printwithzwe ;;
     docker)
@@ -15,8 +19,7 @@ case "$mode" in
         api_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' printwithzwe-api)
         allowed_hosts=$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' printwithzwe-api | sed -n 's/^AllowedHosts=//p')
         api_host=${allowed_hosts%%;*}
-        curl -fsS --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors --max-time 5 \
-            -H "Host: ${api_host:-localhost}" "http://$api_ip:5000/api/health" >/dev/null
+        wait_for_api
         ;;
     *) printf 'Invalid PZW_BACKUP_MODE: use systemd or docker\n' >&2; exit 1 ;;
 esac
@@ -26,7 +29,12 @@ stage=/var/cache/printwithzwe-backup
 install -d -m 0700 "$stage"
 stopped=0
 start_api() {
-    if [ "$mode" = docker ]; then docker start printwithzwe-api >/dev/null; else systemctl start printwithzwe; fi
+    if [ "$mode" = docker ]; then
+        docker start printwithzwe-api >/dev/null
+        wait_for_api
+    else
+        systemctl start printwithzwe
+    fi
 }
 cleanup() {
     if [ "$stopped" = 1 ]; then start_api; fi
