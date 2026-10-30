@@ -32,6 +32,8 @@ if [ "$mode" = docker ]; then docker stop printwithzwe-api >/dev/null; else syst
 stopped=1
 sqlite3 /var/lib/printwithzwe/catalog.db ".backup '$stage/catalog.db'"
 cp -a /var/lib/printwithzwe/uploads /var/lib/printwithzwe/keys "$stage/"
+if [ -d /etc/letsencrypt ]; then cp -a /etc/letsencrypt "$stage/letsencrypt"; fi
+if [ -d /etc/nginx ]; then cp -a /etc/nginx "$stage/nginx"; fi
 start_api
 stopped=0
 restic backup --tag printwithzwe "$stage"

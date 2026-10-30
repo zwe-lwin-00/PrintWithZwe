@@ -299,8 +299,9 @@ coherent tested backup if necessary. Do not blindly overwrite existing state.
 After cutover, update the installed backup script from `deploy/backup.sh` and set
 `PZW_BACKUP_MODE=docker` in the root-only `/etc/printwithzwe-backup.env`; otherwise
 the backup will refuse to run when the systemd API is stopped. The Docker backup
-briefly stops `printwithzwe-api`, snapshots the SQLite database, images, and keys,
-then restarts it before encrypted off-server transfer. Test the backup and an
+briefly stops `printwithzwe-api`, snapshots the SQLite database, images, keys,
+and existing TLS and host Nginx configuration, then restarts it before encrypted
+off-server transfer. Test the backup and an
 independent restore before relying on the timer. Removing containers or images
 must never delete `/var/lib/printwithzwe` or backup files.
 
@@ -340,6 +341,31 @@ files securely; never commit them. For a different domain, update Nginx server
 names and certificate paths, the API's allowed hosts, DNS, and the renewal command
 before deploying. Keep the old VPS online until HTTPS, data restoration and backup
 recovery are verified.
+
+### Later Docker updates
+
+Once the initial cutover and off-server backup configuration are complete, run
+from the VPS repository as root:
+
+```bash
+git pull --ff-only
+bash deploy/docker-deploy.sh
+```
+
+The command requires a clean repository and the existing Docker stack. It
+builds the API and web images **sequentially on the VPS**, tagged with the current
+Git commit, runs the configured encrypted off-server backup, preserves the prior
+Compose configuration, updates the containers, and checks HTTPS health. Builds
+can temporarily use substantial memory on the 2 GB VPS; monitor memory and run
+the update during a maintenance window. It does not configure backups for you.
+You must test backup restoration separately before relying on this procedure.
+
+For lower VPS build load, build both images for `linux/amd64` on your computer
+using `git rev-parse --short=12 HEAD` as their tag, transfer and `docker load`
+them, then run `PZW_SKIP_BUILD=1 bash deploy/docker-deploy.sh`. The script
+checks both images exist. If an update or health check fails, it reports the
+saved configuration location. Inspect logs and use the rollback guidance above;
+do not blindly restore a database after customers may have submitted changes.
 
 ## Publish from Windows (systemd option)
 
