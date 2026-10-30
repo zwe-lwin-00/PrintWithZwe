@@ -143,27 +143,47 @@ export async function fileToImageUpload(file: File): Promise<ProductImageUpload>
   }
   const image = await decodeImage(file);
   if (!image) throw new Error("The photo could not be decoded. Try iPhone Most Compatible format.");
-  const maxDimension = 2048;
-  const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
   const canvas = document.createElement("canvas");
-  canvas.width = Math.max(1, Math.round(image.width * scale));
-  canvas.height = Math.max(1, Math.round(image.height * scale));
-  const context = canvas.getContext("2d");
-  if (!context) throw new Error("Your browser cannot process this photo.");
-  image.draw(context, canvas.width, canvas.height);
-  image.close();
-  let blob: Blob | null = null;
-  for (const quality of [0.86, 0.78, 0.68, 0.58, 0.48]) {
-    blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", quality));
-    if (blob && blob.size <= 2 * 1024 * 1024) break;
+  try {
+    let mimeType = "image/webp";
+    let blob: Blob | null = null;
+    for (const maxDimension of [2048, 1600, 1280, 1024, 800, 640]) {
+      const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Your browser cannot process this photo.");
+      if (mimeType === "image/jpeg") {
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      image.draw(context, canvas.width, canvas.height);
+      for (const quality of [0.86, 0.78, 0.68, 0.58, 0.48]) {
+        blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, mimeType, quality));
+        if (mimeType === "image/webp" && (!blob || blob.type !== mimeType)) {
+          mimeType = "image/jpeg";
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          image.draw(context, canvas.width, canvas.height);
+          blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, mimeType, quality));
+        }
+        if (blob && blob.type === mimeType && blob.size <= 2 * 1024 * 1024) break;
+      }
+      if (blob && blob.type === mimeType && blob.size <= 2 * 1024 * 1024) break;
+    }
+    if (!blob || blob.type !== mimeType || blob.size > 2 * 1024 * 1024) {
+      throw new Error("Your browser could not compress this photo. Try a JPEG copy or another browser.");
+    }
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    const extension = mimeType === "image/jpeg" ? ".jpg" : ".webp";
+    return { name: file.name.replace(/\.[^.]+$/, "") + extension, mimeType, data: btoa(binary) };
+  } finally {
+    image.close();
+    canvas.width = 1;
+    canvas.height = 1;
   }
-  if (!blob || blob.size > 2 * 1024 * 1024) {
-    throw new Error("This photo is still larger than 2 MB after compression. Choose a smaller photo.");
-  }
-  const bytes = new Uint8Array(await blob.arrayBuffer());
-  let binary = "";
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return { name: file.name.replace(/\.[^.]+$/, ".webp"), mimeType: "image/webp", data: btoa(binary) };
 }
 
 type DecodedImage = {
