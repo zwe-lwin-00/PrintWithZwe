@@ -11,6 +11,14 @@ if [ -z "$project" ] || [ "$project" = '<no value>' ]; then
 	exit 1
 fi
 compose=(docker compose --project-name "$project" -f /opt/printwithzwe-stack/compose.yaml)
-"${compose[@]}" --profile tools run --rm --no-deps certbot renew "$@" --webroot --webroot-path /var/www/acme
+if "${compose[@]}" --profile tools run --rm --no-deps certbot renew "$@" \
+	--webroot --webroot-path /var/www/acme \
+	--logs-dir /etc/letsencrypt/renewal-logs --max-log-backups 5; then
+	:
+else
+	status=$?
+	printf 'Certificate renewal failed; Nginx was not reloaded. Log: %s/renewal-logs/letsencrypt.log\n' "$PZW_CERT_ROOT" >&2
+	exit "$status"
+fi
 "${compose[@]}" exec -T web nginx -c /tmp/nginx.conf -t
 "${compose[@]}" exec -T web nginx -c /tmp/nginx.conf -s reload

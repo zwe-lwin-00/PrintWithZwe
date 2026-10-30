@@ -54,7 +54,7 @@ sqlite3() { printf 'sqlite3 %s\n' "$*" >> /tmp/test-calls; }
 export -f git docker systemctl curl restic sqlite3
 
 reset_fixture() {
-    printf 'PZW_UID=999\nPZW_GID=33\nPZW_IMAGE_TAG=latest\nPZW_PRIMARY_DOMAIN=example.test\nPZW_ALLOWED_HOSTS="example.test;www.example.test"\nCUSTOM_SETTING=keep-me\n' > /etc/printwithzwe-docker.env
+    printf 'PZW_UID=999\nPZW_GID=33\nPZW_IMAGE_TAG=latest\nPZW_PRIMARY_DOMAIN=example.test\nPZW_ALLOWED_HOSTS="example.test;www.example.test"\nPZW_CERT_ROOT=/etc/letsencrypt\nCUSTOM_SETTING=keep-me\n' > /etc/printwithzwe-docker.env
     printf 'services: {}\n' > /opt/printwithzwe-stack/compose.yaml
     : > /tmp/test-calls
     : > /tmp/curl-count
@@ -115,8 +115,10 @@ for TEST_MODE in renew-failure renew-success; do
     bash /repo/deploy/docker-cert-renew.sh --dry-run > /tmp/test-output 2>&1 || result=$?
     grep -q -- '--project-name test-project' /tmp/test-calls
     grep -q -- 'certbot renew --dry-run' /tmp/test-calls
+    grep -q -- '--logs-dir /etc/letsencrypt/renewal-logs --max-log-backups 5' /tmp/test-calls
     if [ "$TEST_MODE" = renew-failure ]; then
         test "$result" != 0
+        grep -q 'Log: /etc/letsencrypt/renewal-logs/letsencrypt.log' /tmp/test-output
         ! grep -q 'nginx .*reload' /tmp/test-calls
     else
         test "$result" = 0
