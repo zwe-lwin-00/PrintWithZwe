@@ -1,5 +1,5 @@
-import { useReducedMotion } from "framer-motion";
-import { useMemo, useState, useEffect, useRef, type ReactNode } from "react";
+import { useInView, useReducedMotion } from "framer-motion";
+import { useMemo, useState, useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { useTranslation } from "@/context/LocaleProvider";
 import { cn } from "@/lib/utils";
 
@@ -80,19 +80,21 @@ function splitBrandTitle(name: string): { lead: string; accent: string } {
   return { lead: words.join(" "), accent };
 }
 
-function usePrintSimulation(enabled: boolean): PrintState {
+function usePrintSimulation(enabled: boolean, reducedMotion: boolean): PrintState {
   const [state, setState] = useState<PrintState>({
     layer: 0,
     isComplete: false,
   });
 
   useEffect(() => {
-    if (!enabled) {
+    if (reducedMotion) {
       setState({ layer: LAYER_COUNT, isComplete: true });
       return;
     }
+    if (!enabled) return;
 
     let layer = 0;
+    setState({ layer: 0, isComplete: false });
     let layerTimer: ReturnType<typeof window.setTimeout>;
     let pauseTimer: ReturnType<typeof window.setTimeout>;
 
@@ -120,28 +122,38 @@ function usePrintSimulation(enabled: boolean): PrintState {
       window.clearTimeout(layerTimer);
       window.clearTimeout(pauseTimer);
     };
-  }, [enabled]);
+  }, [enabled, reducedMotion]);
 
   return state;
 }
 
 export function PrintAnimation({ className, compact = false }: PrintAnimationProps) {
   const { t } = useTranslation();
+  const frameRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(frameRef, { amount: 0.05 });
+  const [pageVisible, setPageVisible] = useState(() => document.visibilityState === "visible");
   const prefersReducedMotion = useReducedMotion();
+  const shouldAnimate = isInView && pageVisible && !prefersReducedMotion;
+
+  useEffect(() => {
+    const updateVisibility = () => setPageVisible(document.visibilityState === "visible");
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () => document.removeEventListener("visibilitychange", updateVisibility);
+  }, []);
   const brandName = t("brand.name");
   const { lead, accent } = useMemo(
     () => splitBrandTitle(brandName),
     [brandName],
   );
 
-  const { layer, isComplete } = usePrintSimulation(!prefersReducedMotion);
+  const { layer, isComplete } = usePrintSimulation(shouldAnimate, !!prefersReducedMotion);
 
   const printProgress = prefersReducedMotion
     ? 100
     : Math.round((layer / LAYER_COUNT) * 100);
 
   const visibleLayers = prefersReducedMotion ? LAYER_COUNT : layer;
-  const isPrinting = layer > 0 && !isComplete;
+  const isPrinting = shouldAnimate && layer > 0 && !isComplete;
   const stackLayerCount = Math.min(Math.max(layer, 1), 8);
   const elapsed = Math.round((layer * LAYER_MS) / 1000);
   const nozzleLayer = Math.max(layer, 1);
@@ -158,7 +170,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
   const bedY = compact ? BED_Y_COMPACT : BED_Y;
 
   return (
-    <PrintFrame compact={compact} className={className}>
+    <PrintFrame compact={compact} className={className} frameRef={frameRef} active={shouldAnimate}>
       <div className="relative mx-auto w-full max-w-full">
         {/* Compact HUD — legacy mobile fallback */}
         {compact && (
@@ -306,7 +318,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
           <NozzleTracker
             layer={nozzleLayer}
             compact={compact}
-            paused={isComplete}
+            paused={isComplete || !shouldAnimate}
             visible={nozzleVisible}
           />
         </div>
@@ -352,7 +364,7 @@ function HudPanel({
   return (
     <div
       className={cn(
-        "min-w-0 rounded-lg border border-border/70 bg-card/85 px-1.5 py-1.5 shadow-sm backdrop-blur-md",
+        "min-w-0 rounded-lg border border-border/70 bg-card/85 px-1.5 py-1.5 shadow-sm lg:backdrop-blur-md",
         className,
       )}
     >
@@ -805,35 +817,37 @@ function NozzleTracker({
   visible?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const layerRef = useRef(layer);
-  const pausedRef = useRef(paused);
-  layerRef.current = layer;
-  pausedRef.current = paused;
 
   useEffect(() => {
-    if (!visible) return;
+    const scene = ref.current?.parentElement;
+    if (!visible || paused || !scene) return;
     let raf = 0;
+    let sceneWidth = scene.clientWidth;
+    let lastPaint = 0;
+    const frameInterval = window.matchMedia("(max-width: 1023px)").matches ? 1000 / 30 : 0;
+    const observer = new ResizeObserver(([entry]) => {
+      sceneWidth = entry.contentRect.width;
+    });
+    observer.observe(scene);
     const start = performance.now();
 
     const tick = (now: number) => {
-      if (pausedRef.current) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-      const t = (now - start) / 1000;
-      const scan = Math.sin(t * 3.2) * 0.42 + Math.sin(t * 1.7 + 1.2) * 0.18;
-      const xPct = 50 + scan * 38;
-      const el = ref.current;
-      if (el) {
-        el.style.left = pctX(nozzleSceneX(xPct, !!compact));
-        el.style.top = pctY(nozzleSceneY(layerRef.current, !!compact));
+      if (now - lastPaint >= frameInterval) {
+        lastPaint = now;
+        const time = (now - start) / 1000;
+        const scan = Math.sin(time * 3.2) * 0.42 + Math.sin(time * 1.7 + 1.2) * 0.18;
+        const offset = (scan * 38 * chamberBox(compact).w * sceneWidth) / (100 * VIEW_W);
+        if (ref.current) ref.current.style.transform = `translate3d(${offset}px, 0, 0)`;
       }
       raf = requestAnimationFrame(tick);
     };
 
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [compact, visible]);
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+    };
+  }, [compact, visible, paused]);
 
   useEffect(() => {
     const el = ref.current;
@@ -852,6 +866,7 @@ function NozzleTracker({
       style={{
         left: pctX(nozzleSceneX(50, !!compact)),
         top: pctY(nozzleSceneY(layer, !!compact)),
+        willChange: visible && !paused ? "transform" : undefined,
       }}
       aria-hidden={!visible}
     >
@@ -865,7 +880,7 @@ function NozzleVisual({ compact, frozen }: { compact?: boolean; frozen?: boolean
     <div className="relative h-8 w-8 -translate-x-1/2 -translate-y-1/2">
       {/* Fixed-size glow — same in printing and complete so size never shifts */}
       <div
-        className="absolute inset-0 rounded-full bg-cyan-400/20 blur-md"
+        className="absolute inset-0 rounded-full bg-cyan-400/20 lg:blur-md"
         style={{ opacity: frozen ? 0.5 : 1 }}
       />
       <div className="relative flex flex-col items-center">
@@ -890,16 +905,20 @@ function PrintFrame({
   children,
   className,
   compact,
+  frameRef,
+  active,
 }: {
   children: ReactNode;
   className?: string;
   compact?: boolean;
+  frameRef?: RefObject<HTMLDivElement>;
+  active: boolean;
 }) {
   return (
-    <div className={cn("flex w-full flex-col", className)} aria-hidden>
+    <div ref={frameRef} data-print-animation data-animation-active={active} className={cn("flex w-full flex-col", className)} aria-hidden>
       <div
         className={cn(
-          "relative isolate w-full overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-b from-card/95 to-background/70 shadow-elevated backdrop-blur-md",
+          "relative isolate w-full overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-b from-card/95 to-background/70 shadow-elevated lg:backdrop-blur-md",
           compact ? "p-3" : "p-5",
         )}
       >
