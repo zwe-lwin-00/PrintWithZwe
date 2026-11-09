@@ -17,25 +17,16 @@ import type { MaterialId } from "@/types/pricing";
 const inputClassName =
   "w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base outline-none ring-primary transition focus:ring-2 sm:text-sm sm:py-2";
 
-function parseNonNegative(raw: string): number | null {
-  if (raw === "") return 0;
-  const value = Number(raw);
-  if (Number.isNaN(value) || value < 0) return null;
-  return value;
-}
-
 function isValidInput(
-  weight: number | null,
-  hours: number | null,
-  minutes: number | null,
+  weight: number,
+  hours: number,
   weightRaw: string,
   hoursRaw: string,
-  minutesRaw: string,
 ) {
-  if (weightRaw === "" && hoursRaw === "" && minutesRaw === "") return false;
-  if (weight === null || hours === null || minutes === null) return false;
-  if (minutes > 59) return false;
-  return weight > 0 || hours > 0 || minutes > 0;
+  if (weightRaw === "" && hoursRaw === "") return false;
+  if (weightRaw !== "" && (Number.isNaN(weight) || weight < 0)) return false;
+  if (hoursRaw !== "" && (Number.isNaN(hours) || hours < 0)) return false;
+  return weight > 0 || hours > 0;
 }
 
 export function PriceCalculatorSection() {
@@ -49,7 +40,6 @@ export function PriceCalculatorSection() {
   );
   const [weightGrams, setWeightGrams] = useState("");
   const [printHours, setPrintHours] = useState("");
-  const [printMinutes, setPrintMinutes] = useState("");
 
   useEffect(() => {
     setMaterialId((current) => {
@@ -70,29 +60,21 @@ export function PriceCalculatorSection() {
     return () => window.removeEventListener("popstate", syncMaterial);
   }, [pricing]);
 
-  const weight = parseNonNegative(weightGrams);
-  const hours = parseNonNegative(printHours);
-  const minutes = parseNonNegative(printMinutes);
-  const isValid =
-    !isLoading &&
-    !pricingError &&
-    isValidInput(weight, hours, minutes, weightGrams, printHours, printMinutes);
-  const totalPrintHours =
-    isValid && weight !== null && hours !== null && minutes !== null
-      ? hours + minutes / 60
-      : 0;
+  const weight = weightGrams === "" ? 0 : Number(weightGrams);
+  const hours = printHours === "" ? 0 : Number(printHours);
+  const isValid = !isLoading && !pricingError && isValidInput(weight, hours, weightGrams, printHours);
 
   const breakdown = useMemo(() => {
-    if (!isValid || weight === null) return null;
+    if (!isValid) return null;
     return calculatePrice(
       {
         materialId,
         weightGrams: Math.max(weight, 0),
-        printHours: Math.max(totalPrintHours, 0),
+        printHours: Math.max(hours, 0),
       },
       pricing,
     );
-  }, [materialId, weight, totalPrintHours, isValid, pricing]);
+  }, [materialId, weight, hours, isValid, pricing]);
 
   const materialLabel = t(`materials.${materialId}`);
 
@@ -151,62 +133,41 @@ export function PriceCalculatorSection() {
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="calc-weight" className="text-sm font-medium">
-                  {t("calculator.weight")}
-                </label>
-                <input
-                  id="calc-weight"
-                  disabled={isLoading || !!pricingError}
-                  type="number"
-                  min={0}
-                  step={1}
-                  inputMode="decimal"
-                  placeholder={t("calculator.weightPlaceholder")}
-                  value={weightGrams}
-                  onChange={(event) => setWeightGrams(event.target.value)}
-                  className={inputClassName}
-                />
-              </div>
+              <div className="grid grid-cols-1 gap-4 xs:grid-cols-2">
+                <div className="space-y-2">
+                  <label htmlFor="calc-weight" className="text-sm font-medium">
+                    {t("calculator.weight")}
+                  </label>
+                  <input
+                    id="calc-weight"
+                    disabled={isLoading || !!pricingError}
+                    type="number"
+                    min={0}
+                    step={1}
+                    inputMode="decimal"
+                    placeholder={t("calculator.weightPlaceholder")}
+                    value={weightGrams}
+                    onChange={(event) => setWeightGrams(event.target.value)}
+                    className={inputClassName}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <p className="text-sm font-medium">{t("calculator.printTime")}</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <label htmlFor="calc-hours" className="text-xs text-muted-foreground">
-                      {t("calculator.hours")}
-                    </label>
-                    <input
-                      id="calc-hours"
-                      disabled={isLoading || !!pricingError}
-                      type="number"
-                      min={0}
-                      step={1}
-                      inputMode="numeric"
-                      placeholder={t("calculator.hoursPlaceholder")}
-                      value={printHours}
-                      onChange={(event) => setPrintHours(event.target.value)}
-                      className={inputClassName}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label htmlFor="calc-minutes" className="text-xs text-muted-foreground">
-                      {t("calculator.minutes")}
-                    </label>
-                    <input
-                      id="calc-minutes"
-                      disabled={isLoading || !!pricingError}
-                      type="number"
-                      min={0}
-                      max={59}
-                      step={1}
-                      inputMode="numeric"
-                      placeholder={t("calculator.minutesPlaceholder")}
-                      value={printMinutes}
-                      onChange={(event) => setPrintMinutes(event.target.value)}
-                      className={inputClassName}
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <label htmlFor="calc-hours" className="text-sm font-medium">
+                    {t("calculator.printTime")}
+                  </label>
+                  <input
+                    id="calc-hours"
+                    disabled={isLoading || !!pricingError}
+                    type="number"
+                    min={0}
+                    step={0.5}
+                    inputMode="decimal"
+                    placeholder={t("calculator.hoursPlaceholder")}
+                    value={printHours}
+                    onChange={(event) => setPrintHours(event.target.value)}
+                    className={inputClassName}
+                  />
                 </div>
               </div>
 
