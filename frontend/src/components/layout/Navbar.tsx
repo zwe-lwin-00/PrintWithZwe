@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Calculator, Menu, Printer, X } from "lucide-react";
+import { Calculator, Menu, X } from "lucide-react";
 import { ContactButtons } from "@/components/ui/ContactButtons";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -94,13 +94,13 @@ export function Navbar() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <motion.span
-            whileHover={{ rotate: 12 }}
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary"
-          >
-            <Printer className="h-4 w-4" />
-          </motion.span>
+          <img
+            src="/brand/logo-mark.png"
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 object-contain"
+          />
           <span className="truncate text-sm sm:text-base">{t("brand.name")}</span>
         </motion.a>
 

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle, Phone, Printer } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { ContactButtons } from "@/components/ui/ContactButtons";
 import { useSiteConfig } from "@/context/ConfigProvider";
@@ -52,13 +52,13 @@ export function Footer() {
                 whileHover={{ x: 2 }}
                 className="inline-flex items-center gap-2 font-semibold"
               >
-                <motion.span
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary"
-                >
-                  <Printer className="h-4 w-4" />
-                </motion.span>
+                <img
+                  src="/brand/logo-mark.png"
+                  alt=""
+                  width={36}
+                  height={36}
+                  className="h-9 w-9 shrink-0 object-contain"
+                />
                 {brandName}
               </motion.div>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
