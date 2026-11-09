@@ -193,8 +193,8 @@ public sealed class CatalogTests : IAsyncLifetime
         using var visitor = factory.Browser();
         var response = await visitor.GetFromJsonAsync<JsonObject>("/api/pricing");
         var pricing = response!["pricing"]!;
-        Assert.Equal(2000m, pricing["baseFee"]!.GetValue<decimal>());
-        Assert.Equal(1500m, pricing["machineRatePerHour"]!.GetValue<decimal>());
+        Assert.Equal(4000m, pricing["baseFee"]!.GetValue<decimal>());
+        Assert.Equal(1200m, pricing["machineRatePerHour"]!.GetValue<decimal>());
         Assert.Equal(5, pricing["materials"]!.AsArray().Count);
         Assert.Equal(HttpStatusCode.Unauthorized, (await visitor.GetAsync("/api/admin/pricing")).StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized,
@@ -242,16 +242,16 @@ public sealed class CatalogTests : IAsyncLifetime
         await Csrf(browser);
         pricing["baseFee"] = -1;
         Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
-        pricing["baseFee"] = 2000;
+        pricing["baseFee"] = 4000;
         pricing["materials"]![0]!["ratePerGram"] = 1_000_001;
         Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
-        pricing["materials"]![0]!["ratePerGram"] = 50;
+        pricing["materials"]![0]!["ratePerGram"] = 300;
         pricing["materials"]![1]!["id"] = "pla";
         Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
         pricing["materials"] = null;
         Assert.Equal(HttpStatusCode.BadRequest, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
         var unchanged = (await browser.GetFromJsonAsync<JsonObject>("/api/pricing"))!["pricing"]!;
-        Assert.Equal(2000m, unchanged["baseFee"]!.GetValue<decimal>());
+        Assert.Equal(4000m, unchanged["baseFee"]!.GetValue<decimal>());
     }
 
     [Fact]

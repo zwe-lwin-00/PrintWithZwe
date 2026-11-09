@@ -6,19 +6,19 @@ namespace PrintWithZwe.Api;
 public sealed class PricingSettings
 {
     public int Id { get; set; } = 1;
-    public decimal BaseFee { get; set; } = 2000;
-    public decimal MachineRatePerHour { get; set; } = 1500;
+    public decimal BaseFee { get; set; } = 4000;
+    public decimal MachineRatePerHour { get; set; } = 1200;
     public List<MaterialRate> Materials { get; set; } = [];
 
     public static PricingSettings CreateDefault() => new()
     {
         Materials =
         [
-            new() { Id = "pla", Label = "PLA", RatePerGram = 50 },
-            new() { Id = "petg", Label = "PETG", RatePerGram = 65 },
-            new() { Id = "abs", Label = "ABS", RatePerGram = 70 },
-            new() { Id = "tpu", Label = "TPU", RatePerGram = 90 },
-            new() { Id = "multi-color", Label = "Multi-Color (AMS)", RatePerGram = 80 }
+            new() { Id = "pla", Label = "PLA", RatePerGram = 300 },
+            new() { Id = "petg", Label = "PETG", RatePerGram = 320 },
+            new() { Id = "abs", Label = "ABS", RatePerGram = 340 },
+            new() { Id = "tpu", Label = "TPU", RatePerGram = 400 },
+            new() { Id = "multi-color", Label = "Multi-Color (AMS)", RatePerGram = 400 }
         ]
     };
 
