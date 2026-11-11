@@ -1,4 +1,9 @@
-import type { MaterialRateConfig, SiteConfig, SiteConfigPatch } from "@/types/config";
+import type {
+  ColorSurchargesPerGram,
+  MaterialRateConfig,
+  SiteConfig,
+  SiteConfigPatch,
+} from "@/types/config";
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -12,6 +17,16 @@ function isValidMaterial(material: unknown): material is MaterialRateConfig {
     typeof candidate.label === "string" &&
     Number.isFinite(candidate.ratePerGram) &&
     (candidate.ratePerGram ?? -1) >= 0
+  );
+}
+
+function isValidColorSurcharges(
+  value: unknown,
+): value is ColorSurchargesPerGram {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Partial<ColorSurchargesPerGram>;
+  return (["1", "2", "3", "4"] as const).every(
+    (key) => Number.isFinite(candidate[key]) && (candidate[key] ?? -1) >= 0,
   );
 }
 
@@ -30,8 +45,16 @@ function mergeSiteConfig(
   }
 
   if (patch.pricing) {
-    const { materials, ...pricingPatch } = patch.pricing;
-    result.pricing = { ...result.pricing, ...pricingPatch };
+    const { materials, colorSurchargesPerGram, ...pricingPatch } = patch.pricing;
+    result.pricing = {
+      ...result.pricing,
+      ...pricingPatch,
+      colorSurchargesPerGram: result.pricing.colorSurchargesPerGram,
+    };
+
+    if (isValidColorSurcharges(colorSurchargesPerGram)) {
+      result.pricing.colorSurchargesPerGram = colorSurchargesPerGram;
+    }
 
     if (Array.isArray(materials) && materials.length > 0) {
       const validMaterials = materials.filter(isValidMaterial);
