@@ -13,21 +13,16 @@ namespace PrintWithZwe.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "WhatsappNumber",
-                table: "SiteSettings");
+            // SQLite cannot DropColumn through EF; clear stored WhatsApp values instead.
+            migrationBuilder.Sql(
+                """
+                UPDATE "SiteSettings" SET "WhatsappNumber" = '';
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "WhatsappNumber",
-                table: "SiteSettings",
-                type: "TEXT",
-                maxLength: 30,
-                nullable: false,
-                defaultValue: "");
         }
     }
 }

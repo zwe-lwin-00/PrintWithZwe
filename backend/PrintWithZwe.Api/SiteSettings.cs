@@ -12,6 +12,8 @@ public sealed class SiteSettings
     [MaxLength(80)] public string HeroBadgeShort { get; set; } = "Bambu Lab quality prints";
     [MaxLength(30)] public string PhoneNumber { get; set; } = "+959787238201";
     [MaxLength(40)] public string TelegramUsername { get; set; } = "zwe_ll";
+    // Kept in SQLite for schema compatibility; never exposed in the public API.
+    [MaxLength(30)] public string WhatsappNumber { get; set; } = "";
     [MaxLength(80)] public string MessengerPageId { get; set; } = "printwithzwe";
     [MaxLength(2048)] public string LocationUrl { get; set; } = "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5";
 
@@ -57,6 +59,7 @@ public static class SiteSettingsEndpoints
             settings.HeroBadgeShort = input.HeroBadgeShort.Trim();
             settings.PhoneNumber = input.PhoneNumber.Trim();
             settings.TelegramUsername = input.TelegramUsername.Trim().TrimStart('@');
+            settings.WhatsappNumber = "";
             settings.MessengerPageId = input.MessengerPageId.Trim();
             settings.LocationUrl = input.LocationUrl.Trim();
             if (isNew) database.SiteSettings.Add(settings);
