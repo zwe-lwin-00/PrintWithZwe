@@ -195,6 +195,10 @@ public sealed class CatalogTests : IAsyncLifetime
         var pricing = response!["pricing"]!;
         Assert.Equal(3000m, pricing["baseFee"]!.GetValue<decimal>());
         Assert.Equal(1000m, pricing["machineRatePerHour"]!.GetValue<decimal>());
+        Assert.Equal(0m, pricing["colorSurchargesPerGram"]!["1"]!.GetValue<decimal>());
+        Assert.Equal(50m, pricing["colorSurchargesPerGram"]!["2"]!.GetValue<decimal>());
+        Assert.Equal(90m, pricing["colorSurchargesPerGram"]!["3"]!.GetValue<decimal>());
+        Assert.Equal(120m, pricing["colorSurchargesPerGram"]!["4"]!.GetValue<decimal>());
         Assert.Equal(5, pricing["materials"]!.AsArray().Count);
         Assert.Equal(HttpStatusCode.Unauthorized, (await visitor.GetAsync("/api/admin/pricing")).StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized,
@@ -210,6 +214,9 @@ public sealed class CatalogTests : IAsyncLifetime
         var pricing = response!["pricing"]!.AsObject();
         pricing["baseFee"] = 3000.25m;
         pricing["machineRatePerHour"] = 2000m;
+        pricing["colorSurcharge2PerGram"] = 55m;
+        pricing["colorSurcharge3PerGram"] = 95m;
+        pricing["colorSurcharge4PerGram"] = 125m;
         pricing["materials"]![0]!["ratePerGram"] = 75.5m;
         Assert.Equal(HttpStatusCode.OK, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
 
@@ -217,12 +224,18 @@ public sealed class CatalogTests : IAsyncLifetime
         var published = (await visitor.GetFromJsonAsync<JsonObject>("/api/pricing"))!["pricing"]!;
         Assert.Equal(3000.25m, published["baseFee"]!.GetValue<decimal>());
         Assert.Equal(2000m, published["machineRatePerHour"]!.GetValue<decimal>());
+        Assert.Equal(55m, published["colorSurchargesPerGram"]!["2"]!.GetValue<decimal>());
+        Assert.Equal(95m, published["colorSurchargesPerGram"]!["3"]!.GetValue<decimal>());
+        Assert.Equal(125m, published["colorSurchargesPerGram"]!["4"]!.GetValue<decimal>());
         Assert.Equal(75.5m, published["materials"]![0]!["ratePerGram"]!.GetValue<decimal>());
         Assert.Equal("MMK", published["currency"]!.GetValue<string>());
         Assert.Equal(5, published["materials"]!.AsArray().Count);
 
         pricing["baseFee"] = 0;
         pricing["machineRatePerHour"] = 0;
+        pricing["colorSurcharge2PerGram"] = 0;
+        pricing["colorSurcharge3PerGram"] = 0;
+        pricing["colorSurcharge4PerGram"] = 0;
         foreach (var material in pricing["materials"]!.AsArray()) material!["ratePerGram"] = 0;
         Assert.Equal(HttpStatusCode.OK, (await browser.PutAsJsonAsync("/api/admin/pricing", pricing)).StatusCode);
         var zero = (await visitor.GetFromJsonAsync<JsonObject>("/api/pricing"))!["pricing"]!;

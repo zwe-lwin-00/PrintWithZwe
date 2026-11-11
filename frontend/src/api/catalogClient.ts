@@ -47,17 +47,33 @@ export async function fetchProducts(): Promise<Product[]> {
   return (await request<{ items: Product[] }>("/products")).items;
 }
 
+function isValidColorSurcharges(value: PricingConfig["colorSurchargesPerGram"] | undefined): boolean {
+  if (!value) return false;
+  return (["1", "2", "3", "4"] as const).every((key) =>
+    Number.isFinite(value[key]) && value[key] >= 0,
+  );
+}
+
 export async function fetchPricing(admin = false): Promise<PricingConfig> {
   const { pricing } = await request<{ pricing: PricingConfig }>(admin ? "/admin/pricing" : "/pricing");
   if (!pricing || !Array.isArray(pricing.materials) || pricing.materials.length === 0 ||
-    !Number.isFinite(pricing.baseFee) || !Number.isFinite(pricing.machineRatePerHour)) {
+    !Number.isFinite(pricing.baseFee) || !Number.isFinite(pricing.machineRatePerHour) ||
+    !isValidColorSurcharges(pricing.colorSurchargesPerGram)) {
     throw new Error("The pricing API returned invalid rates.");
   }
   return pricing;
 }
 
 export async function savePricing(pricing: PricingConfig): Promise<PricingConfig> {
-  return (await request<{ pricing: PricingConfig }>("/admin/pricing", "PUT", pricing)).pricing;
+  const payload = {
+    baseFee: pricing.baseFee,
+    machineRatePerHour: pricing.machineRatePerHour,
+    colorSurcharge2PerGram: pricing.colorSurchargesPerGram["2"],
+    colorSurcharge3PerGram: pricing.colorSurchargesPerGram["3"],
+    colorSurcharge4PerGram: pricing.colorSurchargesPerGram["4"],
+    materials: pricing.materials,
+  };
+  return (await request<{ pricing: PricingConfig }>("/admin/pricing", "PUT", payload)).pricing;
 }
 
 export async function fetchSiteConfig(admin = false): Promise<Pick<SiteConfig, "brand" | "contact">> {

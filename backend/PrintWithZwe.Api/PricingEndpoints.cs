@@ -8,6 +8,10 @@ public sealed class PricingSettings
     public int Id { get; set; } = 1;
     public decimal BaseFee { get; set; } = 3000;
     public decimal MachineRatePerHour { get; set; } = 1000;
+    /// <summary>Extra MMK/g for 2-color AMS prints (1-color uses material rate only).</summary>
+    public decimal ColorSurcharge2PerGram { get; set; } = 50;
+    public decimal ColorSurcharge3PerGram { get; set; } = 90;
+    public decimal ColorSurcharge4PerGram { get; set; } = 120;
     public List<MaterialRate> Materials { get; set; } = [];
 
     public static PricingSettings CreateDefault() => new()
@@ -25,11 +29,22 @@ public sealed class PricingSettings
 
     public object ToResponse() => new
     {
-        Currency = "MMK", Locale = "en-MM", BaseFee, MachineRatePerHour,
+        Currency = "MMK",
+        Locale = "en-MM",
+        BaseFee,
+        MachineRatePerHour,
+        ColorSurchargesPerGram = new Dictionary<string, decimal>
+        {
+            ["1"] = 0,
+            ["2"] = ColorSurcharge2PerGram,
+            ["3"] = ColorSurcharge3PerGram,
+            ["4"] = ColorSurcharge4PerGram,
+        },
         Materials = MaterialIds.Select(id => Materials.Single(material => material.Id == id))
     };
 
     public static readonly string[] MaterialIds = ["pla", "petg", "abs", "tpu", "multi-color"];
+    public static readonly string[] BaseMaterialIds = ["pla", "petg", "abs", "tpu"];
 }
 
 public sealed class MaterialRate
@@ -43,6 +58,9 @@ public sealed class PricingRequest
 {
     [Range(typeof(decimal), "0", "1000000000")] public decimal BaseFee { get; init; }
     [Range(typeof(decimal), "0", "1000000000")] public decimal MachineRatePerHour { get; init; }
+    [Range(typeof(decimal), "0", "1000000")] public decimal ColorSurcharge2PerGram { get; init; }
+    [Range(typeof(decimal), "0", "1000000")] public decimal ColorSurcharge3PerGram { get; init; }
+    [Range(typeof(decimal), "0", "1000000")] public decimal ColorSurcharge4PerGram { get; init; }
     [Required, MinLength(5), MaxLength(5)] public MaterialRateRequest[] Materials { get; init; } = [];
 
     public bool IsValid() => RequestValidation.IsValid(this)
@@ -72,8 +90,17 @@ public static class PricingEndpoints
             }
             settings.BaseFee = input.BaseFee;
             settings.MachineRatePerHour = input.MachineRatePerHour;
+            settings.ColorSurcharge2PerGram = input.ColorSurcharge2PerGram;
+            settings.ColorSurcharge3PerGram = input.ColorSurcharge3PerGram;
+            settings.ColorSurcharge4PerGram = input.ColorSurcharge4PerGram;
             foreach (var material in settings.Materials)
                 material.RatePerGram = input.Materials.Single(item => item.Id == material.Id).RatePerGram;
+
+            // Keep legacy multi-color row aligned with PLA + 4-color surcharge.
+            var pla = settings.Materials.Single(material => material.Id == "pla");
+            var multi = settings.Materials.Single(material => material.Id == "multi-color");
+            multi.RatePerGram = pla.RatePerGram + settings.ColorSurcharge4PerGram;
+
             await database.SaveChangesAsync(cancellation);
             return Results.Ok(new { ok = true, pricing = settings.ToResponse() });
         }).RequireAuthorization("Admin").RequireRateLimiting("writes");

@@ -6,15 +6,14 @@ import type {
   PriceEstimateInput,
 } from "@/types/pricing";
 
-/** Extra MMK per gram for AMS multi-color waste/time (same material only). */
-export const COLOR_SURCHARGE_PER_GRAM: Record<ColorCount, number> = {
+export const BASE_MATERIAL_IDS: BaseMaterialId[] = ["pla", "petg", "abs", "tpu"];
+
+const FALLBACK_SURCHARGES: Record<ColorCount, number> = {
   1: 0,
   2: 50,
   3: 90,
   4: 120,
 };
-
-export const BASE_MATERIAL_IDS: BaseMaterialId[] = ["pla", "petg", "abs", "tpu"];
 
 export function isBaseMaterialId(value: string): value is BaseMaterialId {
   return BASE_MATERIAL_IDS.includes(value as BaseMaterialId);
@@ -22,6 +21,15 @@ export function isBaseMaterialId(value: string): value is BaseMaterialId {
 
 export function isColorCount(value: number): value is ColorCount {
   return value === 1 || value === 2 || value === 3 || value === 4;
+}
+
+export function colorSurchargePerGram(
+  pricing: PricingConfig,
+  colorCount: ColorCount,
+): number {
+  const key = String(colorCount) as "1" | "2" | "3" | "4";
+  const value = pricing.colorSurchargesPerGram?.[key];
+  return Number.isFinite(value) && value >= 0 ? value : FALLBACK_SURCHARGES[colorCount];
 }
 
 function getMaterialRate(pricing: PricingConfig, materialId: BaseMaterialId) {
@@ -38,7 +46,7 @@ export function effectiveRatePerGram(
   colorCount: ColorCount,
 ): number {
   const material = getMaterialRate(pricing, materialId);
-  return material.ratePerGram + COLOR_SURCHARGE_PER_GRAM[colorCount];
+  return material.ratePerGram + colorSurchargePerGram(pricing, colorCount);
 }
 
 export function calculatePrice(

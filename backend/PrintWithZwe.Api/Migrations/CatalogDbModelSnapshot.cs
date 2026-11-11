@@ -218,6 +218,15 @@ namespace PrintWithZwe.Api.Migrations
                     b.Property<decimal>("BaseFee")
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal>("ColorSurcharge2PerGram")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("ColorSurcharge3PerGram")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("ColorSurcharge4PerGram")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("MachineRatePerHour")
                         .HasColumnType("TEXT");
 

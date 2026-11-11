@@ -13,6 +13,7 @@ export const defaultSiteConfig: SiteConfig = {
     locale: "en-MM",
     baseFee: 3000,
     machineRatePerHour: 1000,
+    colorSurchargesPerGram: { "1": 0, "2": 50, "3": 90, "4": 120 },
     materials: [
       { id: "pla", label: "PLA", ratePerGram: 250 },
       { id: "petg", label: "PETG", ratePerGram: 270 },

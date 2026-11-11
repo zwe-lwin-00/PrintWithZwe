@@ -14,11 +14,19 @@ export interface MaterialRateConfig {
   ratePerGram: number;
 }
 
+export interface ColorSurchargesPerGram {
+  "1": number;
+  "2": number;
+  "3": number;
+  "4": number;
+}
+
 export interface PricingConfig {
   currency: string;
   locale: string;
   baseFee: number;
   machineRatePerHour: number;
+  colorSurchargesPerGram: ColorSurchargesPerGram;
   materials: MaterialRateConfig[];
 }
 
