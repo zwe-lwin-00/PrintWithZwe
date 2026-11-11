@@ -14,11 +14,6 @@ function telegramLink(username: string): string {
   return `https://t.me/${handle}`;
 }
 
-function whatsappLink(phone: string): string {
-  const digits = normalizePhoneDigits(phone);
-  return digits ? `https://wa.me/${digits}` : "";
-}
-
 function formatPhoneDisplay(phone: string): string {
   const trimmed = phone.trim();
   if (!trimmed) return "";
@@ -36,16 +31,13 @@ export interface ContactLinks {
   phoneDisplay: string;
   telegram: string;
   telegramDisplay: string;
-  whatsapp: string;
   hasPhone: boolean;
   hasTelegram: boolean;
-  hasWhatsapp: boolean;
   locationUrl: string;
 }
 
 export function buildContactLinks(contact: ContactConfig): ContactLinks {
   const phone = contact.phoneNumber?.trim() ?? "";
-  const whatsapp = contact.whatsappNumber?.trim() || phone;
 
   return {
     phone,
@@ -53,10 +45,8 @@ export function buildContactLinks(contact: ContactConfig): ContactLinks {
     phoneDisplay: formatPhoneDisplay(phone),
     telegram: telegramLink(contact.telegramUsername),
     telegramDisplay: telegramDisplay(contact.telegramUsername),
-    whatsapp: whatsappLink(whatsapp),
     hasPhone: phone.length > 0,
     hasTelegram: contact.telegramUsername.trim().length > 0,
-    hasWhatsapp: normalizePhoneDigits(whatsapp).length > 0,
     locationUrl: contact.locationUrl?.trim() ?? "",
   };
 }

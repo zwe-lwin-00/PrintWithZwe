@@ -9,9 +9,6 @@ export function applyEnvOverrides(config: SiteConfig): SiteConfig {
   if (import.meta.env.VITE_PHONE_NUMBER) {
     next.contact.phoneNumber = import.meta.env.VITE_PHONE_NUMBER;
   }
-  if (import.meta.env.VITE_WHATSAPP_NUMBER !== undefined) {
-    next.contact.whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
-  }
   if (import.meta.env.VITE_MESSENGER_PAGE_ID) {
     next.contact.messengerPageId = import.meta.env.VITE_MESSENGER_PAGE_ID;
   }

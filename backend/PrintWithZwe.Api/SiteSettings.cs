@@ -12,19 +12,18 @@ public sealed class SiteSettings
     [MaxLength(80)] public string HeroBadgeShort { get; set; } = "Bambu Lab quality prints";
     [MaxLength(30)] public string PhoneNumber { get; set; } = "+959787238201";
     [MaxLength(40)] public string TelegramUsername { get; set; } = "zwe_ll";
-    [MaxLength(30)] public string WhatsappNumber { get; set; } = "959787238201";
     [MaxLength(80)] public string MessengerPageId { get; set; } = "printwithzwe";
     [MaxLength(2048)] public string LocationUrl { get; set; } = "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5";
 
     public SiteConfigResponse ToResponse() => new(
         new BrandResponse(BrandName, BrandTagline, HeroBadge, HeroBadgeShort),
-        new ContactResponse(PhoneNumber, TelegramUsername, WhatsappNumber, MessengerPageId, LocationUrl));
+        new ContactResponse(PhoneNumber, TelegramUsername, MessengerPageId, LocationUrl));
 
     public static SiteSettings CreateDefault() => new();
 }
 
 public sealed record BrandResponse(string Name, string Tagline, string HeroBadge, string HeroBadgeShort);
-public sealed record ContactResponse(string PhoneNumber, string TelegramUsername, string WhatsappNumber, string MessengerPageId, string LocationUrl);
+public sealed record ContactResponse(string PhoneNumber, string TelegramUsername, string MessengerPageId, string LocationUrl);
 public sealed record SiteConfigResponse(BrandResponse Brand, ContactResponse Contact);
 
 public sealed class SiteSettingsRequest
@@ -35,7 +34,6 @@ public sealed class SiteSettingsRequest
     [Required, StringLength(80)] public string HeroBadgeShort { get; init; } = "";
     [Required, StringLength(30)] public string PhoneNumber { get; init; } = "";
     [Required, StringLength(40)] public string TelegramUsername { get; init; } = "";
-    [StringLength(30)] public string WhatsappNumber { get; init; } = "";
     [StringLength(80)] public string MessengerPageId { get; init; } = "";
     [StringLength(2048), Url] public string LocationUrl { get; init; } = "";
 }
@@ -59,7 +57,6 @@ public static class SiteSettingsEndpoints
             settings.HeroBadgeShort = input.HeroBadgeShort.Trim();
             settings.PhoneNumber = input.PhoneNumber.Trim();
             settings.TelegramUsername = input.TelegramUsername.Trim().TrimStart('@');
-            settings.WhatsappNumber = input.WhatsappNumber.Trim();
             settings.MessengerPageId = input.MessengerPageId.Trim();
             settings.LocationUrl = input.LocationUrl.Trim();
             if (isNew) database.SiteSettings.Add(settings);

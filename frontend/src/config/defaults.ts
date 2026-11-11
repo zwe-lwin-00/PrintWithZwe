@@ -4,7 +4,6 @@ export const defaultSiteConfig: SiteConfig = {
   contact: {
     phoneNumber: "+959787238201",
     telegramUsername: "zwe_ll",
-    whatsappNumber: "959787238201",
     messengerPageId: "printwithzwe",
     locationUrl: "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5",
   },

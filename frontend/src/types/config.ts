@@ -3,7 +3,6 @@ import type { MaterialId } from "@/types/pricing";
 export interface ContactConfig {
   phoneNumber: string;
   telegramUsername: string;
-  whatsappNumber: string;
   messengerPageId: string;
   locationUrl: string;
 }

@@ -114,19 +114,6 @@ export function Footer() {
                       </motion.a>
                     </li>
                   )}
-                  {links.hasWhatsapp && contact.whatsappNumber && (
-                    <li>
-                      <motion.a
-                        href={links.whatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ x: 4, color: "hsl(var(--primary))" }}
-                        className="inline-block py-0.5"
-                      >
-                        {t("footer.whatsapp")}
-                      </motion.a>
-                    </li>
-                  )}
                 </ul>
               </motion.div>
             </div>
