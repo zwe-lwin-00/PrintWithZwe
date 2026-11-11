@@ -13,11 +13,8 @@ namespace PrintWithZwe.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // SQLite cannot DropColumn through EF; clear stored WhatsApp values instead.
-            migrationBuilder.Sql(
-                """
-                UPDATE "SiteSettings" SET "WhatsappNumber" = '';
-                """);
+            // No schema change: SQLite cannot DropColumn via EF, and the unused
+            // WhatsappNumber column is cleared by the API on save instead.
         }
 
         /// <inheritdoc />
