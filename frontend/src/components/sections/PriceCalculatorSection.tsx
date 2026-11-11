@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calculator, Info, RefreshCw } from "lucide-react";
+import { Calculator, RefreshCw } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
-import { buildContactLinks } from "@/lib/contact";
 import {
   BASE_MATERIAL_IDS,
   calculatePrice,
@@ -37,9 +36,8 @@ function isValidInput(
 
 export function PriceCalculatorSection() {
   const { config, isLoading, pricingError, reloadConfig } = useSiteConfig();
-  const { pricing, contact } = config;
+  const { pricing } = config;
   const { t } = useTranslation();
-  const contactLinks = buildContactLinks(contact);
 
   const [materialId, setMaterialId] = useState<BaseMaterialId>(() =>
     getDefaultMaterialId(pricing),
@@ -293,16 +291,6 @@ export function PriceCalculatorSection() {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {!isLoading && !pricingError && <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
-              <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              {t("calculator.formula", {
-                machineRate: formatPrice(pricing.machineRatePerHour, pricing),
-                baseFee: formatPrice(pricing.baseFee, pricing),
-                phone: contactLinks.phoneDisplay,
-                telegram: contact.telegramUsername,
-              })}
-            </p>}
           </div>
         </motion.div>
       </Container>

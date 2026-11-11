@@ -80,7 +80,6 @@
     "materialLine": "{{label}} · {{colors}} ({{rate}}/g)",
     "machineLine": "Machine ({{rate}}/hr)",
     "baseFee": "Base fee",
-    "formula": "Formula: (Weight × material rate for color count) + (Hours × {{machineRate}}) + {{baseFee}} base fee. Same-material colors only. Call {{phone}} or message us on Telegram @{{telegram}} for an exact quote.",
     "emptyStateTitle": "Your estimate will appear here",
     "emptyStateHint": "Enter weight or print time above to calculate a rough price."
   },
