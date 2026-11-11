@@ -150,9 +150,6 @@ export function PriceCalculatorSection() {
                     ).map((item) => (
                       <option key={item.id} value={item.id}>
                         {t(`materials.${item.id}`)}
-                        {!isLoading && !pricingError
-                          ? ` — from ${formatPrice(item.ratePerGram, pricing)}/g`
-                          : ""}
                       </option>
                     ))}
                   </select>
@@ -175,9 +172,6 @@ export function PriceCalculatorSection() {
                     {COLOR_OPTIONS.map((count) => (
                       <option key={count} value={count}>
                         {t("calculator.colorOption", { count })}
-                        {!isLoading && !pricingError
-                          ? ` — ${formatPrice(effectiveRatePerGram(pricing, materialId, count), pricing)}/g`
-                          : ""}
                       </option>
                     ))}
                   </select>
