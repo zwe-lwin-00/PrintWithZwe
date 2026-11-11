@@ -8,14 +8,14 @@
   "pricing": {
     "currency": "MMK",
     "locale": "en-MM",
-    "baseFee": 4000,
-    "machineRatePerHour": 1200,
+    "baseFee": 3000,
+    "machineRatePerHour": 1000,
     "materials": [
-      { "id": "pla", "label": "PLA", "ratePerGram": 300 },
-      { "id": "petg", "label": "PETG", "ratePerGram": 320 },
-      { "id": "abs", "label": "ABS", "ratePerGram": 340 },
-      { "id": "tpu", "label": "TPU", "ratePerGram": 400 },
-      { "id": "multi-color", "label": "Multi-Color (AMS)", "ratePerGram": 400 }
+      { "id": "pla", "label": "PLA", "ratePerGram": 250 },
+      { "id": "petg", "label": "PETG", "ratePerGram": 270 },
+      { "id": "abs", "label": "ABS", "ratePerGram": 280 },
+      { "id": "tpu", "label": "TPU", "ratePerGram": 350 },
+      { "id": "multi-color", "label": "Multi-Color (AMS)", "ratePerGram": 370 }
     ]
   },
   "brand": {

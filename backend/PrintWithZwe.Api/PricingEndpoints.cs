@@ -6,19 +6,20 @@ namespace PrintWithZwe.Api;
 public sealed class PricingSettings
 {
     public int Id { get; set; } = 1;
-    public decimal BaseFee { get; set; } = 4000;
-    public decimal MachineRatePerHour { get; set; } = 1200;
+    public decimal BaseFee { get; set; } = 3000;
+    public decimal MachineRatePerHour { get; set; } = 1000;
     public List<MaterialRate> Materials { get; set; } = [];
 
     public static PricingSettings CreateDefault() => new()
     {
         Materials =
         [
-            new() { Id = "pla", Label = "PLA", RatePerGram = 300 },
-            new() { Id = "petg", Label = "PETG", RatePerGram = 320 },
-            new() { Id = "abs", Label = "ABS", RatePerGram = 340 },
-            new() { Id = "tpu", Label = "TPU", RatePerGram = 400 },
-            new() { Id = "multi-color", Label = "Multi-Color (AMS)", RatePerGram = 400 }
+            new() { Id = "pla", Label = "PLA", RatePerGram = 250 },
+            new() { Id = "petg", Label = "PETG", RatePerGram = 270 },
+            new() { Id = "abs", Label = "ABS", RatePerGram = 280 },
+            new() { Id = "tpu", Label = "TPU", RatePerGram = 350 },
+            // Kept for API compatibility; calculator uses material + color count instead.
+            new() { Id = "multi-color", Label = "Multi-Color (AMS)", RatePerGram = 370 }
         ]
     };
 

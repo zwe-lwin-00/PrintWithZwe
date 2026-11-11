@@ -6,16 +6,22 @@ import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
 import { buildContactLinks } from "@/lib/contact";
 import {
+  BASE_MATERIAL_IDS,
   calculatePrice,
+  effectiveRatePerGram,
   formatPrice,
   getDefaultMaterialId,
+  isBaseMaterialId,
+  isColorCount,
   parseMaterialFromQuery,
 } from "@/lib/pricing";
 import { fadeUp, springTransition } from "@/lib/motion";
-import type { MaterialId } from "@/types/pricing";
+import type { BaseMaterialId, ColorCount } from "@/types/pricing";
 
 const inputClassName =
   "w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base outline-none ring-primary transition focus:ring-2 sm:text-sm sm:py-2";
+
+const COLOR_OPTIONS: ColorCount[] = [1, 2, 3, 4];
 
 function isValidInput(
   weight: number,
@@ -35,24 +41,34 @@ export function PriceCalculatorSection() {
   const { t } = useTranslation();
   const contactLinks = buildContactLinks(contact);
 
-  const [materialId, setMaterialId] = useState<MaterialId>(() =>
+  const [materialId, setMaterialId] = useState<BaseMaterialId>(() =>
     getDefaultMaterialId(pricing),
   );
+  const [colorCount, setColorCount] = useState<ColorCount>(1);
   const [weightGrams, setWeightGrams] = useState("");
   const [printHours, setPrintHours] = useState("");
 
+  const selectableMaterials = useMemo(
+    () =>
+      pricing.materials.filter((material) => isBaseMaterialId(material.id)),
+    [pricing.materials],
+  );
+
   useEffect(() => {
     setMaterialId((current) => {
-      const exists = pricing.materials.some((material) => material.id === current);
+      const exists = selectableMaterials.some((material) => material.id === current);
       return exists ? current : getDefaultMaterialId(pricing);
     });
-  }, [pricing]);
+  }, [pricing, selectableMaterials]);
 
   useEffect(() => {
     const syncMaterial = () => {
       const params = new URLSearchParams(window.location.search);
       const fromQuery = parseMaterialFromQuery(params.get("material"), pricing);
-      if (fromQuery) setMaterialId(fromQuery);
+      if (fromQuery) {
+        setMaterialId(fromQuery.materialId);
+        setColorCount(fromQuery.colorCount);
+      }
     };
 
     syncMaterial();
@@ -63,20 +79,23 @@ export function PriceCalculatorSection() {
   const weight = weightGrams === "" ? 0 : Number(weightGrams);
   const hours = printHours === "" ? 0 : Number(printHours);
   const isValid = !isLoading && !pricingError && isValidInput(weight, hours, weightGrams, printHours);
+  const ratePerGram = effectiveRatePerGram(pricing, materialId, colorCount);
 
   const breakdown = useMemo(() => {
     if (!isValid) return null;
     return calculatePrice(
       {
         materialId,
+        colorCount,
         weightGrams: Math.max(weight, 0),
         printHours: Math.max(hours, 0),
       },
       pricing,
     );
-  }, [materialId, weight, hours, isValid, pricing]);
+  }, [materialId, colorCount, weight, hours, isValid, pricing]);
 
   const materialLabel = t(`materials.${materialId}`);
+  const colorsLabel = t("calculator.colorOption", { count: colorCount });
 
   return (
     <section
@@ -112,25 +131,59 @@ export function PriceCalculatorSection() {
         >
           <div className="rounded-2xl border border-border bg-card/60 p-5 shadow-elevated backdrop-blur-sm sm:p-6">
             <div className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="calc-material" className="text-sm font-medium">
-                  {t("calculator.material")}
-                </label>
-                <select
-                  id="calc-material"
-                  disabled={isLoading || !!pricingError}
-                  value={materialId}
-                  onChange={(event) =>
-                    setMaterialId(event.target.value as MaterialId)
-                  }
-                  className={inputClassName}
-                >
-                  {pricing.materials.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {t(`materials.${item.id}`)}{!isLoading && !pricingError ? ` - ${formatPrice(item.ratePerGram, pricing)}/g` : ""}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 gap-4 xs:grid-cols-2">
+                <div className="space-y-2">
+                  <label htmlFor="calc-material" className="text-sm font-medium">
+                    {t("calculator.material")}
+                  </label>
+                  <select
+                    id="calc-material"
+                    disabled={isLoading || !!pricingError}
+                    value={materialId}
+                    onChange={(event) => {
+                      const next = event.target.value;
+                      if (isBaseMaterialId(next)) setMaterialId(next);
+                    }}
+                    className={inputClassName}
+                  >
+                    {(selectableMaterials.length > 0
+                      ? selectableMaterials
+                      : BASE_MATERIAL_IDS.map((id) => ({ id, ratePerGram: 0 }))
+                    ).map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {t(`materials.${item.id}`)}
+                        {!isLoading && !pricingError
+                          ? ` — from ${formatPrice(item.ratePerGram, pricing)}/g`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="calc-colors" className="text-sm font-medium">
+                    {t("calculator.colors")}
+                  </label>
+                  <select
+                    id="calc-colors"
+                    disabled={isLoading || !!pricingError}
+                    value={colorCount}
+                    onChange={(event) => {
+                      const next = Number(event.target.value);
+                      if (isColorCount(next)) setColorCount(next);
+                    }}
+                    className={inputClassName}
+                  >
+                    {COLOR_OPTIONS.map((count) => (
+                      <option key={count} value={count}>
+                        {t("calculator.colorOption", { count })}
+                        {!isLoading && !pricingError
+                          ? ` — ${formatPrice(effectiveRatePerGram(pricing, materialId, count), pricing)}/g`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 xs:grid-cols-2">
@@ -177,7 +230,7 @@ export function PriceCalculatorSection() {
             <AnimatePresence mode="wait">
               {breakdown ? (
                 <motion.div
-                  key={`${breakdown.total}-${materialId}-${pricing.baseFee}`}
+                  key={`${breakdown.total}-${materialId}-${colorCount}-${pricing.baseFee}`}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
@@ -194,7 +247,11 @@ export function PriceCalculatorSection() {
                   <dl className="mt-4 space-y-2 border-t border-border/60 pt-4 text-sm">
                     <div className="flex flex-col gap-0.5 xs:flex-row xs:justify-between xs:gap-4">
                       <dt className="min-w-0 text-muted-foreground">
-                        {t("calculator.materialLine", { label: materialLabel })}
+                        {t("calculator.materialLine", {
+                          label: materialLabel,
+                          colors: colorsLabel,
+                          rate: formatPrice(ratePerGram, pricing),
+                        })}
                       </dt>
                       <dd className="shrink-0 font-medium xs:text-right">
                         {formatPrice(breakdown.materialCost, pricing)}
