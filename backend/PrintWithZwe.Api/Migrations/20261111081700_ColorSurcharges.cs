@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using PrintWithZwe.Api;
 
 #nullable disable
 
@@ -9,8 +10,6 @@ namespace PrintWithZwe.Api.Migrations
     [Migration("20261111081700_ColorSurcharges")]
     public partial class ColorSurcharges : Migration
     {
-        // CatalogDb lives in parent namespace PrintWithZwe.Api
-
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
