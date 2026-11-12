@@ -179,7 +179,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
             style={{ height: COMPACT_HUD_H }}
           >
             <div className="min-w-0 shrink-0">
-              <p className="text-[0.45rem] font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="text-[0.45rem] font-semibold tracking-wide text-muted-foreground">
                 {t("animation.layer")}
               </p>
               <p className="text-[0.7rem] font-bold tabular-nums leading-none">
@@ -208,7 +208,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
             style={{ height: HUD_H }}
           >
             <HudPanel className="min-w-0 flex-1">
-              <p className="text-[0.55rem] font-semibold uppercase tracking-widest text-muted-foreground">
+              <p className="text-[0.55rem] font-semibold tracking-wide text-muted-foreground">
                 {t("animation.layer")}
               </p>
               <p className="text-sm font-bold tabular-nums leading-none text-foreground">
@@ -332,7 +332,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
             <p className="min-w-0 truncate text-[0.45rem] font-semibold uppercase tracking-wider text-muted-foreground">
               {t("animation.footerModelShort")}
             </p>
-            <p className="min-w-0 truncate text-right text-[0.45rem] font-medium uppercase leading-none tracking-wider text-muted-foreground">
+            <p className="min-w-0 truncate text-right text-[0.45rem] font-medium leading-snug tracking-wide text-muted-foreground">
               {isComplete ? t("animation.done") : t("animation.print")}
             </p>
           </div>
@@ -344,7 +344,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
             <p className="min-w-0 truncate text-[0.55rem] font-semibold uppercase tracking-wider text-muted-foreground">
               {t("animation.footerModel")}
             </p>
-            <p className="min-w-0 truncate text-right text-[0.55rem] font-medium uppercase leading-none tracking-wider text-muted-foreground">
+            <p className="min-w-0 truncate text-right text-[0.55rem] font-medium leading-snug tracking-wide text-muted-foreground">
               {statusLabel}
             </p>
           </div>

@@ -170,7 +170,7 @@ export function Footer() {
           viewport={{ once: true }}
           variants={fadeUp}
           custom={0.2}
-          className="mt-8 border-t border-border pt-6 text-center text-xs text-muted-foreground sm:mt-10 md:pb-0"
+          className="mt-8 border-t border-border pt-6 text-center text-xs text-muted-foreground sm:mt-10"
         >
           {t("footer.copyright", { year, name: brandName })}
         </motion.p>

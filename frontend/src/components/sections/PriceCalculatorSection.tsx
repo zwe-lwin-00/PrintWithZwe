@@ -229,7 +229,7 @@ export function PriceCalculatorSection() {
                   transition={springTransition}
                   className="mt-6 rounded-xl border border-primary/20 bg-primary/5 p-4 sm:p-5"
                 >
-                  <p className="text-xs font-medium uppercase tracking-wider text-primary">
+                  <p className="text-xs font-medium tracking-wide text-primary">
                     {t("calculator.estimatedTotal")}
                   </p>
                   <p className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">

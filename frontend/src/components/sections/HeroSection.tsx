@@ -100,7 +100,7 @@ export function HeroSection() {
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
             className="flex flex-col items-center gap-2 text-muted-foreground"
           >
-            <span className="text-xs uppercase tracking-widest">{t("hero.scroll")}</span>
+            <span className="text-xs tracking-wide">{t("hero.scroll")}</span>
             <div className="h-10 w-6 rounded-full border border-border p-1.5">
               <motion.div
                 animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}

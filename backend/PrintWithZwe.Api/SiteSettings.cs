@@ -7,7 +7,7 @@ public sealed class SiteSettings
 {
     public int Id { get; set; } = 1;
     [MaxLength(80)] public string BrandName { get; set; } = "Print with Zwe";
-    [MaxLength(180)] public string BrandTagline { get; set; } = "Bringing your ideas to life, layer by layer.";
+    [MaxLength(180)] public string BrandTagline { get; set; } = "သင့်စိတ်ကူးများကို ပုံဖော်လိုက်ပါ";
     [MaxLength(140)] public string HeroBadge { get; set; } = "Bambu Lab quality · Precision engineering";
     [MaxLength(80)] public string HeroBadgeShort { get; set; } = "Bambu Lab quality prints";
     [MaxLength(30)] public string PhoneNumber { get; set; } = "+959787238201";

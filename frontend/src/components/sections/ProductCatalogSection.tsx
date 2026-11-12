@@ -200,14 +200,14 @@ function ProductCard({
         )}
 
         {product.featured && (
-          <span className="absolute left-3 top-3 z-[2] rounded-full bg-primary px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-primary-foreground">
+          <span className="absolute left-3 top-3 z-[2] rounded-full bg-primary px-2.5 py-1 text-[0.65rem] font-semibold tracking-wide text-primary-foreground">
             {t("shop.featured")}
           </span>
         )}
         {!product.inStock && (
           <>
             <span className="absolute inset-0 z-[1] bg-background/40" aria-hidden />
-            <span className="absolute right-3 top-3 z-[2] rounded-full bg-background/90 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur">
+            <span className="absolute right-3 top-3 z-[2] rounded-full bg-background/90 px-2.5 py-1 text-[0.65rem] font-semibold tracking-wide text-muted-foreground backdrop-blur">
               {t("shop.outOfStock")}
             </span>
           </>
@@ -299,12 +299,12 @@ function ProductDetailDialog({
 
             <div className="pointer-events-none absolute left-4 top-4 z-10 flex flex-wrap gap-2">
               {product.featured && (
-                <span className="rounded-full bg-primary px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-primary-foreground">
+                <span className="rounded-full bg-primary px-2.5 py-1 text-[0.65rem] font-semibold tracking-wide text-primary-foreground">
                   {t("shop.featured")}
                 </span>
               )}
               {!product.inStock && (
-                <span className="rounded-full bg-background/90 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur">
+                <span className="rounded-full bg-background/90 px-2.5 py-1 text-[0.65rem] font-semibold tracking-wide text-muted-foreground backdrop-blur">
                   {t("shop.outOfStock")}
                 </span>
               )}
