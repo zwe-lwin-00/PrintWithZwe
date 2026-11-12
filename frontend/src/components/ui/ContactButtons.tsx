@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { ReactNode } from "react";
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
@@ -30,47 +30,13 @@ function TikTokIcon({ className }: { className?: string }) {
   );
 }
 
-interface ChannelButtonProps {
+interface ChannelItem {
+  key: string;
   href: string;
   label: string;
   detail?: string;
   icon: ReactNode;
-  className?: string;
-  sizeClass: string;
-  external?: boolean;
-}
-
-function ChannelButton({
-  href,
-  label,
-  detail,
-  icon,
-  className,
-  sizeClass,
-  external = true,
-}: ChannelButtonProps) {
-  return (
-    <motion.a
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className={cn(
-        "inline-flex w-full min-w-0 flex-1 items-center justify-center gap-2 rounded-lg text-center font-medium leading-snug transition-colors",
-        sizeClass,
-        className,
-      )}
-    >
-      <span className="shrink-0">{icon}</span>
-      <span className="min-w-0 whitespace-normal break-words">
-        {label}
-        {detail ? (
-          <span className="mt-0.5 block text-xs font-normal opacity-90">{detail}</span>
-        ) : null}
-      </span>
-    </motion.a>
-  );
+  external: boolean;
 }
 
 export function ContactButtons({
@@ -99,27 +65,32 @@ export function ContactButtons({
           className,
         )}
       >
-        <ChannelButton
+        <motion.a
           href={links.telegram}
-          label={t("contact.telegram")}
-          icon={<MessageCircle className="h-4 w-4" />}
-          sizeClass={sizeClass}
-          className="bg-[#229ED9] text-white shadow-lg shadow-[#229ED9]/25 hover:bg-[#1d8bc2]"
-        />
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={cn(
+            "inline-flex w-full min-w-0 flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-center font-medium leading-snug text-primary-foreground shadow-lg shadow-primary/25 transition-colors hover:bg-primary/90",
+            sizeClass,
+          )}
+        >
+          <MessageCircle className="h-4 w-4 shrink-0" />
+          <span className="min-w-0 whitespace-normal break-words">{t("contact.telegram")}</span>
+        </motion.a>
       </div>
     );
   }
 
-  const items = [
+  const items: ChannelItem[] = [
     links.hasTelegram
       ? {
           key: "telegram",
           href: links.telegram,
-          label: t("contact.telegram"),
+          label: t("footer.telegram"),
           detail: links.telegramDisplay,
           icon: <MessageCircle className="h-4 w-4" />,
-          className:
-            "bg-[#229ED9] text-white shadow-lg shadow-[#229ED9]/25 hover:bg-[#1d8bc2]",
           external: true,
         }
       : null,
@@ -130,8 +101,6 @@ export function ContactButtons({
           label: t("contact.phone"),
           detail: links.phoneDisplay,
           icon: <Phone className="h-4 w-4" />,
-          className:
-            "border border-border bg-card text-foreground shadow-sm hover:border-primary/30 hover:bg-card/80",
           external: false,
         }
       : null,
@@ -139,11 +108,9 @@ export function ContactButtons({
       ? {
           key: "facebook",
           href: links.facebook,
-          label: t("contact.facebook"),
+          label: t("footer.facebook"),
           detail: undefined,
           icon: <FacebookIcon className="h-4 w-4" />,
-          className:
-            "border border-border bg-[#1877F2] text-white shadow-lg shadow-[#1877F2]/25 hover:bg-[#166fe5]",
           external: true,
         }
       : null,
@@ -151,11 +118,9 @@ export function ContactButtons({
       ? {
           key: "tiktok",
           href: links.tiktok,
-          label: t("contact.tiktok"),
+          label: t("footer.tiktok"),
           detail: links.tiktokDisplay,
           icon: <TikTokIcon className="h-4 w-4" />,
-          className:
-            "border border-border bg-foreground text-background shadow-sm hover:opacity-90",
           external: true,
         }
       : null,
@@ -166,34 +131,36 @@ export function ContactButtons({
           label: t("contact.location"),
           detail: undefined,
           icon: <MapPin className="h-4 w-4" />,
-          className:
-            "border border-border bg-card text-foreground shadow-sm hover:border-primary/30 hover:bg-card/80",
           external: true,
         }
       : null,
-  ].filter((item): item is NonNullable<typeof item> => item !== null);
+  ].filter((item): item is ChannelItem => item !== null);
 
   if (items.length === 0) return null;
 
   return (
-    <div
-      className={cn(
-        "grid min-w-0 gap-2",
-        items.length === 1 ? "grid-cols-1" : "grid-cols-1 xs:grid-cols-2",
-        className,
-      )}
-    >
+    <div className={cn("grid min-w-0 gap-2 sm:grid-cols-2", className)}>
       {items.map((item) => (
-        <ChannelButton
+        <motion.a
           key={item.key}
           href={item.href}
-          label={item.label}
-          detail={item.detail}
-          icon={item.icon}
-          sizeClass={sizeClass}
-          className={item.className}
-          external={item.external}
-        />
+          target={item.external ? "_blank" : undefined}
+          rel={item.external ? "noopener noreferrer" : undefined}
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.99 }}
+          className="group flex min-h-14 items-center gap-3 rounded-xl border border-border bg-card/60 px-3 py-3 transition-colors hover:border-primary/35 hover:bg-card"
+        >
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+            {item.icon}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-medium text-foreground">{item.label}</span>
+            {item.detail ? (
+              <span className="mt-0.5 block truncate text-xs text-muted-foreground">{item.detail}</span>
+            ) : null}
+          </span>
+          <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+        </motion.a>
       ))}
     </div>
   );

@@ -51,17 +51,11 @@ export function Footer() {
           variants={staggerContainer}
           className="flex flex-col gap-8"
         >
-          <motion.div
-            variants={staggerItem}
-            className="rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-6"
-          >
-            <p className="text-sm font-medium text-foreground">{t("contact.title")}</p>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              {t("contact.subtitle")}
-            </p>
-            <div className="mt-4">
-              <ContactButtons channels="all" size="lg" className="max-w-3xl" />
-            </div>
+          <motion.div variants={staggerItem} className="space-y-5">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              {t("contact.title")}
+            </h2>
+            <ContactButtons channels="all" className="max-w-3xl" />
           </motion.div>
 
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
