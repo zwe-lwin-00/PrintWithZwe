@@ -24,9 +24,9 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 const footerLinkKeys = [
-  { href: "#services", key: "nav.services" },
-  { href: "#shop", key: "nav.shop" },
+  { href: "#how-it-works", key: "nav.howItWorks" },
   { href: "#calculator", key: "nav.calculator" },
+  { href: "#shop", key: "nav.shop" },
   { href: "#contact", key: "nav.contact" },
 ] as const;
 

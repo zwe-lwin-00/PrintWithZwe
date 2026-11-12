@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Print with Zwe",
-    "description": "Print with Zwe — Custom 3D printing, multi-color prints, and rapid prototyping."
+    "description": "Print with Zwe — Estimate MakerWorld and other 3D models, then message us for custom printing in Yangon."
   },
   "brand": {
     "name": "Print with Zwe",
@@ -9,7 +9,7 @@
     "footerBlurb": "{{name}} — custom 3D printing and rapid prototyping with precision engineering meets creative fabrication."
   },
   "nav": {
-    "services": "Services",
+    "howItWorks": "How it works",
     "shop": "Shop",
     "calculator": "Calculator",
     "contact": "Contact",
@@ -18,48 +18,31 @@
     "closeMenu": "Close menu"
   },
   "hero": {
-    "description": "Custom 3D printing, multi-color fabrication, and rapid prototyping — built with software-grade precision and maker-space creativity.",
+    "description": "Find a model on MakerWorld or similar sites, estimate the print price here, then message us for custom printing or a visit.",
     "estimatePrice": "Estimate Price",
     "scroll": "Scroll"
   },
-  "services": {
-    "eyebrow": "What we offer",
-    "title": "Services built for makers, engineers, and creators",
-    "description": "From single-part prints to multi-color prototypes — every job gets the same attention to detail.",
-    "estimateLink": "Estimate with this service",
-    "items": {
-      "custom-printing": {
-        "title": "Custom 3D Printing",
-        "description": "High-quality prints in PLA, PETG, ABS, and TPU — tuned profiles for strength, finish, and function.",
-        "features": [
-          "PLA · PETG · ABS · TPU",
-          "0.2mm precision layers",
-          "Functional & decorative parts"
-        ]
-      },
-      "multi-color": {
-        "title": "Multi-Color Printing",
-        "description": "Vivid multi-material prints with AMS support — perfect for logos, labels, and eye-catching models.",
-        "features": [
-          "AMS multi-filament",
-          "Seamless color swaps",
-          "Brand-ready prototypes"
-        ]
-      },
-      "prototyping": {
-        "title": "Rapid Prototyping & CAD",
-        "description": "Fast iteration from idea to physical part, with CAD design support when you need a file built from scratch.",
-        "features": [
-          "Same-week turnaround",
-          "Design-to-print support",
-          "Iterative fit testing"
-        ]
-      }
+  "howItWorks": {
+    "eyebrow": "What to do here",
+    "title": "Two simple ways to use Print with Zwe",
+    "description": "Most visitors come for a quick price check, or to reach us about a custom print.",
+    "estimate": {
+      "step": "1 · Price check",
+      "title": "Estimate your print",
+      "description": "Pick a model on MakerWorld or another library, note the filament weight and print time from your slicer, then calculate a rough price here.",
+      "cta": "Estimate Price"
+    },
+    "contact": {
+      "step": "2 · Reach us",
+      "title": "Contact for custom printing",
+      "description": "Ask about custom jobs, materials, timing, or visit the shop. Telegram is the fastest way to start.",
+      "telegram": "Message on Telegram",
+      "location": "Shop location"
     }
   },
   "calculator": {
     "title": "Instant Price Estimator",
-    "description": "Rough estimate based on material, weight, and print time. Final price may vary with complexity, supports, and infill.",
+    "description": "Enter the material, weight, and print time from your slicer (MakerWorld models work the same way). Final price may vary with supports, infill, and complexity.",
     "material": "Material",
     "colors": "Colors (same material)",
     "colorOption": "{{count}}-color",
@@ -67,7 +50,7 @@
     "printTime": "Print time (hours)",
     "weightPlaceholder": "e.g. 50",
     "hoursPlaceholder": "e.g. 3",
-    "hint": "Pick one material, then 1–4 colors (AMS). Mixing different materials needs a custom quote.",
+    "hint": "Use weight and hours from your slicer. Pick one material and 1–4 colors (AMS). Mixing different materials needs a custom quote.",
     "estimatedTotal": "Estimated total",
     "materialLine": "{{label}} · {{colors}} ({{rate}}/g)",
     "machineLine": "Machine ({{rate}}/hr)",

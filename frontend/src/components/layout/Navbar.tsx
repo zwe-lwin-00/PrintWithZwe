@@ -11,9 +11,9 @@ import { slideDown, staggerContainer, staggerItem } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 const navLinkKeys = [
-  { href: "#services", key: "nav.services", id: "services" },
-  { href: "#shop", key: "nav.shop", id: "shop" },
+  { href: "#how-it-works", key: "nav.howItWorks", id: "how-it-works" },
   { href: "#calculator", key: "nav.calculator", id: "calculator" },
+  { href: "#shop", key: "nav.shop", id: "shop" },
   { href: "#contact", key: "nav.contact", id: "contact" },
 ] as const;
 

@@ -2,9 +2,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { MobileContactBar } from "@/components/ui/ContactButtons";
 import { HeroSection } from "@/components/sections/HeroSection";
+import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { PriceCalculatorSection } from "@/components/sections/PriceCalculatorSection";
 import { ProductCatalogSection } from "@/components/sections/ProductCatalogSection";
-import { ServicesSection } from "@/components/sections/ServicesSection";
 import { useTranslation } from "@/context/LocaleProvider";
 
 export function HomePage() {
@@ -21,9 +21,9 @@ export function HomePage() {
       <Navbar />
       <main id="main-content" className="min-w-0 md:pb-0">
         <HeroSection />
-        <ServicesSection />
-        <ProductCatalogSection />
+        <HowItWorksSection />
         <PriceCalculatorSection />
+        <ProductCatalogSection />
       </main>
       <Footer />
       <MobileContactBar />
