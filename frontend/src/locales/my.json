@@ -97,7 +97,7 @@
   },
   "contact": {
     "title": "ဆက်သွယ်ရန်",
-    "subtitle": "ဖုန်း၊ Telegram၊ Facebook၊ TikTok သို့မဟုတ် ဆိုင်လာရန် — သင့်အဆင်ပြေသည့်နည်းလမ်းဖြင့် ဆက်သွယ်နိုင်ပါတယ်။",
+    "subtitle": "ဖုန်း၊ Telegram၊ Facebook၊ TikTok သို့မဟုတ် ဆိုင်ကိုလာရန် — သင်အဆင်ပြေသည့်နည်းလမ်းဖြင့် ဆက်သွယ်နိုင်ပါတယ်။",
     "telegram": "Telegram ဖြင့် မက်ဆေ့ချ်ပို့ရန်",
     "phone": "ဖုန်းဆက်ရန်",
     "facebook": "Facebook ဖြင့် ဆက်သွယ်ရန်",
@@ -110,7 +110,7 @@
     "telegram": "Telegram",
     "tiktok": "TikTok",
     "facebook": "Facebook",
-    "copyright": "© {{year}} {{name}}။ မူပိုင်ခွင့်အားလုံး လက်ဝယ်ရှိသည်။"
+    "copyright": "© {{year}} {{name}}. All rights reserved."
   },
   "theme": {
     "light": "အလင်း",
@@ -126,12 +126,12 @@
     "pricingUnavailable": "ဈေးနှုန်း မရနိုင်ပါ။ ပြန်ကြိုးစားပါ။"
   },
   "animation": {
-    "layer": "အလွှာ",
-    "ready": "အဆင်သင့်",
-    "printing": "ပရင့်ထုတ်နေသည်",
-    "complete": "ပြီးဆုံး",
-    "done": "OK",
-    "print": "ပရင့်",
+    "layer": "Layer",
+    "ready": "Ready",
+    "printing": "Printing",
+    "complete": "Complete",
+    "done": "Done",
+    "print": "Print",
     "footerModel": "P2S Combo · AMS 2 Pro",
     "footerModelShort": "P2S Combo",
     "amsLabel": "AMS 2 PRO",
