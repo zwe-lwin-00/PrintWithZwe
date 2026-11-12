@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calculator, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
@@ -98,7 +98,7 @@ export function PriceCalculatorSection() {
   return (
     <section
       id="calculator"
-      className="relative overflow-hidden border-y border-border/60 py-16 sm:py-24 lg:py-32"
+      className="relative overflow-hidden border-y border-border/60 py-12 sm:py-16 lg:py-20"
     >
       <Container>
         <motion.div
@@ -106,17 +106,11 @@ export function PriceCalculatorSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           variants={fadeUp}
-          className="mx-auto max-w-2xl text-center"
+          className="min-w-0 max-w-2xl"
         >
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary sm:h-14 sm:w-14">
-            <Calculator className="h-5 w-5 sm:h-6 sm:w-6" />
-          </span>
-          <h2 className="mt-5 text-2xl font-bold tracking-tight sm:mt-6 sm:text-3xl lg:text-4xl">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
             {t("calculator.title")}
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            {t("calculator.description")}
-          </p>
         </motion.div>
 
         <motion.div
@@ -125,7 +119,7 @@ export function PriceCalculatorSection() {
           viewport={{ once: true, margin: "-40px" }}
           variants={fadeUp}
           custom={0.1}
-          className="mx-auto mt-10 max-w-xl"
+          className="mx-auto mt-6 max-w-xl sm:mt-8"
         >
           <div className="rounded-2xl border border-border bg-card/60 p-4 shadow-elevated backdrop-blur-sm xs:p-5 sm:p-6">
             <div className="space-y-4">

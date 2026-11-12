@@ -20,7 +20,7 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="relative overflow-hidden py-16 sm:py-24 lg:py-32"
+      className="relative overflow-hidden py-12 sm:py-16 lg:py-20"
     >
       <SceneBackground showOrbs={false} gridOpacity="opacity-15" />
 
@@ -31,17 +31,11 @@ export function HowItWorksSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           variants={fadeUp}
-          className="mx-auto max-w-2xl text-center"
+          className="min-w-0 max-w-2xl"
         >
-          <p className="text-xs font-medium tracking-wide text-primary sm:text-sm">
-            {t("howItWorks.eyebrow")}
-          </p>
-          <h2 className="mt-2 break-words text-xl font-bold leading-tight tracking-tight xs:text-2xl sm:mt-3 sm:text-3xl lg:text-4xl">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
             {t("howItWorks.title")}
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base md:text-lg">
-            {t("howItWorks.description")}
-          </p>
         </motion.div>
 
         <motion.div
@@ -49,7 +43,7 @@ export function HowItWorksSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
           variants={staggerContainer}
-          className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:mt-14 sm:gap-6 lg:grid-cols-2"
+          className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-2"
         >
           <motion.article
             variants={staggerItem}
