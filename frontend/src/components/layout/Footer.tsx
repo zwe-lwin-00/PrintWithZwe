@@ -56,9 +56,11 @@ export function Footer() {
             className="rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-6"
           >
             <p className="text-sm font-medium text-foreground">{t("contact.title")}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{t("contact.subtitle")}</p>
-            <div className="mt-4 hidden sm:block">
-              <ContactButtons layout="row" size="lg" className="max-w-md" />
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              {t("contact.subtitle")}
+            </p>
+            <div className="mt-4">
+              <ContactButtons channels="all" size="lg" className="max-w-3xl" />
             </div>
           </motion.div>
 

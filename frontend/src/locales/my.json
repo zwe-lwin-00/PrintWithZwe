@@ -97,8 +97,12 @@
   },
   "contact": {
     "title": "ဆက်သွယ်ရန်",
-    "subtitle": "Telegram ဖြင့် မက်ဆေ့ချ်ပို့ပါ — အမြန်တုံ့ပြန်ပေးပါသည်။",
-    "telegram": "Telegram ဖြင့် မက်ဆေ့ချ်ပို့ရန်"
+    "subtitle": "ဖုန်း၊ Telegram၊ Facebook၊ TikTok သို့မဟုတ် ဆိုင်လာရန် — သင့်အဆင်ပြေသည့်နည်းလမ်းဖြင့် ဆက်သွယ်နိုင်ပါတယ်။",
+    "telegram": "Telegram ဖြင့် မက်ဆေ့ချ်ပို့ရန်",
+    "phone": "ဖုန်းဆက်ရန်",
+    "facebook": "Facebook ဖြင့် ဆက်သွယ်ရန်",
+    "tiktok": "TikTok ကြည့်ရန်",
+    "location": "ဆိုင် တည်နေရာ"
   },
   "footer": {
     "navigate": "သွားရန်",

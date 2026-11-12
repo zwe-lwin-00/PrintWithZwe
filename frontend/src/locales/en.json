@@ -95,8 +95,12 @@
   },
   "contact": {
     "title": "Get in touch",
-    "subtitle": "Message us — we reply quickly on Telegram.",
-    "telegram": "Message on Telegram"
+    "subtitle": "Reach us by phone, Telegram, Facebook, TikTok, or visit the shop — use whichever channel works for you.",
+    "telegram": "Message on Telegram",
+    "phone": "Call us",
+    "facebook": "Message on Facebook",
+    "tiktok": "Visit TikTok",
+    "location": "Shop location"
   },
   "footer": {
     "navigate": "Navigate",
