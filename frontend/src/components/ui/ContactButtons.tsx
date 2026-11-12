@@ -83,58 +83,55 @@ export function ContactButtons({
     );
   }
 
-  const items: ChannelItem[] = [
-    links.hasTelegram
-      ? {
-          key: "telegram",
-          href: links.telegram,
-          label: t("footer.telegram"),
-          detail: links.telegramDisplay,
-          icon: <MessageCircle className="h-4 w-4" />,
-          external: true,
-        }
-      : null,
-    links.hasPhone
-      ? {
-          key: "phone",
-          href: links.phoneTel,
-          label: t("contact.phone"),
-          detail: links.phoneDisplay,
-          icon: <Phone className="h-4 w-4" />,
-          external: false,
-        }
-      : null,
-    links.hasFacebook
-      ? {
-          key: "facebook",
-          href: links.facebook,
-          label: t("footer.facebook"),
-          detail: undefined,
-          icon: <FacebookIcon className="h-4 w-4" />,
-          external: true,
-        }
-      : null,
-    links.hasTiktok
-      ? {
-          key: "tiktok",
-          href: links.tiktok,
-          label: t("footer.tiktok"),
-          detail: links.tiktokDisplay,
-          icon: <TikTokIcon className="h-4 w-4" />,
-          external: true,
-        }
-      : null,
-    links.locationUrl
-      ? {
-          key: "location",
-          href: links.locationUrl,
-          label: t("contact.location"),
-          detail: undefined,
-          icon: <MapPin className="h-4 w-4" />,
-          external: true,
-        }
-      : null,
-  ].filter((item): item is ChannelItem => item !== null);
+  const items: ChannelItem[] = [];
+  if (links.hasTelegram) {
+    items.push({
+      key: "telegram",
+      href: links.telegram,
+      label: t("footer.telegram"),
+      detail: links.telegramDisplay,
+      icon: <MessageCircle className="h-4 w-4" />,
+      external: true,
+    });
+  }
+  if (links.hasPhone) {
+    items.push({
+      key: "phone",
+      href: links.phoneTel,
+      label: t("contact.phone"),
+      detail: links.phoneDisplay,
+      icon: <Phone className="h-4 w-4" />,
+      external: false,
+    });
+  }
+  if (links.hasFacebook) {
+    items.push({
+      key: "facebook",
+      href: links.facebook,
+      label: t("footer.facebook"),
+      icon: <FacebookIcon className="h-4 w-4" />,
+      external: true,
+    });
+  }
+  if (links.hasTiktok) {
+    items.push({
+      key: "tiktok",
+      href: links.tiktok,
+      label: t("footer.tiktok"),
+      detail: links.tiktokDisplay,
+      icon: <TikTokIcon className="h-4 w-4" />,
+      external: true,
+    });
+  }
+  if (links.locationUrl) {
+    items.push({
+      key: "location",
+      href: links.locationUrl,
+      label: t("contact.location"),
+      icon: <MapPin className="h-4 w-4" />,
+      external: true,
+    });
+  }
 
   if (items.length === 0) return null;
 
