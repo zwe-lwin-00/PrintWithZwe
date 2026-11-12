@@ -327,6 +327,11 @@ namespace PrintWithZwe.Api.Migrations
                         .HasMaxLength(180)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("FacebookUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("HeroBadge")
                         .IsRequired()
                         .HasMaxLength(140)
@@ -353,6 +358,11 @@ namespace PrintWithZwe.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TelegramUsername")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TiktokUsername")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("TEXT");

@@ -12,6 +12,12 @@ export function applyEnvOverrides(config: SiteConfig): SiteConfig {
   if (import.meta.env.VITE_MESSENGER_PAGE_ID) {
     next.contact.messengerPageId = import.meta.env.VITE_MESSENGER_PAGE_ID;
   }
+  if (import.meta.env.VITE_TIKTOK_USERNAME) {
+    next.contact.tiktokUsername = import.meta.env.VITE_TIKTOK_USERNAME.replace(/^@/, "");
+  }
+  if (import.meta.env.VITE_FACEBOOK_URL) {
+    next.contact.facebookUrl = import.meta.env.VITE_FACEBOOK_URL;
+  }
 
   if (import.meta.env.VITE_BRAND_NAME) {
     next.brand.name = import.meta.env.VITE_BRAND_NAME;

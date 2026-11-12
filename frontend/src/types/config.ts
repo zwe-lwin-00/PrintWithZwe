@@ -4,6 +4,8 @@ export interface ContactConfig {
   phoneNumber: string;
   telegramUsername: string;
   messengerPageId: string;
+  tiktokUsername: string;
+  facebookUrl: string;
   locationUrl: string;
 }
 

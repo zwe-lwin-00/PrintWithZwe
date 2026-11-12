@@ -17,6 +17,8 @@ function fieldsFromConfig(config: EditableConfig): Record<string, string> {
     phoneNumber: config.contact.phoneNumber,
     telegramUsername: config.contact.telegramUsername,
     messengerPageId: config.contact.messengerPageId,
+    tiktokUsername: config.contact.tiktokUsername,
+    facebookUrl: config.contact.facebookUrl,
     locationUrl: config.contact.locationUrl,
   };
 }
@@ -52,7 +54,14 @@ export function AdminSiteSettingsPage() {
     try {
       const updated = await saveSiteConfig({
         brand: { name: fields.brandName.trim(), tagline: fields.brandTagline.trim(), heroBadge: fields.heroBadge.trim(), heroBadgeShort: fields.heroBadgeShort.trim() },
-        contact: { phoneNumber: fields.phoneNumber.trim(), telegramUsername: fields.telegramUsername.trim().replace(/^@/, ""), messengerPageId: fields.messengerPageId.trim(), locationUrl: fields.locationUrl.trim() },
+        contact: {
+          phoneNumber: fields.phoneNumber.trim(),
+          telegramUsername: fields.telegramUsername.trim().replace(/^@/, ""),
+          messengerPageId: fields.messengerPageId.trim(),
+          tiktokUsername: fields.tiktokUsername.trim().replace(/^@/, ""),
+          facebookUrl: fields.facebookUrl.trim(),
+          locationUrl: fields.locationUrl.trim(),
+        },
       });
       setSavedConfig(updated); setFields(fieldsFromConfig(updated)); await reloadConfig(); setSaved(true);
     } catch (error) { setError(error instanceof Error ? error.message : "Could not save site settings."); }
@@ -81,6 +90,8 @@ export function AdminSiteSettingsPage() {
         </div></section><section><h2 className="mb-4 text-base font-semibold">Contact channels</h2><div className="space-y-5 border-y border-border py-5">
           {field("phoneNumber", "Phone number", { maxLength: 30, required: true })}
           {field("telegramUsername", "Telegram username", { maxLength: 40, required: true, help: "Enter the username without @." })}
+          {field("tiktokUsername", "TikTok username", { maxLength: 40, help: "Enter the username without @." })}
+          {field("facebookUrl", "Facebook page URL", { maxLength: 2048, help: "Use a https://facebook.com or https://fb.com link." })}
           {field("messengerPageId", "Messenger page ID", { maxLength: 80 })}
           {field("locationUrl", "Shop location map URL", { maxLength: 2048, required: true, help: "Use a Google Maps link." })}
         </div></section></fieldset>

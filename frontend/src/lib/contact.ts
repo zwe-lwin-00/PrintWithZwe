@@ -14,6 +14,11 @@ function telegramLink(username: string): string {
   return `https://t.me/${handle}`;
 }
 
+function tiktokLink(username: string): string {
+  const handle = username.replace(/^@/, "").trim();
+  return handle ? `https://www.tiktok.com/@${handle}` : "";
+}
+
 function formatPhoneDisplay(phone: string): string {
   const trimmed = phone.trim();
   if (!trimmed) return "";
@@ -25,19 +30,31 @@ function telegramDisplay(username: string): string {
   return `@${handle}`;
 }
 
+function tiktokDisplay(username: string): string {
+  const handle = username.replace(/^@/, "").trim();
+  return handle ? `@${handle}` : "";
+}
+
 export interface ContactLinks {
   phone: string;
   phoneTel: string;
   phoneDisplay: string;
   telegram: string;
   telegramDisplay: string;
+  tiktok: string;
+  tiktokDisplay: string;
+  facebook: string;
   hasPhone: boolean;
   hasTelegram: boolean;
+  hasTiktok: boolean;
+  hasFacebook: boolean;
   locationUrl: string;
 }
 
 export function buildContactLinks(contact: ContactConfig): ContactLinks {
   const phone = contact.phoneNumber?.trim() ?? "";
+  const tiktokUsername = contact.tiktokUsername?.trim() ?? "";
+  const facebook = contact.facebookUrl?.trim() ?? "";
 
   return {
     phone,
@@ -45,8 +62,13 @@ export function buildContactLinks(contact: ContactConfig): ContactLinks {
     phoneDisplay: formatPhoneDisplay(phone),
     telegram: telegramLink(contact.telegramUsername),
     telegramDisplay: telegramDisplay(contact.telegramUsername),
+    tiktok: tiktokLink(tiktokUsername),
+    tiktokDisplay: tiktokDisplay(tiktokUsername),
+    facebook,
     hasPhone: phone.length > 0,
     hasTelegram: contact.telegramUsername.trim().length > 0,
+    hasTiktok: tiktokUsername.replace(/^@/, "").length > 0,
+    hasFacebook: facebook.length > 0,
     locationUrl: contact.locationUrl?.trim() ?? "",
   };
 }

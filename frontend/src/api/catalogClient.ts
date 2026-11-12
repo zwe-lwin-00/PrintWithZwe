@@ -89,6 +89,8 @@ export async function saveSiteConfig(config: Pick<SiteConfig, "brand" | "contact
     phoneNumber: config.contact.phoneNumber,
     telegramUsername: config.contact.telegramUsername,
     messengerPageId: config.contact.messengerPageId,
+    tiktokUsername: config.contact.tiktokUsername,
+    facebookUrl: config.contact.facebookUrl,
     locationUrl: config.contact.locationUrl,
   })).config;
 }

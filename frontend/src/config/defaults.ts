@@ -5,6 +5,8 @@ export const defaultSiteConfig: SiteConfig = {
     phoneNumber: "+959787238201",
     telegramUsername: "zwe_ll",
     messengerPageId: "printwithzwe",
+    tiktokUsername: "printwithzwe2026",
+    facebookUrl: "https://www.facebook.com/share/193HnfrGfk/?mibextid=wwXIfr",
     locationUrl: "https://maps.app.goo.gl/Fq5xDbNXvTAWbB8t5",
   },
   pricing: {
