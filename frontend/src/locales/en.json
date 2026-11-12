@@ -23,21 +23,27 @@
     "scroll": "Scroll"
   },
   "howItWorks": {
-    "eyebrow": "What to do here",
-    "title": "Two simple ways to use Print with Zwe",
-    "description": "Most visitors come for a quick price check, or to reach us about a custom print.",
-    "estimate": {
-      "step": "1 · Price check",
-      "title": "Estimate your print",
-      "description": "Pick a model on MakerWorld or another library, note the filament weight and print time from your slicer, then calculate a rough price here.",
-      "cta": "Estimate Price"
-    },
-    "contact": {
-      "step": "2 · Reach us",
-      "title": "Contact for custom printing",
-      "description": "Ask about custom jobs, materials, timing, or visit the shop. Telegram is the fastest way to start.",
-      "telegram": "Message on Telegram",
-      "location": "Shop location"
+    "title": "How to estimate a print",
+    "ctaEstimate": "Estimate Price",
+    "ctaContact": "Contact us",
+    "steps": {
+      "find": {
+        "title": "Find a free model",
+        "body": "Pick a free 3D model from MakerWorld, Printables, or Thingiverse."
+      },
+      "measure": {
+        "title": "Check weight and time",
+        "body": "Open the model in a slicer like Bambu Studio or OrcaSlicer. Note the filament weight (grams) and print time (hours).",
+        "hint": "Weight and time show up in the slicer preview."
+      },
+      "estimate": {
+        "title": "Calculate here",
+        "body": "Enter the material, grams, and hours in the estimator below for a rough price."
+      },
+      "contact": {
+        "title": "Message us for custom work",
+        "body": "For custom prints, material choices, or a shop visit, message us on Telegram."
+      }
     }
   },
   "calculator": {

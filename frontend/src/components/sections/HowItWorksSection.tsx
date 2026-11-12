@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Calculator, MapPin, MessageCircle } from "lucide-react";
+import { Calculator, Clock, ExternalLink, MessageCircle, PackageSearch, Scale } from "lucide-react";
+import type { ReactNode } from "react";
 import { Container } from "@/components/layout/Container";
 import { SceneBackground } from "@/components/ui/SceneBackground";
 import {
@@ -9,13 +10,75 @@ import {
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
 import { buildContactLinks } from "@/lib/contact";
-import { fadeUp, springTransition, staggerContainer, staggerItem } from "@/lib/motion";
-import { cn } from "@/lib/utils";
+import { fadeUp, staggerContainer, staggerItem } from "@/lib/motion";
+
+const MODEL_SITES = [
+  { href: "https://makerworld.com", label: "MakerWorld" },
+  { href: "https://www.printables.com", label: "Printables" },
+  { href: "https://www.thingiverse.com", label: "Thingiverse" },
+] as const;
+
+interface GuideStep {
+  key: string;
+  icon: ReactNode;
+  title: string;
+  body: string;
+  extra?: ReactNode;
+}
 
 export function HowItWorksSection() {
   const { t } = useTranslation();
   const { config } = useSiteConfig();
   const links = buildContactLinks(config.contact);
+
+  const steps: GuideStep[] = [
+    {
+      key: "find",
+      icon: <PackageSearch className="h-4 w-4" />,
+      title: t("howItWorks.steps.find.title"),
+      body: t("howItWorks.steps.find.body"),
+      extra: (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {MODEL_SITES.map((site) => (
+            <a
+              key={site.href}
+              href={site.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/60 px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/35 hover:text-primary"
+            >
+              {site.label}
+              <ExternalLink className="h-3 w-3 opacity-70" />
+            </a>
+          ))}
+        </div>
+      ),
+    },
+    {
+      key: "measure",
+      icon: <Scale className="h-4 w-4" />,
+      title: t("howItWorks.steps.measure.title"),
+      body: t("howItWorks.steps.measure.body"),
+      extra: (
+        <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Clock className="h-3.5 w-3.5 shrink-0 text-primary" />
+          {t("howItWorks.steps.measure.hint")}
+        </p>
+      ),
+    },
+    {
+      key: "estimate",
+      icon: <Calculator className="h-4 w-4" />,
+      title: t("howItWorks.steps.estimate.title"),
+      body: t("howItWorks.steps.estimate.body"),
+    },
+    {
+      key: "contact",
+      icon: <MessageCircle className="h-4 w-4" />,
+      title: t("howItWorks.steps.contact.title"),
+      body: t("howItWorks.steps.contact.body"),
+    },
+  ];
 
   return (
     <section
@@ -38,93 +101,68 @@ export function HowItWorksSection() {
           </h2>
         </motion.div>
 
-        <motion.div
+        <motion.ol
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
           variants={staggerContainer}
-          className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:gap-6 lg:grid-cols-2"
+          className="mt-6 space-y-3 sm:mt-8"
         >
-          <motion.article
-            variants={staggerItem}
-            whileHover={{ y: -4 }}
-            transition={springTransition}
-            className="rounded-2xl border border-border bg-card/60 p-5 shadow-elevated backdrop-blur-sm sm:p-6"
-          >
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary sm:h-11 sm:w-11">
-              <Calculator className="h-5 w-5" />
-            </span>
-            <p className="mt-4 text-xs font-medium tracking-wide text-primary">
-              {t("howItWorks.estimate.step")}
-            </p>
-            <h3 className="mt-2 text-base font-semibold sm:text-xl">
-              {t("howItWorks.estimate.title")}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {t("howItWorks.estimate.description")}
-            </p>
-            <div className="mt-5">
-              <MotionLinkButton
-                href="#calculator"
-                variant="default"
-                icon={<Calculator className="h-4 w-4 shrink-0" />}
-                className="w-full"
-              >
-                {t("howItWorks.estimate.cta")}
-                <AnimatedArrow />
-              </MotionLinkButton>
-            </div>
-          </motion.article>
+          {steps.map((step, index) => (
+            <motion.li
+              key={step.key}
+              variants={staggerItem}
+              className="rounded-xl border border-border bg-card/60 p-4 sm:p-5"
+            >
+              <div className="flex gap-3 sm:gap-4">
+                <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-semibold text-primary">
+                  {index + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 hidden text-primary xs:inline-flex">
+                      {step.icon}
+                    </span>
+                    <h3 className="text-base font-semibold sm:text-lg">{step.title}</h3>
+                  </div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    {step.body}
+                  </p>
+                  {step.extra}
+                </div>
+              </div>
+            </motion.li>
+          ))}
+        </motion.ol>
 
-          <motion.article
-            variants={staggerItem}
-            whileHover={{ y: -4 }}
-            transition={springTransition}
-            className="rounded-2xl border border-border bg-card/60 p-5 shadow-elevated backdrop-blur-sm sm:p-6"
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          variants={fadeUp}
+          custom={0.15}
+          className="mt-6 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:items-center"
+        >
+          <MotionLinkButton
+            href="#calculator"
+            variant="default"
+            icon={<Calculator className="h-4 w-4 shrink-0" />}
+            className="w-full sm:w-auto"
           >
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary sm:h-11 sm:w-11">
-              <MessageCircle className="h-5 w-5" />
-            </span>
-            <p className="mt-4 text-xs font-medium tracking-wide text-primary">
-              {t("howItWorks.contact.step")}
-            </p>
-            <h3 className="mt-2 text-base font-semibold sm:text-xl">
-              {t("howItWorks.contact.title")}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {t("howItWorks.contact.description")}
-            </p>
-            <div className="mt-5 flex flex-col gap-2">
-              {links.hasTelegram && (
-                <motion.a
-                  href={links.telegram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={cn(
-                    "inline-flex min-h-11 w-full flex-1 items-center justify-center gap-2 rounded-lg bg-[#229ED9] px-3 py-2 text-sm font-medium leading-snug text-white shadow-lg shadow-[#229ED9]/25 transition-colors hover:bg-[#1d8bc2]",
-                  )}
-                >
-                  <MessageCircle className="h-4 w-4 shrink-0" />
-                  <span className="min-w-0 whitespace-normal break-words text-center">{t("howItWorks.contact.telegram")}</span>
-                </motion.a>
-              )}
-              {links.locationUrl && (
-                <motion.a
-                  href={links.locationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex min-h-11 w-full flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card/80 px-3 py-2 text-sm font-medium leading-snug text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-card"
-                >
-                  <MapPin className="h-4 w-4 shrink-0 text-primary" />
-                  <span className="min-w-0 whitespace-normal break-words text-center">{t("howItWorks.contact.location")}</span>
-                </motion.a>
-              )}
-            </div>
-          </motion.article>
+            {t("howItWorks.ctaEstimate")}
+            <AnimatedArrow />
+          </MotionLinkButton>
+          {links.hasTelegram && (
+            <a
+              href={links.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium leading-snug transition-colors hover:border-primary/30 hover:bg-muted/50 sm:w-auto sm:px-6 sm:text-base"
+            >
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              {t("howItWorks.ctaContact")}
+            </a>
+          )}
         </motion.div>
       </Container>
     </section>
