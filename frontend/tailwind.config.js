@@ -33,7 +33,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["\"Noto Sans Myanmar\"", "Padauk", "Myanmar Text", "system-ui", "sans-serif"],
       },
       backgroundImage: {
         "mesh-grid":

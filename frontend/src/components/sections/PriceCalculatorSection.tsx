@@ -276,12 +276,12 @@ export function PriceCalculatorSection() {
                   className="mt-6 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center"
                 >
                   <p className="text-sm font-medium text-foreground">
-                    {pricingError ?? (isLoading ? "Loading current rates..." : t("calculator.emptyStateTitle"))}
+                    {pricingError ?? (isLoading ? t("calculator.loadingRates") : t("calculator.emptyStateTitle"))}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {!pricingError && !isLoading ? t("calculator.emptyStateHint") : ""}
                   </p>
-                  {pricingError && <ButtonRetry onRetry={() => void reloadConfig()} />}
+                  {pricingError && <ButtonRetry label={t("calculator.retry")} onRetry={() => void reloadConfig()} />}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -292,6 +292,6 @@ export function PriceCalculatorSection() {
   );
 }
 
-function ButtonRetry({ onRetry }: { onRetry: () => void }) {
-  return <button type="button" onClick={onRetry} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-medium hover:bg-muted/50"><RefreshCw className="h-4 w-4" />Retry</button>;
+function ButtonRetry({ label, onRetry }: { label: string; onRetry: () => void }) {
+  return <button type="button" onClick={onRetry} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-medium hover:bg-muted/50"><RefreshCw className="h-4 w-4" />{label}</button>;
 }

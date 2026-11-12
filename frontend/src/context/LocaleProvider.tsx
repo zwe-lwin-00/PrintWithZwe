@@ -21,8 +21,8 @@ const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 function applyDocumentMeta() {
   const dict = getDictionary();
-  document.documentElement.lang = "en";
-  document.documentElement.dataset.locale = "en";
+  document.documentElement.lang = "my";
+  document.documentElement.dataset.locale = "my";
   document.title = dict.meta.title;
 
   const meta = document.querySelector('meta[name="description"]');

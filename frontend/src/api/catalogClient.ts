@@ -135,7 +135,7 @@ export async function restoreProduct(id: string): Promise<void> {
   await request(`/admin/products/${encodeURIComponent(id)}/restore`, "POST", {});
 }
 
-export function formatProductPrice(price: number, currency: string, locale = "en-MM"): string {
+export function formatProductPrice(price: number, currency: string, locale = "my-MM"): string {
   return new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 0 }).format(price);
 }
 

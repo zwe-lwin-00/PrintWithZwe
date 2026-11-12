@@ -11,7 +11,7 @@ export const defaultSiteConfig: SiteConfig = {
   },
   pricing: {
     currency: "MMK",
-    locale: "en-MM",
+    locale: "my-MM",
     baseFee: 3000,
     machineRatePerHour: 1000,
     colorSurchargesPerGram: { "1": 0, "2": 50, "3": 90, "4": 120 },

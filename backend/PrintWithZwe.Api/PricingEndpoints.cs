@@ -30,7 +30,7 @@ public sealed class PricingSettings
     public object ToResponse() => new
     {
         Currency = "MMK",
-        Locale = "en-MM",
+        Locale = "my-MM",
         BaseFee,
         MachineRatePerHour,
         ColorSurchargesPerGram = new Dictionary<string, decimal>

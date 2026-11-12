@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "title": "Print with Zwe",
+    "description": "Print with Zwe — MakerWorld နှင့် အခြား 3D မော်ဒယ်များ၏ စျေးနှုန်းကို ခန့်မှန်းပြီး ရန်ကုန်တွင် စိတ်ကြိုက် ပရင့်လုပ်ရန် ဆက်သွယ်ပါ။"
+  },
+  "brand": {
+    "name": "Print with Zwe",
+    "tagline": "သင့်စိတ်ကူးများကို အလွှာလိုက် အသက်သွင်းပေးသည်။",
+    "footerBlurb": "{{name}} — စိတ်ကြိုက် 3D ပရင့်နှင့် အမြန် ပရိုတိုတိုင်လုပ်ငန်း။"
+  },
+  "nav": {
+    "howItWorks": "ဘယ်လိုသုံးမလဲ",
+    "shop": "ဆိုင်",
+    "calculator": "စျေးခန့်မှန်း",
+    "contact": "ဆက်သွယ်ရန်",
+    "estimatePrice": "စျေးခန့်မှန်းမည်",
+    "openMenu": "မီနူးဖွင့်ရန်",
+    "closeMenu": "မီနူးပိတ်ရန်"
+  },
+  "hero": {
+    "description": "MakerWorld သို့မဟုတ် အလားတူဆိုက်များမှ မော်ဒယ်ရှာပြီး ဤနေရာတွင် စျေးခန့်မှန်းပါ။ စိတ်ကြိုက်ပရင့် သို့မဟုတ် ဆိုင်လာရန် ကျွန်ုပ်တို့ကို မက်ဆေ့ချ်ပို့ပါ။",
+    "estimatePrice": "စျေးခန့်မှန်းမည်",
+    "scroll": "ဆက်လှည့်ကြည့်ရန်"
+  },
+  "howItWorks": {
+    "eyebrow": "ဤဆိုက်တွင် လုပ်ရမည့်အရာ",
+    "title": "Print with Zwe ကို သုံးရန် နည်းလမ်း ၂ ခု",
+    "description": "ဧည့်သည်အများစုသည် စျေးအမြန်ကြည့်ရန် သို့မဟုတ် စိတ်ကြိုက်ပရင့်အတွက် ဆက်သွယ်ရန် လာကြသည်။",
+    "estimate": {
+      "step": "၁ · စျေးကြည့်ရန်",
+      "title": "ပရင့်စျေး ခန့်မှန်းမည်",
+      "description": "MakerWorld သို့မဟုတ် အခြား library မှ မော်ဒယ်ရွေးပါ။ Slicer ထဲက filament အလေးချိန်နှင့် ပရင့်ချိန်ကို မှတ်ထားပြီး ဤနေရာတွင် အကြမ်းဖျင်းစျေး တွက်ပါ။",
+      "cta": "စျေးခန့်မှန်းမည်"
+    },
+    "contact": {
+      "step": "၂ · ဆက်သွယ်ရန်",
+      "title": "စိတ်ကြိုက်ပရင့်အတွက် ဆက်သွယ်မည်",
+      "description": "စိတ်ကြိုက်အလုပ်၊ ပစ္စည်း၊ အချိန် သို့မဟုတ် ဆိုင်လာရန် မေးမြန်းနိုင်သည်။ Telegram က အမြန်ဆုံး နည်းလမ်းဖြစ်သည်။",
+      "telegram": "Telegram ဖြင့် မက်ဆေ့ချ်ပို့ရန်",
+      "location": "ဆိုင်တည်နေရာ"
+    }
+  },
+  "calculator": {
+    "title": "ချက်ချင်း စျေးခန့်မှန်းချက်",
+    "description": "Slicer ထဲက ပစ္စည်း၊ အလေးချိန်နှင့် ပရင့်ချိန်ကို ထည့်ပါ (MakerWorld မော်ဒယ်များလည်း အတူတူပါ)။ Support၊ infill နှင့် ရှုပ်ထွေးမှုအရ နောက်ဆုံးစျေး ကွာနိုင်သည်။",
+    "material": "ပစ္စည်း",
+    "colors": "အရောင်အရေအတွက် (ပစ္စည်းတူ)",
+    "colorOption": "{{count}}-အရောင်",
+    "weight": "အလေးချိန် (ဂရမ်)",
+    "printTime": "ပရင့်ချိန် (နာရီ)",
+    "weightPlaceholder": "ဥပမာ ၅၀",
+    "hoursPlaceholder": "ဥပမာ ၃",
+    "hint": "Slicer ထဲက အလေးချိန်နှင့် နာရီကို သုံးပါ။ ပစ္စည်းတစ်မျိုးနှင့် အရောင် ၁–၄ ခု (AMS) ရွေးပါ။ ပစ္စည်းရောသုံးရင် စိတ်ကြိုက် quote လိုအပ်သည်။",
+    "estimatedTotal": "ခန့်မှန်းစုစုပေါင်း",
+    "materialLine": "{{label}} · {{colors}} ({{rate}}/g)",
+    "machineLine": "စက်ခ ({{rate}}/နာရီ)",
+    "baseFee": "အခြေခံကြေး",
+    "emptyStateTitle": "ခန့်မှန်းစျေး ဤနေရာတွင် ပေါ်မည်",
+    "emptyStateHint": "အလေးချိန် သို့မဟုတ် ပရင့်ချိန် ထည့်ပြီး အကြမ်းဖျင်းစျေး တွက်ပါ။",
+    "loadingRates": "လက်ရှိနှုန်းထားများ တင်နေသည်...",
+    "retry": "ပြန်ကြိုးစားရန်"
+  },
+  "materials": {
+    "pla": "PLA",
+    "petg": "PETG",
+    "abs": "ABS",
+    "tpu": "TPU",
+    "multi-color": "Multi-Color (AMS)"
+  },
+  "shop": {
+    "title": "ဆိုင်ကတ်တလော့ခ်",
+    "description": "စျေးနှုန်းရှင်းလင်းသော အဆင်သင့် 3D ပရင့်များ။ မှာယူရန် Telegram ဖြင့် မက်ဆေ့ချ်ပို့ပါ။",
+    "productCount": "ပစ္စည်း {{count}} ခု",
+    "featured": "အထူးရွေးချယ်",
+    "outOfStock": "ပစ္စည်းကုန်",
+    "orderTelegram": "Telegram ဖြင့် မှာမည်",
+    "orderCall": "ဖုန်းဆက်မှာမည်",
+    "telegramMessage": "မင်္ဂလာပါ။ {{title}} ({{price}}) ကို မှာချင်ပါတယ်။",
+    "loading": "ပစ္စည်းများ တင်နေသည်…",
+    "emptyTitle": "ပစ္စည်းမရှိသေးပါ",
+    "emptyHint": "မကြာမီ ပရင့်အသစ်များ ထပ်ထည့်ပါမည်။",
+    "errorTitle": "ပစ္စည်းများ မတင်နိုင်ပါ",
+    "errorHint": "ခဏနောက်မှ ထပ်ကြိုးစားပါ သို့မဟုတ် တိုက်ရိုက်ဆက်သွယ်ပါ။",
+    "showingCount": "{{total}} အနက် {{shown}} ခု ပြသနေသည်",
+    "loadMore": "ပစ္စည်းများ ထပ်ကြည့်ရန်",
+    "viewDetails": "{{title}}၊ {{price}} အသေးစိတ်ကြည့်ရန်",
+    "viewDetailsShort": "အသေးစိတ်",
+    "selectImage": "ပုံ {{index}} ကို ပြရန်",
+    "closeDetail": "ပစ္စည်းအသေးစိတ် ပိတ်ရန်",
+    "photoCount": "ပုံ {{count}} ပုံ",
+    "previousPhoto": "ယခင်ပုံ",
+    "nextPhoto": "နောက်ပုံ",
+    "imageCounter": "{{current}} / {{total}}",
+    "tapToView": "နှိပ်၍ ကြည့်ရန်",
+    "soldOutHint": "ဤပစ္စည်း လက်ရှိတွင် ကုန်နေသည်။ ပြန်ရရှိချိန် သို့မဟုတ် ဆင်တူပစ္စည်းအတွက် ဆက်သွယ်ပါ။",
+    "contactForAvailability": "ရရှိမှုအတွက် ဆက်သွယ်ရန်"
+  },
+  "contact": {
+    "title": "ဆက်သွယ်ရန်",
+    "subtitle": "Telegram ဖြင့် မက်ဆေ့ချ်ပို့ပါ — အမြန်တုံ့ပြန်ပေးပါသည်။",
+    "telegram": "Telegram ဖြင့် မက်ဆေ့ချ်ပို့ရန်"
+  },
+  "footer": {
+    "navigate": "သွားရန်",
+    "reachUs": "ဆက်သွယ်ရန်",
+    "telegram": "Telegram",
+    "tiktok": "TikTok",
+    "facebook": "Facebook",
+    "copyright": "© {{year}} {{name}}. မူပိုင်ခွင့်အားလုံး လက်ဝယ်ရှိသည်။"
+  },
+  "theme": {
+    "light": "အလင်း",
+    "dark": "အမှောင်",
+    "switchTo": "{{mode}} မုဒ်သို့ ပြောင်းရန်",
+    "themeLabel": "အပြင်အဆင်",
+    "usingMode": "{{mode}} မုဒ် သုံးနေသည်"
+  },
+  "a11y": {
+    "skipToContent": "အကြောင်းအရာသို့ ကျော်ရန်"
+  },
+  "common": {
+    "pricingUnavailable": "လက်ရှိနှုန်းထား မရနိုင်ပါ။ ပြန်ကြိုးစားပါ။"
+  },
+  "animation": {
+    "layer": "အလွှာ",
+    "ready": "အဆင်သင့်",
+    "printing": "ပရင့်နေသည်",
+    "complete": "ပြီးဆုံး",
+    "done": "OK",
+    "print": "ပရင့်",
+    "footerModel": "P2S Combo · AMS 2 Pro",
+    "footerModelShort": "P2S Combo",
+    "amsLabel": "AMS 2 PRO",
+    "modelBadge": "P2S COMBO"
+  }
+}

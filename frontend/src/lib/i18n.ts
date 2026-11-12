@@ -1,6 +1,6 @@
-import en from "@/locales/en.json";
+import my from "@/locales/my.json";
 
-export type TranslationDictionary = typeof en;
+export type TranslationDictionary = typeof my;
 
 export type TranslationParams = Record<string, string | number>;
 
@@ -21,11 +21,11 @@ function interpolate(template: string, params?: TranslationParams): string {
 }
 
 export function getDictionary(): TranslationDictionary {
-  return en;
+  return my;
 }
 
 export function translate(key: string, params?: TranslationParams): string {
-  const value = resolvePath(en, key);
+  const value = resolvePath(my, key);
   if (typeof value === "string") {
     return interpolate(value, params);
   }
@@ -33,9 +33,8 @@ export function translate(key: string, params?: TranslationParams): string {
 }
 
 export function translateArray(key: string): string[] {
-  const value = resolvePath(en, key);
+  const value = resolvePath(my, key);
   return Array.isArray(value)
     ? value.filter((item): item is string => typeof item === "string")
     : [];
 }
-

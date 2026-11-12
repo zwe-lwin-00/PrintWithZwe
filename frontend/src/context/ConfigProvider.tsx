@@ -10,6 +10,7 @@ import {
 import { defaultSiteConfig } from "@/config/defaults";
 import { loadSiteConfig } from "@/config/loadSiteConfig";
 import { fetchPricing } from "@/api/catalogClient";
+import { translate } from "@/lib/i18n";
 import type { SiteConfig } from "@/types/config";
 
 interface ConfigContextValue {
@@ -35,7 +36,7 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
       setConfig({ ...next, pricing });
       setPricingError(null);
     } catch {
-      setPricingError("Current pricing is unavailable. Please try again.");
+      setPricingError(translate("common.pricingUnavailable"));
     } finally {
       setIsLoading(false);
     }
