@@ -25,7 +25,7 @@ export const defaultSiteConfig: SiteConfig = {
   },
   brand: {
     name: "Print with Zwe",
-    tagline: "Bringing your ideas to life, layer by layer.",
+    tagline: "သင့်စိတ်ကူးများကို ပုံဖော်လိုက်ပါ",
     heroBadge: "Bambu Lab quality · Precision engineering",
     heroBadgeShort: "Bambu Lab quality prints",
   },
