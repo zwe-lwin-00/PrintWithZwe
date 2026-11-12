@@ -450,9 +450,6 @@ export function ProductCatalogSection() {
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {t("shop.title")}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {t("shop.description")}
-            </p>
           </div>
           {state === "ready" && items.length > 0 && (
             <p className="shrink-0 text-sm text-muted-foreground">
