@@ -7,7 +7,6 @@ import {
   MessageCircle,
   Package,
   Phone,
-  ShoppingBag,
   X,
 } from "lucide-react";
 import { ProductImage } from "@/components/ui/ProductImage";
@@ -19,7 +18,7 @@ import { useTranslation } from "@/context/LocaleProvider";
 import { useProducts } from "@/hooks/useProducts";
 import { buildContactLinks } from "@/lib/contact";
 import { formatProductPrice } from "@/api/catalogClient";
-import { fadeUp, scaleIn } from "@/lib/motion";
+import { fadeUp } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
@@ -437,7 +436,7 @@ export function ProductCatalogSection() {
   return (
     <section
       id="shop"
-      className="relative overflow-hidden border-y border-border/60 bg-card/20 py-16 sm:py-24 lg:py-32"
+      className="relative overflow-hidden border-y border-border/60 bg-card/20 py-12 sm:py-16 lg:py-20"
     >
       <Container>
         <motion.div
@@ -445,26 +444,18 @@ export function ProductCatalogSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           variants={fadeUp}
-          className="mx-auto max-w-xl px-2 text-center sm:px-0"
+          className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
         >
-          <motion.span
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={scaleIn}
-            custom={0.1}
-            className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary sm:h-14 sm:w-14"
-          >
-            <ShoppingBag className="h-5 w-5 sm:h-6 sm:w-6" />
-          </motion.span>
-          <h2 className="mt-5 text-2xl font-bold tracking-tight sm:mt-6 sm:text-3xl lg:text-4xl">
-            {t("shop.title")}
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
-            {t("shop.description")}
-          </p>
+          <div className="min-w-0 max-w-2xl">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              {t("shop.title")}
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {t("shop.description")}
+            </p>
+          </div>
           {state === "ready" && items.length > 0 && (
-            <p className="mt-2 text-xs font-medium text-primary sm:text-sm">
+            <p className="shrink-0 text-sm text-muted-foreground">
               {t("shop.productCount", { count: items.length })}
             </p>
           )}
@@ -476,7 +467,7 @@ export function ProductCatalogSection() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mx-auto mt-10 flex max-w-lg items-start gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-muted-foreground sm:mt-14"
+            className="mt-8 flex max-w-lg items-start gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-muted-foreground"
           >
             <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
             <div>
@@ -491,9 +482,9 @@ export function ProductCatalogSection() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mx-auto mt-10 max-w-lg rounded-2xl border border-border bg-card/40 p-6 text-center sm:mt-14"
+            className="mt-8 max-w-lg rounded-2xl border border-border bg-card/40 p-6"
           >
-            <Package className="mx-auto h-8 w-8 text-muted-foreground" />
+            <Package className="h-8 w-8 text-muted-foreground" />
             <p className="mt-4 font-medium text-foreground">{t("shop.emptyTitle")}</p>
             <p className="mt-2 text-sm text-muted-foreground">{t("shop.emptyHint")}</p>
           </motion.div>
@@ -501,7 +492,7 @@ export function ProductCatalogSection() {
 
         {state === "ready" && (
           <>
-            <div className="mt-8 grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:mt-10 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="mt-6 grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:mt-8 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {visibleItems.map((product) => (
                 <ProductCard
                   key={product.id}
