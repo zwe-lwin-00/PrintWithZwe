@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, MessageCircle, Phone } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { useSiteConfig } from "@/context/ConfigProvider";
 import { useTranslation } from "@/context/LocaleProvider";
 import { buildContactLinks } from "@/lib/contact";
@@ -20,7 +20,7 @@ export function ContactButtons({
   const { t } = useTranslation();
   const links = buildContactLinks(config.contact);
 
-  if (!links.hasPhone && !links.hasTelegram && !links.locationUrl) return null;
+  if (!links.hasTelegram) return null;
 
   const sizeClass =
     size === "lg"
@@ -35,51 +35,30 @@ export function ContactButtons({
         className,
       )}
     >
-      {links.hasPhone && (
-        <motion.a
-          href={links.phoneTel}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className={cn(
-            "inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card/80 font-medium text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-card",
-            sizeClass,
-          )}
-        >
-          <Phone className="h-4 w-4 shrink-0 text-primary" />
-          <span className="truncate">{t("contact.call")}</span>
-        </motion.a>
-      )}
-      {links.hasTelegram && (
-        <motion.a
-          href={links.telegram}
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className={cn(
-            "inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#229ED9] font-medium text-white shadow-lg shadow-[#229ED9]/25 transition-colors hover:bg-[#1d8bc2]",
-            sizeClass,
-          )}
-        >
-          <MessageCircle className="h-4 w-4 shrink-0" />
-          <span className="truncate">{t("contact.telegram")}</span>
-        </motion.a>
-      )}
-      {links.locationUrl && (
-        <motion.a href={links.locationUrl} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className={cn("inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card/80 font-medium text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-card", sizeClass)}>
-          <MapPin className="h-4 w-4 shrink-0 text-primary" /><span className="truncate">{t("contact.location")}</span>
-        </motion.a>
-      )}
+      <motion.a
+        href={links.telegram}
+        target="_blank"
+        rel="noopener noreferrer"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className={cn(
+          "inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#229ED9] font-medium text-white shadow-lg shadow-[#229ED9]/25 transition-colors hover:bg-[#1d8bc2]",
+          sizeClass,
+        )}
+      >
+        <MessageCircle className="h-4 w-4 shrink-0" />
+        <span className="truncate">{t("contact.telegram")}</span>
+      </motion.a>
     </div>
   );
 }
 
-/** Sticky mobile bar — Call + Telegram always one tap away */
+/** Sticky mobile bar — Telegram one tap away */
 export function MobileContactBar() {
   const { config } = useSiteConfig();
   const links = buildContactLinks(config.contact);
 
-  if (!links.hasPhone && !links.hasTelegram && !links.locationUrl) return null;
+  if (!links.hasTelegram) return null;
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 md:hidden">
