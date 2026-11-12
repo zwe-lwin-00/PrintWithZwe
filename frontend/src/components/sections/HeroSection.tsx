@@ -18,14 +18,14 @@ export function HeroSection() {
     <section className="relative overflow-hidden lg:min-h-[100dvh]">
       <SceneBackground />
 
-      <Container className="relative pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid lg:min-h-[100dvh] lg:grid-cols-[1fr_minmax(280px,400px)] lg:items-center lg:gap-10 lg:pb-20 lg:pt-32 xl:gap-14">
+      <Container className="relative pb-16 pt-24 sm:pb-20 sm:pt-28 lg:grid lg:min-h-[100dvh] lg:grid-cols-[minmax(0,1fr)_minmax(240px,380px)] lg:items-center lg:gap-8 lg:pb-20 lg:pt-32 xl:grid-cols-[minmax(0,1fr)_minmax(280px,400px)] xl:gap-14">
         <div className="flex min-w-0 flex-col justify-center">
           <motion.h1
             custom={0.1}
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="max-w-4xl text-[1.75rem] font-bold leading-tight tracking-tight xs:text-3xl sm:text-5xl lg:text-5xl xl:text-6xl"
+            className="max-w-4xl break-words text-[1.65rem] font-bold leading-tight tracking-tight xs:text-3xl sm:text-4xl md:text-5xl xl:text-6xl"
           >
             <span className="text-gradient-brand">{t("brand.name")}</span>
             <motion.span
@@ -33,7 +33,7 @@ export function HeroSection() {
               initial="hidden"
               animate="visible"
               variants={fadeUp}
-              className="mt-2 block text-lg font-semibold leading-snug text-muted-foreground xs:text-xl sm:text-4xl sm:leading-tight lg:text-3xl xl:text-4xl"
+              className="mt-2 block text-base font-semibold leading-snug text-muted-foreground xs:text-lg sm:text-2xl sm:leading-snug md:text-3xl lg:text-2xl xl:text-3xl"
             >
               {t("brand.tagline")}
             </motion.span>
@@ -44,7 +44,7 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg lg:text-base xl:text-lg"
+            className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground sm:mt-6 sm:text-base md:text-lg lg:text-base xl:text-lg"
           >
             {t("hero.description")}
           </motion.p>
@@ -54,7 +54,7 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mx-auto mt-8 w-full max-w-[400px] lg:hidden"
+            className="mx-auto mt-8 w-full min-w-0 max-w-[400px] lg:hidden"
           >
             <PrintAnimation className="w-full" />
           </motion.div>
@@ -64,18 +64,18 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mt-6 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center sm:gap-4"
+            className="mt-6 flex w-full min-w-0 flex-col gap-3 sm:mt-8 md:max-w-xl md:flex-row md:items-stretch md:gap-3 lg:max-w-none"
           >
             <MotionLinkButton
               href="#calculator"
               variant="default"
-              icon={<Calculator className="h-4 w-4" />}
-              className="w-full sm:w-auto"
+              icon={<Calculator className="h-4 w-4 shrink-0" />}
+              className="w-full md:flex-1 lg:w-auto lg:flex-none"
             >
               {t("hero.estimatePrice")}
               <AnimatedArrow />
             </MotionLinkButton>
-            <ContactButtons layout="row" size="default" className="w-full sm:w-auto" />
+            <ContactButtons layout="row" size="default" className="w-full md:flex-1 lg:w-auto lg:flex-none" />
           </motion.div>
 
         </div>

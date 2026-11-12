@@ -33,13 +33,13 @@ export function HowItWorksSection() {
           variants={fadeUp}
           className="mx-auto max-w-2xl text-center"
         >
-          <p className="text-xs font-medium uppercase tracking-wider text-primary sm:text-sm">
+          <p className="text-xs font-medium tracking-wide text-primary sm:text-sm">
             {t("howItWorks.eyebrow")}
           </p>
-          <h2 className="mt-2 text-2xl font-bold leading-tight tracking-tight sm:mt-3 sm:text-3xl lg:text-4xl">
+          <h2 className="mt-2 break-words text-xl font-bold leading-tight tracking-tight xs:text-2xl sm:mt-3 sm:text-3xl lg:text-4xl">
             {t("howItWorks.title")}
           </h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground sm:mt-4 sm:text-lg">
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base md:text-lg">
             {t("howItWorks.description")}
           </p>
         </motion.div>
@@ -49,7 +49,7 @@ export function HowItWorksSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
           variants={staggerContainer}
-          className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-6 sm:mt-14 md:grid-cols-2"
+          className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:mt-14 sm:gap-6 lg:grid-cols-2"
         >
           <motion.article
             variants={staggerItem}
@@ -60,10 +60,10 @@ export function HowItWorksSection() {
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary sm:h-11 sm:w-11">
               <Calculator className="h-5 w-5" />
             </span>
-            <p className="mt-4 text-xs font-medium uppercase tracking-wider text-primary">
+            <p className="mt-4 text-xs font-medium tracking-wide text-primary">
               {t("howItWorks.estimate.step")}
             </p>
-            <h3 className="mt-2 text-lg font-semibold sm:text-xl">
+            <h3 className="mt-2 text-base font-semibold sm:text-xl">
               {t("howItWorks.estimate.title")}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -73,8 +73,8 @@ export function HowItWorksSection() {
               <MotionLinkButton
                 href="#calculator"
                 variant="default"
-                icon={<Calculator className="h-4 w-4" />}
-                className="w-full sm:w-auto"
+                icon={<Calculator className="h-4 w-4 shrink-0" />}
+                className="w-full"
               >
                 {t("howItWorks.estimate.cta")}
                 <AnimatedArrow />
@@ -91,16 +91,16 @@ export function HowItWorksSection() {
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary sm:h-11 sm:w-11">
               <MessageCircle className="h-5 w-5" />
             </span>
-            <p className="mt-4 text-xs font-medium uppercase tracking-wider text-primary">
+            <p className="mt-4 text-xs font-medium tracking-wide text-primary">
               {t("howItWorks.contact.step")}
             </p>
-            <h3 className="mt-2 text-lg font-semibold sm:text-xl">
+            <h3 className="mt-2 text-base font-semibold sm:text-xl">
               {t("howItWorks.contact.title")}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               {t("howItWorks.contact.description")}
             </p>
-            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+            <div className="mt-5 flex flex-col gap-2">
               {links.hasTelegram && (
                 <motion.a
                   href={links.telegram}
@@ -109,11 +109,11 @@ export function HowItWorksSection() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={cn(
-                    "inline-flex h-11 min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-[#229ED9] px-4 text-sm font-medium text-white shadow-lg shadow-[#229ED9]/25 transition-colors hover:bg-[#1d8bc2]",
+                    "inline-flex min-h-11 w-full flex-1 items-center justify-center gap-2 rounded-lg bg-[#229ED9] px-3 py-2 text-sm font-medium leading-snug text-white shadow-lg shadow-[#229ED9]/25 transition-colors hover:bg-[#1d8bc2]",
                   )}
                 >
                   <MessageCircle className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{t("howItWorks.contact.telegram")}</span>
+                  <span className="min-w-0 whitespace-normal break-words text-center">{t("howItWorks.contact.telegram")}</span>
                 </motion.a>
               )}
               {links.locationUrl && (
@@ -123,10 +123,10 @@ export function HowItWorksSection() {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="inline-flex h-11 min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card/80 px-4 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-card"
+                  className="inline-flex min-h-11 w-full flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-card/80 px-3 py-2 text-sm font-medium leading-snug text-foreground shadow-sm transition-colors hover:border-primary/30 hover:bg-card"
                 >
                   <MapPin className="h-4 w-4 shrink-0 text-primary" />
-                  <span className="truncate">{t("howItWorks.contact.location")}</span>
+                  <span className="min-w-0 whitespace-normal break-words text-center">{t("howItWorks.contact.location")}</span>
                 </motion.a>
               )}
             </div>

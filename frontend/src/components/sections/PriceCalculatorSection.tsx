@@ -127,10 +127,10 @@ export function PriceCalculatorSection() {
           custom={0.1}
           className="mx-auto mt-10 max-w-xl"
         >
-          <div className="rounded-2xl border border-border bg-card/60 p-5 shadow-elevated backdrop-blur-sm sm:p-6">
+          <div className="rounded-2xl border border-border bg-card/60 p-4 shadow-elevated backdrop-blur-sm xs:p-5 sm:p-6">
             <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 xs:grid-cols-2">
-                <div className="space-y-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="min-w-0 space-y-2">
                   <label htmlFor="calc-material" className="text-sm font-medium">
                     {t("calculator.material")}
                   </label>
@@ -155,8 +155,8 @@ export function PriceCalculatorSection() {
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="calc-colors" className="text-sm font-medium">
+                <div className="min-w-0 space-y-2">
+                  <label htmlFor="calc-colors" className="break-words text-sm font-medium leading-snug">
                     {t("calculator.colors")}
                   </label>
                   <select
@@ -178,8 +178,8 @@ export function PriceCalculatorSection() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 xs:grid-cols-2">
-                <div className="space-y-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="min-w-0 space-y-2">
                   <label htmlFor="calc-weight" className="text-sm font-medium">
                     {t("calculator.weight")}
                   </label>
@@ -197,7 +197,7 @@ export function PriceCalculatorSection() {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="min-w-0 space-y-2">
                   <label htmlFor="calc-hours" className="text-sm font-medium">
                     {t("calculator.printTime")}
                   </label>
@@ -237,31 +237,31 @@ export function PriceCalculatorSection() {
                   </p>
 
                   <dl className="mt-4 space-y-2 border-t border-border/60 pt-4 text-sm">
-                    <div className="flex flex-col gap-0.5 xs:flex-row xs:justify-between xs:gap-4">
-                      <dt className="min-w-0 text-muted-foreground">
+                    <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
+                      <dt className="min-w-0 break-words text-muted-foreground">
                         {t("calculator.materialLine", {
                           label: materialLabel,
                           colors: colorsLabel,
                           rate: formatPrice(ratePerGram, pricing),
                         })}
                       </dt>
-                      <dd className="shrink-0 font-medium xs:text-right">
+                      <dd className="shrink-0 font-medium sm:text-right">
                         {formatPrice(breakdown.materialCost, pricing)}
                       </dd>
                     </div>
-                    <div className="flex flex-col gap-0.5 xs:flex-row xs:justify-between xs:gap-4">
-                      <dt className="min-w-0 text-muted-foreground">
+                    <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
+                      <dt className="min-w-0 break-words text-muted-foreground">
                         {t("calculator.machineLine", {
                           rate: formatPrice(pricing.machineRatePerHour, pricing),
                         })}
                       </dt>
-                      <dd className="shrink-0 font-medium xs:text-right">
+                      <dd className="shrink-0 font-medium sm:text-right">
                         {formatPrice(breakdown.machineCost, pricing)}
                       </dd>
                     </div>
-                    <div className="flex flex-col gap-0.5 xs:flex-row xs:justify-between xs:gap-4">
+                    <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
                       <dt className="text-muted-foreground">{t("calculator.baseFee")}</dt>
-                      <dd className="shrink-0 font-medium xs:text-right">
+                      <dd className="shrink-0 font-medium sm:text-right">
                         {formatPrice(breakdown.baseFee, pricing)}
                       </dd>
                     </div>

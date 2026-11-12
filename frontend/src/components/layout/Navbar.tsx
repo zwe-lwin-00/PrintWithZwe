@@ -104,7 +104,7 @@ export function Navbar() {
           <span className="truncate text-sm sm:text-base">{t("brand.name")}</span>
         </motion.a>
 
-        <nav className="hidden items-center gap-6 md:flex lg:gap-8">
+        <nav className="hidden items-center gap-5 lg:flex xl:gap-8">
           {navLinkKeys.map(({ href, key, id }) => (
             <NavLink
               key={href}
@@ -116,28 +116,28 @@ export function Navbar() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <ThemeToggle compact className="md:hidden" />
+          <ThemeToggle compact className="lg:hidden" />
 
-          <ThemeToggle className="hidden md:inline-flex" />
+          <ThemeToggle className="hidden lg:inline-flex" />
 
           <motion.div
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className="hidden md:block"
+            className="hidden lg:block"
           >
             <a
               href="#calculator"
-              className="inline-flex h-11 min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-colors hover:bg-primary/90 dark:shadow-primary/20"
+              className="inline-flex h-11 min-h-11 max-w-[14rem] items-center justify-center gap-2 rounded-lg bg-primary px-3 text-sm font-medium leading-snug text-primary-foreground shadow-lg shadow-primary/25 transition-colors hover:bg-primary/90 xl:max-w-none xl:px-4 dark:shadow-primary/20"
             >
-              <Calculator className="h-4 w-4" />
-              {t("nav.estimatePrice")}
+              <Calculator className="h-4 w-4 shrink-0" />
+              <span className="truncate">{t("nav.estimatePrice")}</span>
             </a>
           </motion.div>
 
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setMobileOpen((open) => !open)}
             aria-label={mobileOpen ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={mobileOpen}
@@ -169,9 +169,9 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-b border-border bg-background/95 backdrop-blur-md md:hidden"
+            className="overflow-hidden border-b border-border bg-background/95 backdrop-blur-md lg:hidden"
           >
-            <Container className="max-h-[calc(100dvh-4rem-env(safe-area-inset-top,0px))] overflow-y-auto py-4">
+            <Container className="max-h-[calc(100dvh-4rem-env(safe-area-inset-top,0px))] overflow-y-auto overscroll-contain py-4">
               <motion.div
                 initial="hidden"
                 animate="visible"
@@ -201,10 +201,10 @@ export function Navbar() {
                   <a
                     href="#calculator"
                     onClick={handleNavClick}
-                    className="inline-flex h-12 min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 text-base font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-colors hover:bg-primary/90"
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium leading-snug text-primary-foreground shadow-lg shadow-primary/25 transition-colors hover:bg-primary/90 sm:px-6 sm:text-base"
                   >
-                    <Calculator className="h-4 w-4" />
-                    {t("nav.estimatePrice")}
+                    <Calculator className="h-4 w-4 shrink-0" />
+                    <span className="min-w-0 break-words text-center">{t("nav.estimatePrice")}</span>
                   </a>
                 </motion.div>
               </motion.div>

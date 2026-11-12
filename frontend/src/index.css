@@ -45,11 +45,14 @@
     @apply scroll-smooth;
     scroll-padding-top: calc(var(--nav-height) + 1rem);
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   #root {
-    @apply min-w-0 w-full;
+    @apply min-w-0 w-full max-w-full;
   }
 
   * {
@@ -57,12 +60,23 @@
   }
 
   body {
-    @apply min-w-0 overflow-x-hidden bg-background text-foreground font-sans antialiased;
+    @apply min-w-0 max-w-full overflow-x-clip bg-background text-foreground font-sans antialiased;
     padding-left: env(safe-area-inset-left, 0px);
     padding-right: env(safe-area-inset-right, 0px);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.7;
     transition:
       background-color 0.35s ease,
       color 0.35s ease;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+    height: auto;
   }
 
   ::selection {

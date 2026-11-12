@@ -19,7 +19,7 @@ export function HomePage() {
         {t("a11y.skipToContent")}
       </a>
       <Navbar />
-      <main id="main-content" className="min-w-0 md:pb-0">
+      <main id="main-content" className="min-w-0 max-w-full overflow-x-clip">
         <HeroSection />
         <HowItWorksSection />
         <PriceCalculatorSection />

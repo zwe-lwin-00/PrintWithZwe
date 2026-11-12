@@ -41,7 +41,7 @@ export function Footer() {
   return (
     <footer
       id="contact"
-      className="border-t border-border bg-card/30 pb-[calc(var(--mobile-contact-bar-height)+env(safe-area-inset-bottom,0px))] md:pb-0"
+      className="border-t border-border bg-card/30 pb-[calc(var(--mobile-contact-bar-height)+env(safe-area-inset-bottom,0px))] lg:pb-0"
     >
       <Container className="py-10 sm:py-12">
         <motion.div

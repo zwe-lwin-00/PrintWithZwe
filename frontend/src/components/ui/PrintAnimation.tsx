@@ -10,10 +10,10 @@ const VIEW_W = 380;
 const VIEW_H = 340;
 
 /** Reference layout at 400px card width — scene uses aspect-ratio to scale */
-const HUD_H = 56;
-const FOOTER_H = 20;
-const COMPACT_HUD_H = 32;
-const COMPACT_FOOTER_H = 14;
+const HUD_H = 64;
+const FOOTER_H = 24;
+const COMPACT_HUD_H = 36;
+const COMPACT_FOOTER_H = 18;
 const COMPACT_SCENE_MAX_H = 220;
 
 /** SVG viewBox regions — single source of truth for HTML overlay alignment */
@@ -195,7 +195,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
                 />
               </div>
             </div>
-            <p className="shrink-0 text-[0.45rem] font-semibold uppercase tracking-wider text-emerald-500/90">
+            <p className="max-w-[40%] shrink-0 break-words text-right text-[0.45rem] font-semibold leading-snug tracking-wide text-emerald-500/90">
               {isComplete ? t("animation.done") : isPrinting ? t("animation.print") : t("animation.ready")}
             </p>
           </div>
@@ -231,7 +231,7 @@ export function PrintAnimation({ className, compact = false }: PrintAnimationPro
                     isPrinting && "animate-pulse",
                   )}
                 />
-                <p className="truncate text-[0.55rem] font-semibold uppercase tracking-wider text-emerald-500/90">
+                <p className="max-w-full break-words text-[0.55rem] font-semibold leading-snug tracking-wide text-emerald-500/90">
                   {statusLabel}
                 </p>
               </div>

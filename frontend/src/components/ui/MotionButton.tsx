@@ -26,7 +26,7 @@ export function MotionLinkButton({
       whileTap={{ scale: 0.98 }}
       transition={springTransition}
       className={cn(
-        "inline-flex h-12 min-h-12 w-full items-center justify-center gap-2 rounded-lg px-6 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto sm:px-8",
+        "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium leading-snug transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-6 sm:text-base lg:w-auto lg:px-8",
         variant === "default"
           ? "border border-transparent bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 dark:shadow-primary/20"
           : "border border-border bg-transparent text-foreground hover:border-primary/30 hover:bg-muted/50",
